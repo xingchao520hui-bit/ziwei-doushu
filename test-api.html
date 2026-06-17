@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>API测试</title>
+</head>
+<body>
+<h1>API测试页面</h1>
+<button onclick="testAPI()">测试/chart接口</button>
+<div id="result"></div>
+<script>
+async function testAPI() {
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = '测试中...';
+  
+  try {
+    const res = await fetch('/chart?year=1993&month=5&day=3&hour=12&gender=male&_t=' + Date.now());
+    const data = await res.json();
+    resultDiv.innerHTML = '<h3>API返回数据:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    
+    if (data.success && data.data) {
+      resultDiv.innerHTML += '<h3 style="color:green">✅ API格式正确!</h3>';
+      resultDiv.innerHTML += '<p>birth_info.gender = ' + data.data.birth_info.gender + '</p>';
+    }
+  } catch(e) {
+    resultDiv.innerHTML = '<p style="color:red">错误: ' + e.message + '</p>';
+  }
+}
+</script>
+</body>
+</html>

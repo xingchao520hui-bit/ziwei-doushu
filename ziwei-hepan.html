@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>紫微斗数合盘分析 - 缘分匹配</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','SimSun',serif;background:linear-gradient(135deg,#fff0f5,#ffe4e9,#ffd6e0);color:#4a2030;line-height:1.8;padding:20px}
+.container{max-width:1400px;margin:0 auto}
+
+.header{text-align:center;padding:40px 20px;border-bottom:3px solid #ff69b4;margin-bottom:40px;background:rgba(255,255,255,.85);border-radius:15px;box-shadow:0 8px 32px rgba(255,105,180,.3)}
+.header h1{color:#ff1493;font-size:42px;margin-bottom:10px;text-shadow:2px 2px 4px rgba(255,20,147,.2)}
+.header .subtitle{color:#d1477a;font-size:16px;font-style:italic}
+
+/* input */
+.input-section{display:flex;gap:30px;margin-bottom:40px;flex-wrap:wrap}
+.person-input{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;flex:1;min-width:300px}
+.person-input h2{color:#c8a96e;margin-bottom:20px;font-size:20px;text-align:center;border-bottom:1px solid #2a2a4a;padding-bottom:10px}
+.form-group{margin-bottom:15px}
+.form-group label{color:#8a7a5a;font-size:12px;margin-bottom:4px;display:block}
+.form-group input,.form-group select{padding:10px 12px;background:rgba(0,0,0,.5);border:1px solid #2a2a4a;color:#e8dcc8;border-radius:5px;font-size:14px;font-family:inherit;width:100%}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#c8a96e}
+.btn-submit{display:block;width:100%;max-width:500px;margin:0 auto;padding:15px 30px;background:linear-gradient(135deg,#c8a96e,#b8963e);color:#1a0a0a;border:none;border-radius:5px;font-size:18px;font-weight:bold;cursor:pointer;letter-spacing:2px;transition:.3s}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(200,169,110,.3)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.status{text-align:center;margin-bottom:20px;display:none;padding:10px}
+.status.show{display:block}.status.error{color:#dc3545}.status.loading{color:#c8a96e}
+
+/* result */
+.result-area{display:none}.result-area.show{display:block}
+
+/* chart display */
+.chart-section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
+.chart-title{color:#c8a96e;font-size:20px;margin-bottom:20px;text-align:center;border-bottom:1px solid #2a2a4a;padding-bottom:10px}
+.palace-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#2a2a4a;border:2px solid #c8a96e;margin-bottom:20px}
+.palace{background:rgba(26,26,58,.9);padding:10px;min-height:100px;border:1px solid #3a3a5a;position:relative}
+.palace.ming{background:rgba(42,26,42,.9);border-color:#c8a96e}
+.palace.shen{background:rgba(42,26,42,.9);border-color:#9b2335}
+.palace-name{font-size:11px;color:#8a7a5a;margin-bottom:5px}
+.palace-badge{position:absolute;top:5px;right:5px;font-size:10px;padding:1px 5px;border-radius:3px}
+.badge-ming{background:#c8a96e;color:#1a0a0a}.badge-shen{background:#9b2335;color:#fff}
+.star-list{font-size:10px;line-height:1.4}.star-main{color:#c8a96e;font-weight:bold}
+.star-lucky{color:#5cb85c}.star-evil{color:#d9534f}.star-minor{color:#888}
+
+/* score */
+.score-section{background:rgba(18,18,42,.8);padding:40px;border:1px solid #2a2a4a;margin-bottom:30px;text-align:center;border-left:4px solid #c8a96e}
+.score-circle{display:inline-block;width:150px;height:150px;border-radius:50%;background:rgba(200,169,110,.1);color:#c8a96e;font-size:3em;font-weight:bold;line-height:150px;margin-bottom:20px;border:3px solid #c8a96e;box-shadow:0 0 30px rgba(200,169,110,.2)}
+.score-text{color:#e8dcc8;font-size:1.3em;margin-top:10px}
+
+.plain-talk{background:rgba(200,169,110,.05);border:1px solid #c8a96e;border-radius:5px;padding:20px;margin-top:20px;line-height:2}
+.plain-talk h3{color:#c8a96e;margin-bottom:10px;font-size:16px}
+.plain-talk p{margin-bottom:10px;color:#e8dcc8}
+.plain-talk .highlight{color:#c8a96e;font-weight:bold}
+
+.section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
+.section-title{color:#c8a96e;font-size:18px;margin-bottom:15px;border-bottom:1px solid #2a2a4a;padding-bottom:10px}
+
+.dimensions{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:30px}
+.dimension{background:rgba(26,26,58,.9);padding:20px;border:1px solid #2a2a4a;border-radius:5px;text-align:center}
+.dimension h3{color:#c8a96e;margin-bottom:10px;font-size:16px}
+.dimension .score{font-size:2em;font-weight:bold;color:#e8dcc8;margin:10px 0}
+.dimension .max{color:#8a7a5a;font-size:.9em}
+.progress-bar{width:100%;height:8px;background:#2a2a4a;border-radius:4px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#c8a96e,#b8963e);border-radius:4px;transition:width 1s}
+
+.palace-item{background:rgba(26,26,58,.9);padding:15px;margin-bottom:10px;border:1px solid #2a2a4a;border-radius:5px;border-left:4px solid #c8a96e}
+.palace-item.negative{border-left-color:#dc3545}
+.palace-item.positive{border-left-color:#28a745}
+
+.relation-tag{display:inline-block;padding:3px 10px;border-radius:3px;font-size:.9em;font-weight:bold;margin-right:10px}
+.relation-tag.chong{background:#dc3545;color:white}
+.relation-tag.xing{background:#c0392b;color:white}
+.relation-tag.hai{background:#e67e22;color:white}
+.relation-tag.ke{background:#d35400;color:white}
+.relation-tag.liuhe{background:#28a745;color:white}
+.relation-tag.sanhe{background:#27ae60;color:white}
+.relation-tag.same{background:#3498db;color:white}
+.relation-tag.neutral{background:#6c757d;color:white}
+
+.summary{background:rgba(200,169,110,.1);padding:20px;border:1px solid #c8a96e;border-radius:5px;margin-bottom:20px}
+
+@media(max-width:768px){.palace-grid{grid-template-columns:repeat(2,1fr)}.input-section{flex-direction:column}.header h1{font-size:28px}.palace{min-height:75px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+    <h1>紫微斗数合盘分析</h1>
+    <p class="subtitle">双人命盘契合度分析 · 宫位对齐 · 星曜互动 · 四化引动</p>
+</div>
+
+<div class="input-section">
+    <div class="person-input">
+        <h2>第一人信息</h2>
+        <div class="form-group">
+            <label>出生年份</label>
+            <input type="number" id="a_year" value="1993" min="1920" max="2050">
+        </div>
+        <div class="form-group">
+            <label>出生月份</label>
+            <input type="number" id="a_month" value="5" min="1" max="12">
+        </div>
+        <div class="form-group">
+            <label>出生日期</label>
+            <input type="number" id="a_day" value="3" min="1" max="31">
+        </div>
+        <div class="form-group">
+            <label>出生时辰 (0-23)</label>
+            <input type="number" id="a_hour" value="12" min="0" max="23">
+        </div>
+        <div class="form-group">
+            <label>性别</label>
+            <select id="a_gender">
+                <option value="male">男</option>
+                <option value="female">女</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="person-input">
+        <h2>第二人信息</h2>
+        <div class="form-group">
+            <label>出生年份</label>
+            <input type="number" id="b_year" value="1988" min="1920" max="2050">
+        </div>
+        <div class="form-group">
+            <label>出生月份</label>
+            <input type="number" id="b_month" value="6" min="1" max="12">
+        </div>
+        <div class="form-group">
+            <label>出生日期</label>
+            <input type="number" id="b_day" value="20" min="1" max="31">
+        </div>
+        <div class="form-group">
+            <label>出生时辰 (0-23)</label>
+            <input type="number" id="b_hour" value="14" min="0" max="23">
+        </div>
+        <div class="form-group">
+            <label>性别</label>
+            <select id="b_gender">
+                <option value="male">男</option>
+                <option value="female" selected>女</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<button class="btn-submit" onclick="startHepan()">开始合盘分析</button>
+
+<div class="status" id="status"></div>
+
+<div class="result-area" id="result">
+    <!-- 第一人命盘 -->
+    <div class="chart-section" id="chartA" style="display:none;">
+        <h2 class="chart-title" id="chartATitle"></h2>
+        <div class="palace-grid" id="palaceGridA"></div>
+    </div>
+    
+    <!-- 第二人命盘 -->
+    <div class="chart-section" id="chartB" style="display:none;">
+        <h2 class="chart-title" id="chartBTitle"></h2>
+        <div class="palace-grid" id="palaceGridB"></div>
+    </div>
+    
+    <!-- 合盘分析结果 -->
+    <div id="hepanResult" style="display:none;">
+        <div class="score-section">
+            <div class="score-circle" id="scoreCircle">0</div>
+            <div class="score-text" id="scoreText"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">各维度得分</h2>
+            <div class="dimensions" id="dimensions"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">宫位对齐分析</h2>
+            <div class="summary" id="palaceSummary"></div>
+            <div id="palaceComparison"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">星曜互动分析</h2>
+            <div class="summary" id="starSummary"></div>
+            <div id="starHits"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">四化互动分析</h2>
+            <div class="summary" id="mutagenSummary"></div>
+            <div id="mutagenHits"></div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
+
+function pn(d,n){return d.palaces.find(p=>p.name===n)}
+function sn(p){return p.stars.map(s=>s.name)}
+function starName(s){return s.name+(s.siHua?'['+s.siHua+']':'')}
+
+async function startHepan() {
+  const btn = document.querySelector('.btn-submit');
+  const st = document.getElementById('status');
+  btn.disabled = true;
+  btn.textContent = '排盘中...';
+  st.className = 'status show loading';
+  st.textContent = '正在排盘...';
+  
+  const a_params = {
+    year: document.getElementById('a_year').value,
+    month: document.getElementById('a_month').value,
+    day: document.getElementById('a_day').value,
+    hour: document.getElementById('a_hour').value,
+    gender: document.getElementById('a_gender').value
+  };
+  
+  const b_params = {
+    year: document.getElementById('b_year').value,
+    month: document.getElementById('b_month').value,
+    day: document.getElementById('b_day').value,
+    hour: document.getElementById('b_hour').value,
+    gender: document.getElementById('b_gender').value
+  };
+  
+  try {
+    // 排第一人命盘
+    st.textContent = '正在排第一人命盘...';
+    const a_query = Object.keys(a_params).map(k => `${k}=${a_params[k]}`).join('&');
+    const a_res = await fetch(`/chart?${a_query}&_t=${Date.now()}`);
+    const a_data = await a_res.json();
+    if (a_data.error) throw new Error('第一人排盘失败: ' + a_data.error);
+    if (!a_data.success) throw new Error('第一人排盘失败');
+    const a_chart = a_data.data;  // 后端返回 { success: true, data: chartData }
+    
+    // 排第二人命盘
+    st.textContent = '正在排第二人命盘...';
+    const b_query = Object.keys(b_params).map(k => `${k}=${b_params[k]}`).join('&');
+    const b_res = await fetch(`/chart?${b_query}&_t=${Date.now()}`);
+    const b_data = await b_res.json();
+    if (b_data.error) throw new Error('第二人排盘失败: ' + b_data.error);
+    if (!b_data.success) throw new Error('第二人排盘失败');
+    const b_chart = b_data.data;
+    
+    // 显示两个命盘
+    renderChart('A', a_chart);
+    renderChart('B', b_chart);
+    
+    // 合盘分析
+    st.textContent = '正在合盘分析...';
+    const hepan_params = {
+      a_year: a_params.year,
+      a_month: a_params.month,
+      a_day: a_params.day,
+      a_hour: a_params.hour,
+      a_gender: a_params.gender,
+      b_year: b_params.year,
+      b_month: b_params.month,
+      b_day: b_params.day,
+      b_hour: b_params.hour,
+      b_gender: b_params.gender
+    };
+    const hepan_query = Object.keys(hepan_params).map(k => `${k}=${hepan_params[k]}`).join('&');
+    const hepan_res = await fetch(`/hepan?${hepan_query}`);
+    const hepan_data = await hepan_res.json();
+    if (hepan_data.error) throw new Error('合盘失败: ' + hepan_data.error);
+    if (!hepan_data.success) throw new Error('合盘失败');
+    
+    // 显示合盘结果
+    displayResult(hepan_data.data);
+    
+    // 显示结果区域
+    document.getElementById('result').classList.add('show');
+    document.getElementById('hepanResult').style.display = 'block';
+    
+    st.className = 'status';
+    btn.disabled = false;
+    btn.textContent = '开始合盘分析';
+    
+    // 滚动到结果区域
+    document.getElementById('result').scrollIntoView({behavior: 'smooth'});
+    
+  } catch(err) {
+    st.className = 'status show error';
+    st.textContent = '错误: ' + err.message;
+    btn.disabled = false;
+    btn.textContent = '开始合盘分析';
+  }
+}
+
+function renderChart(which, d) {
+  const chartDiv = document.getElementById('chart' + which);
+  const titleDiv = document.getElementById('chart' + which + 'Title');
+  const gridDiv = document.getElementById('palaceGrid' + which);
+  
+  // 显示标题 - 修复：使用 birth_info 而不是 birth
+  const genderTitle = d.birth_info.gender === '男' ? '乾造' : '坤造';
+  const ymd = d.birth_info.solar_date.replace(/-/g, '年') + '日';
+  titleDiv.textContent = `第${which === 'A' ? '一' : '二'}人命盘 — ${genderTitle} ${ymd}`;
+  
+  // 清空网格
+  gridDiv.innerHTML = '';
+  
+  // 按顺序显示十二宫
+  const palaceOrder = ['命宫', '兄弟', '夫妻', '子女', '财帛', '疾厄', '迁移', '仆役', '官禄', '田宅', '福德', '父母'];
+  
+  palaceOrder.forEach(pname => {
+    const p = d.palaces.find(pal => pal.name === pname);
+    if (!p) return;
+    
+    const div = document.createElement('div');
+    div.className = 'palace';
+    if (p.name === '命宫') div.classList.add('ming');
+    if (p.name === '身宫') div.classList.add('shen');
+    
+    let html = `<div class="palace-name">${p.name} (${p.branch})</div>`;
+    
+    if (p.name === '命宫') {
+      const badge = document.createElement('div');
+      badge.className = 'palace-badge badge-ming';
+      badge.textContent = '命';
+      div.appendChild(badge);
+    }
+    if (p.isBodyPalace) {
+      const badge = document.createElement('div');
+      badge.className = 'palace-badge badge-shen';
+      badge.textContent = '身';
+      div.appendChild(badge);
+    }
+    
+    // 显示星曜
+    const mainStars = p.stars.filter(s => s.type === 'major');
+    const minorStars = p.stars.filter(s => s.type === 'minor' || s.type === 'aux');
+    
+    let starsHtml = '<div class="star-list">';
+    mainStars.forEach(s => {
+      starsHtml += `<div class="star-main">${starName(s)}</div>`;
+    });
+    minorStars.slice(0, 5).forEach(s => {
+      starsHtml += `<div class="star-minor">${starName(s)}</div>`;
+    });
+    starsHtml += '</div>';
+    
+    html += starsHtml;
+    div.innerHTML = html;
+    gridDiv.appendChild(div);
+  });
+  
+  chartDiv.style.display = 'block';
+}
+
+function generateOverallPlainTalk(score) {
+  let talk = '<div class="plain-talk">';
+  talk += '<h3>🎯 大白话解读</h3>';
+  
+  if (score >= 80) {
+    talk += '<p>你们的契合度非常高！<span class="highlight">就像两块拼图完美契合</span>，在很多方面都能互相理解和支持。</p>';
+    talk += '<p>你们在一起会觉得很舒服，很少有矛盾，即使有也能很快解决。<span class="highlight">这是难得的缘分，要好好珍惜！</span></p>';
+  } else if (score >= 60) {
+    talk += '<p>你们的契合度不错，<span class="highlight">有发展潜力</span>。虽然可能有些小摩擦，但整体来说是匹配的。</p>';
+    talk += '<p>你们在一起大部分时间都很开心，偶尔会有分歧，但只要<span class="highlight">多沟通、多包容</span>，关系会越来越好。</p>';
+  } else if (score >= 40) {
+    talk += '<p>你们的契合度中等，<span class="highlight">需要多花时间互相了解</span>。你们可能在某些方面差异较大，但这不代表不能在一起。</p>';
+    talk += '<p>关键是<span class="highlight">要互相尊重、互相学习</span>。你们可以从彼此的差异中获得成长，只要愿意付出努力，也能建立好的关系。</p>';
+  } else {
+    talk += '<p>你们的契合度较低，<span class="highlight">可能会经常有摩擦</span>。你们在性格、价值观或处事方式上可能差异较大。</p>';
+    talk += '<p>但这不代表完全没有可能，<span class="highlight">只是需要更多的沟通和磨合</span>。如果真的想在一起，就要做好心理准备，需要付出更多的努力。</p>';
+  }
+  
+  talk += '</div>';
+  return talk;
+}
+
+function generatePalacePlainTalk(data) {
+  const score = data.dimensions.find(d => d.id === 'palace_alignment').score;
+  const max = data.dimensions.find(d => d.id === 'palace_alignment').max;
+  const percent = (score / max * 100).toFixed(0);
+  
+  let talk = '<div class="plain-talk">';
+  talk += '<h3>🏠 宫位对齐大白话</h3>';
+  
+  if (percent >= 80) {
+    talk += '<p>你们的<span class="highlight">命盘宫位匹配度很高</span>！这意味着你们在性格、价值观、生活方式等方面比较契合。</p>';
+    talk += '<p>举个例子：你们的"命宫"（代表性格）和"夫妻宫"（代表感情）如果相处和谐，说明你们<span class="highlight">性格互补、感情顺利</span>。</p>';
+  } else if (percent >= 60) {
+    talk += '<p>你们的命盘宫位匹配度还不错，<span class="highlight">大部分方面都能互相理解</span>。</p>';
+    talk += '<p>可能某些宫位的关系不太理想（比如"冲"或"害"），但整体来说<span class="highlight">是可以互相包容的</span>。</p>';
+  } else if (percent >= 40) {
+    talk += '<p>你们的命盘宫位匹配度中等，<span class="highlight">在某些方面可能会有分歧</span>。</p>';
+    talk += '<p>比如你们的"命宫"和"夫妻宫"如果是"冲"的关系，可能意味着<span class="highlight">性格差异较大，需要多磨合</span>。</p>';
+  } else {
+    talk += '<p>你们的命盘宫位匹配度较低，<span class="highlight">在很多方面可能都存在差异</span>。</p>';
+    talk += '<p>这可能意味着你们的<span class="highlight">性格、价值观、生活方式等方面差异较大</span>，需要更多的理解和包容。</p>';
+  }
+  
+  talk += '<p><strong>建议：</strong>如果宫位匹配度不高，不要灰心。<span class="highlight">多沟通、多理解对方的立场</span>，可以弥补命盘上的不足。</p>';
+  talk += '</div>';
+  return talk;
+}
+
+function generateStarPlainTalk(data) {
+  const score = data.dimensions.find(d => d.id === 'star_harmony').score;
+  const max = data.dimensions.find(d => d.id === 'star_harmony').max;
+  const percent = (score / max * 100).toFixed(0);
+  
+  let talk = '<div class="plain-talk">';
+  talk += '<h3>⭐ 星曜互动大白话</h3>';
+  
+  if (percent >= 80) {
+    talk += '<p>你们的<span class="highlight">星曜互动非常和谐</span>！你们的命盘主星（代表核心性格）相处融洽。</p>';
+    talk += '<p>这意味着你们<span class="highlight">在核心性格、人生观等方面很契合</span>，容易互相理解和支持。</p>';
+  } else if (percent >= 60) {
+    talk += '<p>你们的星曜互动还不错，<span class="highlight">大部分主星都能和谐相处</span>。</p>';
+    talk += '<p>可能有些小星曜的关系不太理想，但<span class="highlight">不影响整体和谐</span>。</p>';
+  } else if (percent >= 40) {
+    talk += '<p>你们的星曜互动中等，<span class="highlight">某些主星可能存在冲突</span>。</p>';
+    talk += '<p>这可能意味着你们在<span class="highlight">某些方面的看法或做法不太一致</span>，需要多沟通。</p>';
+  } else {
+    talk += '<p>你们的星曜互动较差，<span class="highlight">主星之间存在较多冲突</span>。</p>';
+    talk += '<p>这可能意味着你们在<span class="highlight">核心性格、价值观等方面差异较大</span>，需要更多的理解和包容。</p>';
+  }
+  
+  talk += '<p><strong>建议：</strong>如果星曜互动不理想，可以尝试<span class="highlight">从对方的角度思考问题</span>，理解对方的动机和想法。</p>';
+  talk += '</div>';
+  return talk;
+}
+
+function generateMutagenPlainTalk(data) {
+  const score = data.dimensions.find(d => d.id === 'mutagen_interaction').score;
+  const max = data.dimensions.find(d => d.id === 'mutagen_interaction').max;
+  const percent = (score / max * 100).toFixed(0);
+  
+  let talk = '<div class="plain-talk">';
+  talk += '<h3>✨ 四化互动大白话</h3>';
+  
+  if (percent >= 80) {
+    talk += '<p>你们的<span class="highlight">四化互动非常积极</span>！你们的"化禄"（代表好运、财富）互相促进。</p>';
+    talk += '<p>这意味着你们在一起会<span class="highlight">互相带来好运，事业和财运都能得到提升</span>。</p>';
+  } else if (percent >= 60) {
+    talk += '<p>你们的四化互动还不错，<span class="highlight">大部分互动都是积极的</span>。</p>';
+    talk += '<p>可能有些"化忌"（代表阻碍、挑战）的影响，但<span class="highlight">整体来说是互相促进的</span>。</p>';
+  } else if (percent >= 40) {
+    talk += '<p>你们的四化互动中等，<span class="highlight">既有积极的影响，也有挑战</span>。</p>';
+    talk += '<p>你们在一起既会<span class="highlight">互相带来好运，也可能面临一些挑战</span>，需要共同面对。</p>';
+  } else {
+    talk += '<p>你们的四化互动较差，<span class="highlight">可能存在较多的"化忌"影响</span>。</p>';
+    talk += '<p>这意味着你们在一起可能会<span class="highlight">面临较多的阻碍和挑战</span>，需要更多的努力来维持关系。</p>';
+  }
+  
+  talk += '<p><strong>建议：</strong>如果四化互动不理想，不要灰心。<span class="highlight">通过共同的努力和积极的心态</span>，可以化解不利的影响。</p>';
+  talk += '</div>';
+  return talk;
+}
+
+function displayResult(data) {
+  // 显示总分
+  const score = data.score;
+  document.getElementById('scoreCircle').textContent = score;
+  
+  let scoreText = '';
+  if (score >= 80) scoreText = '✨ 契合度很高，天作之合！';
+  else if (score >= 60) scoreText = '💕 契合度较好，有发展潜力';
+  else if (score >= 40) scoreText = '🤝 契合度中等，需要互相理解';
+  else scoreText = '⚠️ 契合度较低，需要更多磨合';
+  document.getElementById('scoreText').textContent = scoreText;
+  
+  // 添加大白话点评
+  const scoreSection = document.querySelector('.score-section');
+  const existingPlainTalk = scoreSection.querySelector('.plain-talk');
+  if (existingPlainTalk) existingPlainTalk.remove();
+  scoreSection.insertAdjacentHTML('beforeend', generateOverallPlainTalk(score));
+  
+  // 显示各维度
+  const dimsDiv = document.getElementById('dimensions');
+  dimsDiv.innerHTML = '';
+  data.dimensions.forEach(d => {
+    const percent = (d.score / d.max * 100).toFixed(0);
+    const dimName = {'palace_alignment':'宫位对齐','star_harmony':'星曜和谐','mutagen_interaction':'四化互动','life_rhythm':'运限节奏'}[d.id] || d.id;
+    const dim = document.createElement('div');
+    dim.className = 'dimension';
+    dim.innerHTML = `
+      <h3>${dimName}</h3>
+      <div class="score">${d.score.toFixed(1)}</div>
+      <div class="max">/ ${d.max} 分</div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${percent}%"></div>
+      </div>
+    `;
+    dimsDiv.appendChild(dim);
+  });
+  
+  // 显示宫位对齐分析
+  displayPalaceAnalysis(data);
+  
+  // 显示星曜互动分析
+  displayStarAnalysis(data);
+  
+  // 显示四化互动分析
+  displayMutagenAnalysis(data);
+}
+
+function displayPalaceAnalysis(data) {
+  const palaceHits = data.hits.filter(h => h.dimension === 'palace_alignment');
+  const summary = data.dimensions.find(d => d.id === 'palace_alignment');
+  
+  const summaryDiv = document.getElementById('palaceSummary');
+  if (summary && summary.reason_summary) {
+    summaryDiv.innerHTML = `<h3>宫位对齐得分: ${summary.score}/${summary.max}</h3><p>${summary.reason_summary.display_text}</p>`;
+  }
+  
+  const compDiv = document.getElementById('palaceComparison');
+  compDiv.innerHTML = '';
+  palaceHits.forEach(h => {
+    const ev = h.evidence;
+    const rel = ev.relation || 'neutral';
+    const relName = {'same':'同支','chong':'冲','liuhe':'六合','sanhe':'三合','xing':'刑','hai':'害','ke':'克','neutral':'平'}[rel] || '平';
+    const isNegative = ['chong', 'xing', 'hai', 'ke'].includes(rel);
+    
+    const item = document.createElement('div');
+    item.className = `palace-item ${isNegative ? 'negative' : 'positive'}`;
+    item.innerHTML = `
+      <div>
+        <span class="relation-tag ${rel}">${relName}</span>
+        <strong>${ev.left_palace}</strong> (${ev.left_branch}) 
+        与 
+        <strong>${ev.right_palace}</strong> (${ev.right_branch})
+      </div>
+      <div style="margin-top: 8px; color: #8a7a5a; font-size: 0.95em;">
+        影响分值: ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)} 
+        （关系因子: ${ev.factor}）
+      </div>
+    `;
+    compDiv.appendChild(item);
+  });
+  
+  // 添加大白话点评
+  const palaceSection = compDiv.closest('.section');
+  const existingPlainTalk = palaceSection.querySelector('.plain-talk');
+  if (existingPlainTalk) existingPlainTalk.remove();
+  palaceSection.insertAdjacentHTML('beforeend', generatePalacePlainTalk(data));
+}
+
+function displayStarAnalysis(data) {
+  const starHits = data.hits.filter(h => h.dimension === 'star_harmony');
+  const summary = data.dimensions.find(d => d.id === 'star_harmony');
+  
+  const summaryDiv = document.getElementById('starSummary');
+  if (summary && summary.reason_summary) {
+    summaryDiv.innerHTML = `<h3>星曜和谐得分: ${summary.score}/${summary.max}</h3><p>${summary.reason_summary.display_text}</p>`;
+  }
+  
+  const hitsDiv = document.getElementById('starHits');
+  hitsDiv.innerHTML = '';
+  starHits.forEach(h => {
+    const ev = h.evidence;
+    const item = document.createElement('div');
+    item.className = 'palace-item';
+    item.innerHTML = `
+      <div><strong>${ev.pair}</strong></div>
+      <div style="margin-top: 8px; font-size: 0.95em;">
+        主星对比: ${ev.stars_a.join(', ')} ↔ ${ev.stars_b.join(', ')}
+      </div>
+      <div style="margin-top: 8px; color: #8a7a5a;">
+        和谐程度: ${(ev.harmony * 100).toFixed(0)}% | 影响分值: ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)}
+      </div>
+    `;
+    hitsDiv.appendChild(item);
+  });
+  
+  // 添加大白话点评
+  const starSection = hitsDiv.closest('.section');
+  const existingPlainTalk = starSection.querySelector('.plain-talk');
+  if (existingPlainTalk) existingPlainTalk.remove();
+  starSection.insertAdjacentHTML('beforeend', generateStarPlainTalk(data));
+}
+
+function displayMutagenAnalysis(data) {
+  const mutagenHits = data.hits.filter(h => h.dimension === 'mutagen_interaction');
+  const summary = data.dimensions.find(d => d.id === 'mutagen_interaction');
+  
+  const summaryDiv = document.getElementById('mutagenSummary');
+  if (summary && summary.reason_summary) {
+    summaryDiv.innerHTML = `<h3>四化互动得分: ${summary.score}/${summary.max}</h3><p>${summary.reason_summary.display_text}</p>`;
+  }
+  
+  const hitsDiv = document.getElementById('mutagenHits');
+  hitsDiv.innerHTML = '';
+  mutagenHits.forEach(h => {
+    if (!h.evidence.matched) return;
+    const ev = h.evidence;
+    const directionText = ev.direction === 'A->B' ? '第一人 → 第二人' : '第二人 → 第一人';
+    const typeText = ev.type === 'lu' ? '化禄' : '化忌';
+    
+    const item = document.createElement('div');
+    item.className = `palace-item ${h.effect < 0 ? 'negative' : 'positive'}`;
+    item.innerHTML = `
+      <div><strong>${directionText}</strong>: ${typeText}</div>
+      <div style="margin-top: 8px;">
+        落入 <strong>${ev.target_palace}</strong> 宫 (${ev.target_branch})
+      </div>
+      <div style="margin-top: 8px; color: #8a7a5a;">
+        影响分值: ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)}
+      </div>
+    `;
+    hitsDiv.appendChild(item);
+  });
+  
+  // 添加大白话点评
+  const mutagenSection = hitsDiv.closest('.section');
+  const existingPlainTalk = mutagenSection.querySelector('.plain-talk');
+  if (existingPlainTalk) existingPlainTalk.remove();
+  mutagenSection.insertAdjacentHTML('beforeend', generateMutagenPlainTalk(data));
+}
+</script>
+</body>
+</html>

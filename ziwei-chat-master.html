@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>紫微斗数 · 命理师对话</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:#0d0d1a;color:#d4c5a9;min-height:100vh;display:flex;flex-direction:column;background-image:radial-gradient(ellipse at 20% 50%,rgba(233,69,96,0.05) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(120,80,200,0.05) 0%,transparent 50%)}
+.header{background:linear-gradient(180deg,#1a0a2e,#0d0d1a);padding:28px 20px 20px;text-align:center;border-bottom:1px solid rgba(233,69,96,0.3);position:relative}
+.header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:120px;height:1px;background:linear-gradient(90deg,transparent,rgba(233,69,96,0.8),transparent)}
+.header h1{font-size:24px;color:#e94560;letter-spacing:4px;text-shadow:0 0 30px rgba(233,69,96,0.4);font-weight:normal}
+.header .sub{color:#8a7a6a;font-size:12px;margin-top:6px;letter-spacing:2px}
+.header .decor{color:#e94560;font-size:18px;margin:0 8px}
+/* 输入面板 */
+.input-panel{background:rgba(26,26,46,0.9);border-radius:8px;margin:20px auto;padding:20px;max-width:680px;width:92%;border:1px solid rgba(233,69,96,0.15)}
+.input-title{color:#e94560;font-size:14px;margin-bottom:12px;text-align:center;letter-spacing:2px}
+.input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.input-group label{display:block;color:#8a7a6a;font-size:11px;margin-bottom:3px;letter-spacing:1px}
+.input-group input,.input-group select{background:rgba(13,13,26,0.8);color:#d4c5a9;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:7px 10px;font-size:13px;width:100%;transition:border 0.3s}
+.input-group input:focus,.input-group select:focus{border-color:rgba(233,69,96,0.5);outline:none}
+.btn-row{margin-top:14px;text-align:center}
+.btn-start{background:linear-gradient(135deg,rgba(233,69,96,0.9),rgba(199,54,89,0.9));color:#fff;border:none;padding:9px 32px;border-radius:4px;font-size:14px;cursor:pointer;letter-spacing:2px;transition:all 0.3s}
+.btn-start:hover{box-shadow:0 0 20px rgba(233,69,96,0.4)}
+.btn-start:disabled{opacity:0.4;cursor:not-allowed}
+.status{text-align:center;margin-top:8px;font-size:12px;color:#8a7a6a;min-height:18px}
+/* 聊天区 */
+.chat-wrapper{display:none;flex-direction:column;flex:1;max-width:860px;margin:0 auto;width:100%}
+.chat-wrapper.show{display:flex}
+.info-bar{background:rgba(26,26,46,0.9);margin:12px 16px 0;padding:10px 16px;border-radius:4px;border-left:2px solid rgba(233,69,96,0.6);font-size:12px;color:#8a7a6a;display:flex;justify-content:space-between;align-items:center}
+.info-bar .name{color:#e94560}
+.chat-area{flex:1;padding:16px 16px 10px;overflow-y:auto;min-height:350px}
+.chat-messages{display:flex;flex-direction:column;gap:18px}
+.msg{max-width:88%;padding:14px 18px;border-radius:4px;line-height:1.9;font-size:14px;position:relative;animation:fadeIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.msg.bot{align-self:flex-start;background:rgba(26,26,46,0.95);border:1px solid rgba(233,69,96,0.12);border-left:3px solid rgba(233,69,96,0.5)}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(233,69,96,0.15),rgba(199,54,89,0.1));border:1px solid rgba(233,69,96,0.3);color:#e8d5c5}
+.msg .master-mark{font-size:11px;color:rgba(233,69,96,0.7);margin-bottom:6px;letter-spacing:2px;border-bottom:1px solid rgba(233,69,96,0.1);padding-bottom:5px}
+.msg.bot .master-mark::before{content:"☯ "}
+.msg h3{color:#e94560;font-size:15px;margin:8px 0 4px;font-weight:normal;letter-spacing:1px}
+.msg h4{color:#c9a96e;font-size:13px;margin:6px 0 3px;font-weight:normal}
+.msg p{margin:4px 0}
+.msg strong{color:#c9a96e}
+.msg .lucky{color:#50fa7b}
+.msg .evil{color:#ff5555}
+.msg .dim{color:#6a5a4a;font-size:12px;font-style:italic}
+.msg .divider{height:1px;background:rgba(233,69,96,0.1);margin:10px 0}
+.msg .seal{text-align:right;color:rgba(233,69,96,0.4);font-size:11px;margin-top:8px;letter-spacing:2px}
+/* 快捷栏 */
+.quick-bar{padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;border-top:1px solid rgba(255,255,255,0.04)}
+.quick-btn{background:rgba(26,26,46,0.9);border:1px solid rgba(255,255,255,0.06);color:#8a7a6a;padding:5px 14px;border-radius:3px;font-size:11px;cursor:pointer;transition:all 0.3s;letter-spacing:1px}
+.quick-btn:hover{border-color:rgba(233,69,96,0.4);color:#e94560}
+/* 输入栏 */
+.input-bar{padding:12px 16px;background:rgba(26,26,46,0.95);border-top:1px solid rgba(255,255,255,0.04);display:flex;gap:10px;align-items:center}
+.input-bar input{flex:1;background:rgba(13,13,26,0.9);color:#d4c5a9;border:1px solid rgba(255,255,255,0.06);border-radius:3px;padding:9px 16px;font-size:13px;outline:none;transition:border 0.3s}
+.input-bar input:focus{border-color:rgba(233,69,96,0.4)}
+.input-bar button{background:rgba(233,69,96,0.8);color:#fff;border:none;padding:9px 20px;border-radius:3px;cursor:pointer;font-size:13px;letter-spacing:1px;transition:all 0.3s}
+.input-bar button:hover{background:rgba(233,69,96,1)}
+.typing{color:rgba(233,69,96,0.5);font-size:12px;padding:8px 18px;font-style:italic;letter-spacing:1px}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(233,69,96,0.2);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>紫微斗数 · 命理师对话</h1>
+  <div class="sub">观天之道 · 执天之行<span class="decor">☯</span>知命改运 · 趋吉避凶</div>
+</div>
+
+<!-- 输入面板 -->
+<div class="input-panel" id="inputPanel">
+  <div class="input-title">— 请报上生辰八字 —</div>
+  <div class="input-grid">
+    <div class="input-group"><label>出生年</label><input type="number" id="inYear" min="1900" max="2100" placeholder="如 1999"></div>
+    <div class="input-group"><label>月</label><input type="number" id="inMonth" min="1" max="12" placeholder="如 2"></div>
+    <div class="input-group"><label>日</label><input type="number" id="inDay" min="1" max="31" placeholder="如 17"></div>
+    <div class="input-group"><label>时辰（0-23）</label><input type="number" id="inHour" min="0" max="23" placeholder="如 22"></div>
+    <div class="input-group"><label>性别</label>
+      <select id="inGender"><option value="male">乾造（男）</option><option value="female">坤造（女）</option></select>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-start" id="btnStart" onclick="doChart()">排盘论命</button>
+  </div>
+  <div class="status" id="statusText"></div>
+</div>
+
+<!-- 聊天区 -->
+<div class="chat-wrapper" id="chatWrapper">
+  <div class="info-bar">
+    <span id="infoText"></span>
+    <span style="font-size:11px;color:rgba(233,69,96,0.5)">命理师在线</span>
+  </div>
+  <div class="chat-area" id="chatArea">
+    <div class="chat-messages" id="chatMessages"></div>
+  </div>
+  <div class="quick-bar" id="quickBar"></div>
+  <div class="input-bar">
+    <input type="text" id="chatInput" placeholder="请赐问..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button onclick="sendMsg()">赐教</button>
+  </div>
+</div>
+
+<script>
+const API = window.location.port==='3211'?'':'http://localhost:3211';
+let chartData=null, currentYear=new Date().getFullYear();
+
+// ── 排盘 ──
+async function doChart(){
+  const y=parseInt(document.getElementById('inYear').value);
+  const m=parseInt(document.getElementById('inMonth').value);
+  const d=parseInt(document.getElementById('inDay').value);
+  const h=parseInt(document.getElementById('inHour').value);
+  const g=document.getElementById('inGender').value;
+  if(!y||!m||!d||isNaN(h)){setStatus('请填入完整生辰');return;}
+  setStatus('正在排盘，请稍候...');
+  document.getElementById('btnStart').disabled=true;
+  try{
+    const r=await fetch(API+'/chart?year='+y+'&month='+m+'&day='+d+'&hour='+h+'&gender='+g);
+    if(!r.ok)throw new Error('排盘失败');
+    const data=await r.json();
+    if(data.error)throw new Error(data.error);
+    chartData=data;
+    try{
+      const pr=await fetch(API+'/past-years?year='+y+'&month='+m+'&day='+d+'&hour='+h+'&gender='+g);
+      if(pr.ok)chartData.pastYears=(await pr.json()).years;
+    }catch(e){}
+    enterChat();
+  }catch(e){setStatus('排盘出错：'+e.message);document.getElementById('btnStart').disabled=false;}
+}
+
+function enterChat(){
+  document.getElementById('inputPanel').style.display='none';
+  document.getElementById('chatWrapper').classList.add('show');
+  const d=chartData;
+  const genderTxt=d.birth.gender==='male'?'乾造':'坤造';
+  document.getElementById('infoText').innerHTML=
+    genderTxt+' · '+d.birth.year+'年'+d.birth.month+'月'+d.birth.day+'日 '+d.birth.hour+'时 · 命主<strong>'+d.info.mingZhu+'</strong> · '+d.info.wuxingJu;
+  // 快捷按钮
+  document.getElementById('quickBar').innerHTML=
+    '<button class="quick-btn" onclick="ask(\'今年运势如何\')">流年运势</button>'+
+    '<button class="quick-btn" onclick="ask(\'事业前程\')">事业前程</button>'+
+    '<button class="quick-btn" onclick="ask(\'财运析评\')">财运析评</button>'+
+    '<button class="quick-btn" onclick="ask(\'姻缘感情\')">姻缘感情</button>'+
+    '<button class="quick-btn" onclick="ask(\'健康状况\')">健康状况</button>'+
+    '<button class="quick-btn" onclick="ask(\'性格命格\')">性格命格</button>'+
+    '<button class="quick-btn" onclick="ask(\'贵人方位\')">贵人方位</button>'+
+    '<button class="quick-btn" onclick="ask(\'人生大运\')">人生大运</button>'+
+    '<button class="quick-btn" onclick="ask(\'命盘格局\')">命盘格局</button>'+
+    '<button class="quick-btn" onclick="ask(\'改运之法\')">改运之法</button>';
+  // 开场白
+  addBotMsg(renderWelcome());
+  scrollBottom();
+}
+
+function renderWelcome(){
+  const d=chartData;
+  const ming=pn(d,'命宫');
+  const mingStar=ms(ming).map(s=>s.name+'['+(s.brightness||'平')+']'+(s.siHua?'化'+hn(s.siHua):'')).join('、')||'空宫借对宫';
+  let txt='<div class="master-mark">命理师谨按</div>';
+  txt+='<p>善信慈悲，贫道已为您排定命盘。</p>';
+  txt+='<div class="divider"></div>';
+  txt+='<h3>☯ 命盘总览</h3>';
+  txt+='<p>命宫：'+mingStar+'</p>';
+  txt+='<p>五行局：'+d.info.wuxingJu+'　命主：'+d.info.mingZhu+'　身主：'+d.info.shenZhu+'</p>';
+  if(d.currentAge)txt+='<p>虚岁：'+d.currentAge+'　当前大限：'+getCurrentDaXian()+'</p>';
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">命盘已定，然运可改、数可易。善信有何疑问，尽管赐问。贫道当以紫微秘法，为您详解。</p>';
+  txt+='<div class="seal">— 紫微命理 —</div>';
+  return txt;
+}
+
+// ── 对话引擎 ──
+function ask(q){sendMsg(q)}
+function sendMsg(q){
+  const input=document.getElementById('chatInput');
+  const text=q||input.value.trim();
+  if(!text)return;
+  input.value='';
+  addUserMsg(text);
+  showTyping();
+  const delay=600+Math.random()*800;
+  setTimeout(()=>{
+    hideTyping();
+    const answer=generateMasterAnswer(text);
+    addBotMsg(answer);
+    scrollBottom();
+  },delay);
+}
+
+function addUserMsg(text){
+  const div=document.createElement('div');
+  div.className='msg user';
+  div.textContent=text;
+  document.getElementById('chatMessages').appendChild(div);
+  scrollBottom();
+}
+function addBotMsg(html){
+  const div=document.createElement('div');
+  div.className='msg bot';
+  div.innerHTML=html;
+  document.getElementById('chatMessages').appendChild(div);
+  scrollBottom();
+}
+function showTyping(){
+  hideTyping();
+  const d=document.createElement('div');
+  d.className='typing';d.id='typingIndicator';
+  d.textContent='命理师正在推演命盘...';
+  document.getElementById('chatMessages').appendChild(d);
+  scrollBottom();
+}
+function hideTyping(){const e=document.getElementById('typingIndicator');if(e)e.remove();}
+function scrollBottom(){const a=document.getElementById('chatArea');setTimeout(()=>a.scrollTop=a.scrollHeight,80);}
+function setStatus(t){document.getElementById('statusText').textContent=t;}
+
+// ── 核心：命理师风格回答生成 ──
+function generateMasterAnswer(question){
+  const q=question.toLowerCase().trim();
+  const d=chartData;
+  if(!d)return '请先排盘';
+  
+  // 流年
+  const yearMatch=q.match(/(20\d{2}|19\d{2})/);
+  const askYear=yearMatch?parseInt(yearMatch[1]):null;
+  if(q.includes('今年')||q.includes('本年')||q.includes('当年'))return answerYearMaster(currentYear);
+  if(q.includes('明年'))return answerYearMaster(currentYear+1);
+  if(askYear&&(q.includes('年')||q.includes('运势')||q.includes('运')))return answerYearMaster(askYear);
+  
+  // 分类
+  if(q.includes('事业')||q.includes('工作')||q.includes('前程')||q.includes('职业')||q.includes('行业'))return answerCareerMaster();
+  if(q.includes('财')||q.includes('钱')||q.includes('收入')||q.includes('财富'))return answerWealthMaster();
+  if(q.includes('感情')||q.includes('婚')||q.includes('姻缘')||q.includes('桃花')||q.includes('对象')||q.includes('另一半'))return answerLoveMaster();
+  if(q.includes('健康')||q.includes('身体')||q.includes('病')||q.includes('疾'))return answerHealthMaster();
+  if(q.includes('性格')||q.includes('命格')||q.includes('为人')||q.includes('命宫'))return answerPersonalityMaster();
+  if(q.includes('贵人')||q.includes('方位')||q.includes('帮助'))return answerNobleMaster();
+  if(q.includes('格局')||q.includes('命局'))return answerPatternMaster();
+  if(q.includes('改运')||q.includes('化解')||q.includes('建议')||q.includes('人生'))return answerAdviceMaster();
+  if(q.includes('大运')||q.includes('大限'))return answerDaXianMaster();
+  
+  // 默认
+  return answerDefaultMaster(question);
+}
+
+// ── 流年分析（命理师风格）──
+function answerYearMaster(year){
+  const d=chartData;
+  const yData=d.pastYears?d.pastYears.find(y=>y.year===year):null;
+  let txt='<div class="master-mark">'+year+'年流年批命</div>';
+  
+  if(!yData){
+    txt+='<p>此年不在推算范围内，或生辰信息有误。请确认。</p>';
+    return txt;
+  }
+  
+  const xusui=year-d.birth.year;
+  txt+='<p><strong>'+year+'年</strong>（虚岁 '+xusui+'）</p>';
+  txt+='<div class="divider"></div>';
+  
+  // 四化引动
+  if(yData.sihua&&yData.sihua.length>0){
+    txt+='<h4>☯ 四化引动</h4>';
+    yData.sihua.forEach(s=>{
+      if(!s.palace)return;
+      const palaceName=s.palace;
+      const starName=s.star||'';
+      const fly=s.fly||'';
+      let effect='';
+      if(fly==='lu')effect='<span class="lucky">禄气加身，此宫大吉。财禄、机遇皆旺，宜把握。</span>';
+      else if(fly==='quan')effect='权星入宫，掌控力增强，主动权在握，可积极主动。';
+      else if(fly==='ke')effect='科星照耀，名声、才华得以展现，人缘转佳，宜考试、交际。';
+      else if(fly==='ji')effect='<span class="evil">忌星入宫，能量阻塞，此宫之事需格外谨慎，不可冒进。</span>';
+      txt+='<p>'+palaceName+'宫：'+starName+(fly?' 化'+hn(fly):'')+'——'+effect+'</p>';
+    });
+    txt+='<div class="divider"></div>';
+  }
+  
+  // 流年命宫
+  if(yData.palace){
+    txt+='<h4>☯ 流年命宫</h4>';
+    txt+='<p>流年命宫在<strong>'+yData.palace.name+'</strong>宫（'+yData.palace.branch+'地）</p>';
+    const orig=d.palaces.find(p=>p.branch===yData.palace.branch);
+    if(orig){
+      txt+='<p>与原局<strong>'+orig.name+'</strong>宫重叠，此年'+orig.name+'领域将受重点影响。';
+      if(orig.name==='命宫')txt+='今年整体运势起伏较大，需稳字当头。';
+      else if(orig.name==='财帛')txt+='今年财运有变，需谨慎理财。';
+      else if(orig.name==='官禄')txt+='今年事业有变动之机，可主动把握。';
+      else if(orig.name==='夫妻')txt+='今年感情生活有变数，需用心经营。';
+      txt+='</p>';
+    }
+  }
+  
+  // 大限
+  if(yData.daXian){
+    txt+='<div class="divider"></div>';
+    txt+='<h4>☯ 大限参考</h4>';
+    txt+='<p>当前大限：'+yData.daXian.startAge+'~'+yData.daXian.endAge+'岁，走<strong>'+yData.daXian.palacesName+'</strong>宫。</p>';
+    const dxStars=ms(yData.daXian);
+    if(dxStars.length>0){
+      txt+='<p>大限宫主星：'+dxStars.map(s=>s.name).join('、')+'。此十年大运基调由此而定。</p>';
+    }
+  }
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：流年如风，来去有时。善信当顺势而为，不可强求。吉年当把握，凶年当守成。</p>';
+  txt+='<div class="seal">— '+year+'年流年批命 —</div>';
+  return txt;
+}
+
+// ── 事业分析（命理师风格）──
+function answerCareerMaster(){
+  const d=chartData;
+  const guan=pn(d,'官禄');
+  const ming=pn(d,'命宫');
+  let txt='<div class="master-mark">事业前程批命</div>';
+  txt+='<div class="divider"></div>';
+  
+  // 官禄宫
+  txt+='<h4>☯ 官禄宫析评</h4>';
+  const gStars=ms(guan);
+  if(gStars.length===0){
+    txt+='<p>官禄宫无主星（空宫），事业动向受对宫<strong>'+(pn(d,'夫妻')?pn(d,'夫妻').name:'')+'</strong>影响。宜灵活应变，不宜固守一业。</p>';
+  }else{
+    gStars.forEach(s=>{
+      txt+='<p><strong>'+s.name+'</strong>'+'['+(s.brightness||'平')+']'+(s.siHua?' 化'+hn(s.siHua):'')+'入官禄宫——';
+      const meanings={
+        '紫微':'帝星坐官禄，天生有领导才能，适合管理、创业，一生贵人不绝。宜把握权位之机。',
+        '天机':'机谋星坐官禄，事业靠智谋策划。适合参谋、策划、IT、学术。变动中求发展。',
+        '太阳':'光明星坐官禄，适合公职、教育、传媒等公开事业。名声重于利益，宜走正道。',
+        '武曲':'财星坐官禄，事业靠实力技术。适合金融、工程、军警。实干兴邦，不宜投机。',
+        '天同':'福星坐官禄，事业平稳，适合文职、服务、艺术。不求大富大贵，但求安稳自在。',
+        '廉贞':'囚星坐官禄，适合法律、审计、纪律部队。行事需正，不可有私心。',
+        '天府':'库星坐官禄，适合管理、财务、政府机构。稳健中求发展，不宜冒进。',
+        '太阴':'富星坐官禄，适合设计、会计、护理、文艺。宜发挥细腻特质，不宜粗犷行事。',
+        '贪狼':'桃花星坐官禄，事业多才多艺，适合演艺、销售、公关。人脉即财脉，需善加利用。',
+        '巨门':'暗星坐官禄，适合律师、教师、研究员。口才、深度是最大优势。需注意口舌是非。',
+        '天相':'印星坐官禄，适合幕僚、助理、协调岗。辅佐他人成事，自己不宜争功。',
+        '天梁':'荫星坐官禄，适合教育、医疗、法律、学术。晚年名声愈盛，宜走专业路线。',
+        '七杀':'将星坐官禄，事业多波折但成就大。适合创业、军警、开创性工作。需有抗压之能。',
+        '破军':'耗星坐官禄，事业多变动改革。适合创新、艺术、跨界。需专注一业，不宜频繁转换。'
+      };
+      txt+=meanings[s.name]||'此星入官禄，需综合全盘论断。';
+      if(s.siHua==='ji')txt+='然化忌在此，事业多阻滞，需格外用心经营。';
+      txt+='</p>';
+    });
+  }
+  
+  // 命宫主星论事业方向
+  txt+='<div class="divider"></div>';
+  txt+='<h4>☯ 命宫主星论事业方向</h4>';
+  const mMajor=ms(ming);
+  if(mMajor.length>0){
+    mMajor.forEach(s=>{
+      const direction={
+        '紫微':'宜创业、管理、公职高层。不适合为人打工，宜自己做主。',
+        '天机':'宜脑力工作、策划、咨询、学术。不宜体力劳动。',
+        '太阳':'宜公开事业、教育、传媒、公益。不适合隐蔽工作。',
+        '武曲':'宜技术、金融、工程、军警。实干为本，不宜虚浮。',
+        '天同':'宜文职、艺术、服务。不宜高压竞争环境。',
+        '廉贞':'宜法律、审计、纪律部队。正道而行，不可有私。',
+        '天府':'宜管理、财务、政府机构。稳健为本。',
+        '太阴':'宜设计、会计、护理、文艺。发挥细腻特质。',
+        '贪狼':'宜演艺、销售、公关、社交平台。人脉为本。',
+        '巨门':'宜律师、教师、记者、研究员。口才为本。',
+        '天相':'宜幕僚、助理、协调。不宜争功。',
+        '天梁':'宜教育、医疗、法律、学术。专业路线。',
+        '七杀':'宜创业、军警、开创性工作。需有抗压之能。',
+        '破军':'宜创新、艺术、跨界。需专注一业。'
+      };
+      txt+='<p>'+s.name+'坐命：'+direction[s.name]+'</p>';
+    });
+  }
+  
+  // 财帛宫参考
+  const cai=pn(d,'财帛');
+  const hasCaiLu=cai.stars.some(s=>s.name==='禄存'||s.siHua==='lu');
+  if(hasCaiLu){
+    txt+='<div class="divider"></div>';
+    txt+='<p class="lucky">☯ 财帛宫有禄存/化禄拱照，正财运旺盛，事业收入稳定有保障。</p>';
+  }
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：事业如舟，命盘如水。顺势而行则一日千里，逆势而动则寸步难行。善信当审时度势，选对方向。</p>';
+  txt+='<div class="seal">— 事业前程批命 —</div>';
+  return txt;
+}
+
+// ── 财运分析（命理师风格）──
+function answerWealthMaster(){
+  const d=chartData;
+  const cai=pn(d,'财帛');
+  let txt='<div class="master-mark">财运析评</div>';
+  txt+='<div class="divider"></div>';
+  
+  txt+='<h4>☯ 财帛宫析评</h4>';
+  const cStars=ms(cai);
+  if(cStars.length===0){
+    txt+='<p>财帛宫无主星（空宫），财运受对宫影响，收入来源不稳定，需多想办法。</p>';
+  }else{
+    cStars.forEach(s=>{
+      txt+='<p><strong>'+s.name+'</strong>['+(s.brightness||'平')+']'+(s.siHua?' 化'+hn(s.siHua):'')+'入财帛宫——';
+      const wMeaning={
+        '紫微':'帝王星掌财，财路宽广，有贵人助财。宜做大项目、大投资。',
+        '天机':'机谋星掌财，财运多变动，收入来源多元化。宜灵活理财，不可固守。',
+        '太阳':'光明星掌财，赚钱走明路，收入与付出成正比。不宜走偏门。',
+        '武曲':'财星掌财，正财运极旺，靠硬实力赚钱。宜稳健投资，不宜投机。',
+        '天同':'福星掌财，财运不求暴富但求够用。花钱也比较节制，能存住钱。',
+        '廉贞':'囚星掌财，财运有阻，需正道求财。偏财不可取。',
+        '天府':'库星掌财，财运稳定，财富积累实在。宜储蓄、置产。',
+        '太阴':'富星掌财，财运细水长流，暗财运佳。宜理财、投资。',
+        '贪狼':'桃花星掌财，财运靠人脉和才艺。偏财旺但需有节制。',
+        '巨门':'暗星掌财，财不露白，宜暗中积累财富。口才也能生财。',
+        '天相':'印星掌财，财运靠稳定和信誉。不宜冒险投资。',
+        '天梁':'荫星掌财，财运靠名声和长辈提携。晚年财运更佳。',
+        '七杀':'将星掌财，财运大起大落。宜创业求财，但需控制风险。',
+        '破军':'耗星掌财，财运多变动。宜创新求财，但需量入为出。'
+      };
+      txt+=wMeaning[s.name]||'此星入财帛，需综合论断。';
+      if(s.siHua==='ji')txt+='然化忌在此，财运有阻，需谨慎理财，不宜借贷。';
+      txt+='</p>';
+    });
+  }
+  
+  // 煞星
+  const evils=cai.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+  if(evils.length>0){
+    txt+='<div class="divider"></div>';
+    txt+='<p class="evil">⚠ 煞星 '+evils.map(s=>s.name).join('、')+' 入财帛宫，财运有波折。需谨慎投资，不宜投机赌博。</p>';
+  }
+  
+  // 禄存/化禄
+  const hasLu=cai.stars.some(s=>s.name==='禄存'||s.siHua==='lu');
+  if(hasLu){
+    txt+='<div class="divider"></div>';
+    txt+='<p class="lucky">☯ 财帛宫有禄存或化禄，正财运极旺。善信天生有财运，需善用此优势。</p>';
+  }
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：财为养命之源，然君子爱财取之以道。善信当正道求财，不可贪不义之财。理财需有度，花钱需有节。</p>';
+  txt+='<div class="seal">— 财运析评 —</div>';
+  return txt;
+}
+
+// ── 感情分析（命理师风格）──
+function answerLoveMaster(){
+  const d=chartData;
+  const fuqi=pn(d,'夫妻');
+  const ming=pn(d,'命宫');
+  let txt='<div class="master-mark">姻缘感情批命</div>';
+  txt+='<div class="divider"></div>';
+  
+  txt+='<h4>☯ 夫妻宫析评</h4>';
+  const fStars=ms(fuqi);
+  if(fStars.length===0){
+    txt+='<p>夫妻宫无主星（空宫），感情受对宫命宫影响。配偶性格受命宫主星影响，感情生活需更多经营。</p>';
+  }else{
+    fStars.forEach(s=>{
+      txt+='<p><strong>'+s.name+'</strong>['+(s.brightness||'平')+']'+(s.siHua?' 化'+hn(s.siHua):'')+'入夫妻宫——';
+      const lMeaning={
+        '紫微':'帝星入夫妻，配偶有才干、有地位。但夫妻关系中谁是主导，需磨合。适合找有能力的人。',
+        '天机':'机谋星入夫妻，配偶聪明但善变。感情需稳定经营，不宜猜疑。',
+        '太阳':'光明星入夫妻，配偶性格外向热情。但有时过于自我，需互相包容。',
+        '武曲':'财星入夫妻，配偶务实、有经济基础。但浪漫不足，感情表达较为直接。',
+        '天同':'福星入夫妻，感情平和温馨。配偶温柔体贴，适合安稳的家庭生活。',
+        '廉贞':'囚星入夫妻，感情较深但有拘束感。需互相信任，不可猜疑。',
+        '天府':'库星入夫妻，配偶稳重可靠。感情细水长流，不适合轰轰烈烈。',
+        '太阴':'富星入夫妻，配偶温柔细腻有内涵。感情有深度，适合长久相处。',
+        '贪狼':'桃花星入夫妻，桃花旺、异性缘好。需定心专一，不可三心二意。',
+        '巨门':'暗星入夫妻，沟通是感情关键。需多交流，不可冷战。',
+        '天相':'印星入夫妻，配偶正派靠谱。感情稳定，但需避免过于平淡。',
+        '天梁':'荫星入夫妻，可能找年龄差距较大的伴侣。感情中有照顾与被照顾的关系。',
+        '七杀':'将星入夫妻，感情热烈但需磨合。配偶性格较强，需互相尊重。',
+        '破军':'耗星入夫妻，感情生活多变化。可能经历多次感情才能找到归宿。需学会珍惜。'
+      };
+      txt+=lMeaning[s.name]||'此星入夫妻，需综合论断。';
+      if(s.siHua==='ji')txt+='然化忌在此，感情有阻，需格外用心经营，多沟通包容。';
+      txt+='</p>';
+    });
+  }
+  
+  // 命宫看择偶
+  txt+='<div class="divider"></div>';
+  txt+='<h4>☯ 命宫主星论择偶倾向</h4>';
+  const mMajor=ms(ming);
+  mMajor.forEach(s=>{
+    const prefs={
+      '紫微':'择偶标准高，喜欢有才华有地位的人。配偶需有能力让你敬仰。',
+      '天机':'喜欢聪明灵活的伴侣，聊得来最重要。智慧比外表更重要。',
+      '太阳':'喜欢热情开朗阳光的人，能一起社交互动。不喜欢阴沉的人。',
+      '武曲':'看重对方的经济能力和务实性格。物质基础在感情中很重要。',
+      '天同':'喜欢温柔体贴的伴侣，追求安逸温馨的家庭生活。不喜欢强势的人。',
+      '廉贞':'择偶标准较高，看重对方的品格和责任感。心灵契合很重要。',
+      '天府':'喜欢稳重可靠的人，细水长流胜过轰轰烈烈。不喜欢变化太多的人。',
+      '太阴':'喜欢温柔细腻有内涵的伴侣。感情需要深度，不喜欢肤浅的关系。',
+      '贪狼':'桃花旺、选择多，但需定心。容易被有才华有魅力的人吸引。',
+      '巨门':'需要能沟通的对象，言语交流和理解是感情基础。不喜欢沉默的人。',
+      '天相':'喜欢正派靠谱的人，婚姻求稳定不求刺激。不适合过于复杂的感情。',
+      '天梁':'可能找年龄差距较大的伴侣，或成熟稳重的对象。喜欢被照顾的感觉。',
+      '七杀':'感情热烈但需磨合，适合有独立个性的伴侣。不喜欢过于温顺的人。',
+      '破军':'感情生活多变，可能经历多次感情才能找到归宿。需学会珍惜眼前人。'
+    };
+    txt+='<p>'+s.name+'坐命：'+prefs[s.name]+'</p>';
+  });
+  
+  // 桃花
+  const hasTaohua=fuqi.stars.some(s=>['贪狼','廉贞','文曲','天姚','咸池'].includes(s.name));
+  if(hasTaohua){
+    txt+='<div class="divider"></div>';
+    txt+='<p>☯ 夫妻宫有桃花星，异性缘旺。然桃花有真假之分，善信需明辨之，不可被表象迷惑。</p>';
+  }
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：姻缘天注定，然修为在人。善信当修身齐家，正道而行，自有良缘降临。切莫强求，切莫放纵。</p>';
+  txt+='<div class="seal">— 姻缘感情批命 —</div>';
+  return txt;
+}
+
+// ── 健康分析（命理师风格）──
+function answerHealthMaster(){
+  const d=chartData;
+  const jie=pn(d,'疾厄');
+  let txt='<div class="master-mark">健康状况批命</div>';
+  txt+='<p class="dim">⚠ 以下为命理参考，身体不适请务必就医，不可仅凭命盘判断。</p>';
+  txt+='<div class="divider"></div>';
+  
+  txt+='<h4>☯ 疾厄宫析评</h4>';
+  const jStars=ms(jie);
+  if(jStars.length===0){
+    txt+='<p>疾厄宫无主星（空宫），身体素质受对宫影响。需根据大限流年判断健康走势。</p>';
+  }else{
+    jStars.forEach(s=>{
+      txt+='<p><strong>'+s.name+'</strong>['+(s.brightness||'平')+']入疾厄宫——';
+      const hMeaning={
+        '紫微':'需注意心脏、头部、血压。帝星受克则心火旺盛，宜静心养性。',
+        '天机':'需注意神经系统、肝胆。机谋过度则伤脑伤肝，宜适度用脑，保持情绪平稳。',
+        '太阳':'需注意眼睛、心血管、血压。光明太过则伤阳，宜避免暴晒，保护眼睛。',
+        '武曲':'需注意呼吸道、肺部、大肠。金气受克则肺部虚弱，宜戒烟，注意空气质量。',
+        '天同':'需注意肾脏、泌尿系统、免疫力。福星受克则肾气不足，宜保暖，适度运动。',
+        '廉贞':'需注意血液循环、皮肤。囚星受克则血不畅，宜保持血液循环，注意皮肤过敏。',
+        '天府':'需注意消化系统、脾胃。库星受克则脾胃不和，宜饮食规律，不暴饮暴食。',
+        '太阴':'需注意泌尿系统、妇科。富星受克则阴气不足，宜保暖驱寒，少碰冷饮。',
+        '贪狼':'需注意肝胆、内分泌。桃花星受克则肝火旺盛，宜少熬夜喝酒，保持生活规律。',
+        '巨门':'需注意口腔、消化系统、肠胃。暗星受克则肠胃虚弱，宜细嚼慢咽，饮食卫生。',
+        '天相':'需注意肾脏、泌尿系统。印星受克则肾虚，宜适度性生活，注意保暖。',
+        '天梁':'需注意骨骼关节。荫星受克则筋骨不强，宜适度运动，保持关节灵活。',
+        '七杀':'⚠ 需注意外伤、意外。将星受克则易有血光之灾，不宜参与高风险活动。',
+        '破军':'需注意身体过度消耗。耗星受克则精力不济，宜保证休息恢复，不可过度劳累。'
+      };
+      txt+=hMeaning[s.name]||'此星入疾厄，需综合论断。';
+      txt+='</p>';
+    });
+  }
+  
+  // 煞星提示
+  const evils=jie.stars.filter(s=>['火星','铃星','擎羊','陀罗'].includes(s.name));
+  if(evils.length>0){
+    txt+='<div class="divider"></div>';
+    txt+='<p class="evil">⚠ 煞星 '+evils.map(s=>s.name).join('、')+' 入疾厄宫，需格外注意突发健康问题。建议定期体检，防微杜渐。</p>';
+  }
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：身体发肤受之父母，当珍惜之。善信当起居有常、饮食有节、劳逸结合，自能健康长寿。</p>';
+  txt+='<div class="seal">— 健康状况批命 —</div>';
+  return txt;
+}
+
+// ── 性格分析（命理师风格）──
+function answerPersonalityMaster(){
+  const d=chartData;
+  const ming=pn(d,'命宫');
+  let txt='<div class="master-mark">性格命格批命</div>';
+  txt+='<div class="divider"></div>';
+  
+  txt+='<h4>☯ 命宫主星论性格</h4>';
+  const mMajor=ms(ming);
+  if(mMajor.length===0){
+    txt+='<p>命宫无主星（空宫），性格弹性大，受环境影响多，善于适应变化。然内心可能缺乏归属感，需找到自己的根基。</p>';
+  }else{
+    mMajor.forEach(s=>{
+      txt+='<p><strong>'+s.name+'</strong>['+(s.brightness||'平')+']'+(s.siHua?' 化'+hn(s.siHua):'')+'坐命——';
+      const pMeaning={
+        '紫微':'帝王之星照命，天生有尊贵之气。为人自尊心强，有领导才能，然有时过于在意面子，需学会放下身段。适合做主导者。',
+        '天机':'天机之星照命，思维敏捷、善于谋划。为人聪明机智，学习能力强，然有时想太多、精神内耗大，需学会行动。',
+        '太阳':'太阳之星照命，为人光明磊落、热情外向。善于社交，然有时过于冲动、自我，需学会倾听他人。',
+        '武曲':'武曲之星照命，性格刚毅果断、执行力强。然有时过于固执、不懂变通，需学会灵活处世。',
+        '天同':'天同之星照命，性格温和善良、人缘好。然有时过于被动安逸，需学会主动出击。',
+        '廉贞':'廉贞之星照命，为人精密、有原则。然有时过于拘束、给自己压力太大，需学会宽容。',
+        '天府':'天府之星照命，性情稳重包容、做事稳妥。然有时过于保守、缺乏冒险精神，需学会适度突破。',
+        '太阴':'太阴之星照命，性格温柔细腻、有内涵。然有时过于敏感、情绪化，需学会理性思考。',
+        '贪狼':'贪狼之星照命，性格活跃、多才多艺、桃花旺。然有时过于放纵、定力不足，需学会专一。',
+        '巨门':'巨门之星照命，口才佳、善于深度思考。然有时言语伤人、是非多，需学会说话的艺术。',
+        '天相':'天相之星照命，为人正派、善于协调。然有时过于当老好人、缺乏主见，需学会拒绝。',
+        '天梁':'天梁之星照命，有学识、善于照顾他人。然有时过于严厉、好为人师，需学会平等相处。',
+        '七杀':'七杀之星照命，性格果断、竞争力强。然有时脾气暴躁、冲动，需学会控制情绪。',
+        '破军':'破军之星照命，勇于改革、不怕变化。然有时过于折腾、缺乏定性，需学会专注。'
+      };
+      txt+=pMeaning[s.name]||'此星坐命，需综合论断。';
+      if(s.siHua==='ji')txt+='然化忌在此，性格有偏执之处，需格外注意修身养性。';
+      txt+='</p>';
+    });
+  }
+  
+  // 身宫
+  const shen=d.palaces.find(p=>p.isBodyPalace);
+  if(shen){
+    txt+='<div class="divider"></div>';
+    txt+='<h4>☯ 身宫在'+shen.name+'</h4>';
+    txt+='<p>身宫主后天努力方向。善信随着年龄增长，在<strong>'+shen.name+'</strong>领域的特质会越来越明显。宜在此领域多下功夫。</p>';
+  }
+  
+  // 五行局
+  txt+='<div class="divider"></div>';
+  txt+='<h4>☯ 五行局：'+d.info.wuxingJu+'</h4>';
+  const wxMean={
+    '水二局':'水性智慧，善于变通，然需防情绪化。',
+    '木三局':'木性仁慈，善于生发，然需防固执。',
+    '金四局':'金性刚毅，善于决断，然需防过于锋利。',
+    '土五局':'土性稳重，善于包容，然需防过于保守。',
+    '火六局':'火性热情，善于表达，然需防过于冲动。'
+  };
+  txt+='<p>'+(wxMean[d.info.wuxingJu]||'五行局影响性格基调，需综合论断。')+'</p>';
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：性格即命运。善信当知命改命，发扬优点、修正缺点，自能改运改命。</p>';
+  txt+='<div class="seal">— 性格命格批命 —</div>';
+  return txt;
+}
+
+// ── 贵人分析（命理师风格）──
+function answerNobleMaster(){
+  const d=chartData;
+  let txt='<div class="master-mark">贵人方位批命</div>';
+  txt+='<div class="divider"></div>';
+  
+  let hasKui=false,hasYue=false;
+  d.palaces.forEach(p=>{
+    if(p.stars.some(s=>s.name==='天魁')){
+      hasKui=true;
+      txt+='<p>☯ <strong>天魁</strong>在<strong>'+p.name+'</strong>宫——白天、事业上的贵人。有长辈或上级提携，宜主动接近地位高于自己的人。</p>';
+    }
+    if(p.stars.some(s=>s.name==='天钺')){
+      hasYue=true;
+      txt+='<p>☯ <strong>天钺</strong>在<strong>'+p.name+'</strong>宫——夜间、关键时刻的贵人。有贵人暗中相助，宜多积德行善，贵人自至。</p>';
+    }
+  });
+  
+  if(!hasKui&&!hasYue){
+    txt+='<p>命盘天魁天钺不明显，贵人运需靠后天积累。然天道无亲，常与善人。善信当多结交正能量的人，主动维护人脉关系，贵人自至。</p>';
+  }
+  
+  // 左辅右弼
+  let hasZuo=false,hasYou=false;
+  d.palaces.forEach(p=>{
+    if(p.stars.some(s=>s.name==='左辅')){
+      hasZuo=true;
+      txt+='<div class="divider"></div>';
+      txt+='<p>☯ <strong>左辅</strong>在<strong>'+p.name+'</strong>宫——有贵人同行，遇到困难有人帮忙。宜团队合作，不宜单打独斗。</p>';
+    }
+    if(p.stars.some(s=>s.name==='右弼')){
+      hasYou=true;
+      txt+='<p>☯ <strong>右弼</strong>在<strong>'+p.name+'</strong>宫——有贵人暗中助力，顺水推舟。宜低调行事，自然有人相助。</p>';
+    }
+  });
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：贵人非天降，而在人为。善信当正道而行、广结善缘，自有贵人相助。切莫坐等贵人降临而不自努力。</p>';
+  txt+='<div class="seal">— 贵人方位批命 —</div>';
+  return txt;
+}
+
+// ── 格局分析（命理师风格）──
+function answerPatternMaster(){
+  const patterns=detectPatterns();
+  let txt='<div class="master-mark">命盘格局批命</div>';
+  txt+='<div class="divider"></div>';
+  
+  if(patterns.length===0){
+    txt+='<p>善信命盘未发现特殊格局。然每个命盘皆有其独特之处，平凡中见真章。请告诉贫道您想了解哪个具体方面。</p>';
+  }else{
+    patterns.forEach(p=>{
+      txt+='<h4>☯ '+p.name+'</h4>';
+      txt+='<p>'+p.desc+'</p>';
+      txt+='<div class="divider"></div>';
+    });
+  }
+  
+  txt+='<p class="dim">批曰：格局即天命，然运在人为。有格局者当善用优势，无格局者当勤奋弥补。命好不如运好，运好不如心好。</p>';
+  txt+='<div class="seal">— 命盘格局批命 —</div>';
+  return txt;
+}
+
+// ── 改运建议（命理师风格）──
+function answerAdviceMaster(){
+  const d=chartData;
+  let txt='<div class="master-mark">改运之法</div>';
+  txt+='<div class="divider"></div>';
+  
+  txt+='<h4>☯ 基于命宫主星的人生建议</h4>';
+  const ming=pn(d,'命宫');
+  const mMajor=ms(ming);
+  mMajor.forEach(s=>{
+    const advice={
+      '紫微':['学会放下身段，不可过于在意面子。','适合当领导但要培养团队精神。','晚年享受尊贵但需避免孤独。'],
+      '天机':['不可想太多，行动比思考更重要。','适合脑力工作但要避免精神内耗。','多运动释放压力，保持身心平衡。'],
+      '太阳':['注意不可过于冲动，做事留有余地。','对家人要多些耐心，不可把热情都给了外人。','注意保护眼睛和心血管。'],
+      '武曲':['学会灵活变通，不可过于固执己见。','理财方面可以更大胆一些，但需量入为出。','注意呼吸道健康，少熬夜。'],
+      '天同':['需要主动出击，不可过于被动安逸。','可以找一个强势的合伙人互补。','锻炼身体增强体质，不可过于享受。'],
+      '廉贞':['对自己和他人都宽容一些，不可过于苛求。','适合从事需要坚持的工作，但需正道而行。','注意控制情绪，远离是非之地。'],
+      '天府':['保持稳健的理财风格，不可冒进。','适合做幕后管理，但需适时表现自己。','生活品质高，注意不可过度享受。'],
+      '太阴':['相信自己的直觉，女性的直觉力很强。','适合从事与美相关的工作。','注意保暖，少碰冷饮，保护阴气。'],
+      '贪狼':['桃花虽好但需专一，不可三心二意。','多才多艺是优势但需要专注一个方向。','注意肝胆健康，少熬夜喝酒。'],
+      '巨门':['说话要注意方式方法，不可口无遮拦。','口才是优势但要用在正道上。','适合做需要深度研究的工作。'],
+      '天相':['不可总是当老好人，学会拒绝。','适合做幕僚但也要争取自己的利益。','人际关系是最大优势要好好维护。'],
+      '天梁':['学识越老越值钱，终身学习很重要。','照顾他人的同时也要注意照顾自己。','适合从事教育或传承类工作。'],
+      '七杀':['学会控制脾气，做事三思而后行。','适合开创性工作但要注意风险控制。','注意安全，避免高风险活动。'],
+      '破军':['不可害怕改变，变化是你的优势。','专注做好一件事比频繁切换更重要。','注意休息，保持精力充沛，不可过度消耗。']
+    };
+    if(advice[s.name]){
+      txt+='<p><strong>'+s.name+'</strong>坐命之改运法：</p>';
+      advice[s.name].forEach(a=>{ txt+='<p>• '+a+'</p>'; });
+      txt+='<div class="divider"></div>';
+    }
+  });
+  
+  // 通用改运之法
+  txt+='<h4>☯ 通用改运之法</h4>';
+  txt+='<p>• 顺势而为：根据大限走向调整人生重心，不可逆天行事。</p>';
+  txt+='<p>• 扬长避短：化禄的宫位是优势领域，多加利用；化忌的宫位是挑战领域，需格外用心经营。</p>';
+  txt+='<p>• 积德行善：命由天定，运由己造。多行善事，自然改运。</p>';
+  txt+='<p>• 修身养性：性格即命运。修正缺点、发扬优点，自能改运改命。</p>';
+  txt+='<p>• 择善而交：近朱者赤，近墨者黑。多结交正能量的人，自然运势提升。</p>';
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：命由天定，运由己造。善信当知命而不认命，改运改命，自能转祸为福、转败为功。</p>';
+  txt+='<div class="seal">— 改运之法 —</div>';
+  return txt;
+}
+
+// ── 大限分析（命理师风格）──
+function answerDaXianMaster(){
+  const d=chartData;
+  let txt='<div class="master-mark">人生大运批命</div>';
+  txt+='<div class="divider"></div>';
+  
+  if(!d.pastYears||d.pastYears.length===0){
+    txt+='<p>大限数据不足，无法详细批命。请确认排盘数据完整。</p>';
+    return txt;
+  }
+  
+  // 找出当前和下一个大限
+  const nowXu=d.currentAge||(currentYear-d.birth.year);
+  const das=d.pastYears.filter(y=>y.daXian).reduce((acc,y)=>{
+    const key=y.daXian.startAge+'-'+y.daXian.endAge;
+    if(!acc.find(a=>a.key===key))acc.push({key:key,start:y.daXian.startAge,end:y.daXian.endAge,palaceName:y.daXian.palacesName,exampleYear:y.year});
+    return acc;
+  },[]).sort((a,b)=>a.start-b.start);
+  
+  if(das.length>0){
+    txt+='<h4>☯ 大限走势</h4>';
+    das.forEach((dx,i)=>{
+      const isNow=nowXu>=dx.start&&nowXu<=dx.end;
+      txt+='<p>'+(isNow?'<strong>【当前】</strong>':'')+'<strong>'+dx.start+'~'+dx.end+'岁</strong>：走<strong>'+dx.palaceName+'</strong>宫';
+      if(isNow)txt+='（此十年大运正在行进中）';
+      txt+='</p>';
+    });
+    txt+='<div class="divider"></div>';
+  }
+  
+  // 当前大限详细分析
+  const nowDa=d.pastYears.find(y=>y.daXian&&nowXu>=y.daXian.startAge&&nowXu<=y.daXian.endAge);
+  if(nowDa&&nowDa.daXian){
+    txt+='<h4>☯ 当前大限（'+nowDa.daXian.startAge+'~'+nowDa.daXian.endAge+'岁）详细分析</h4>';
+    const dxPalace=d.palaces.find(p=>p.name===nowDa.daXian.palacesName);
+    if(dxPalace){
+      const dxStars=ms(dxPalace);
+      if(dxStars.length>0){
+        txt+='<p>大限宫主星：'+dxStars.map(s=>s.name).join('、')+'</p>';
+        dxStars.forEach(s=>{
+          txt+='<p>'+s.name+'坐大限宫——';
+          if(['紫微','天府','武曲'].includes(s.name))txt+='此十年事业财运较旺，宜把握机遇。';
+          else if(['天同','天梁'].includes(s.name))txt+='此十年平稳安康，宜稳字当头。';
+          else if(['贪狼','破军','七杀'].includes(s.name))txt+='此十年变动较大，有机遇也有挑战，需谨慎应对。';
+          else txt+='此十年运势需综合论断。';
+          txt+='</p>';
+        });
+      }
+    }
+  }
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：大运如四季，有春夏秋冬。善信当知天时，春种、夏长、秋收、冬藏，自能顺天应命。</p>';
+  txt+='<div class="seal">— 人生大运批命 —</div>';
+  return txt;
+}
+
+// ── 默认回答（命理师风格）──
+function answerDefaultMaster(question){
+  const d=chartData;
+  let txt='<div class="master-mark">综合批命</div>';
+  txt+='<div class="divider"></div>';
+  
+  txt+='<p>善信赐问："'+question+'"，贫道谨按命盘推算如下：</p>';
+  txt+='<div class="divider"></div>';
+  
+  // 命盘总览
+  txt+='<h4>☯ 命盘总览</h4>';
+  txt+='<p>命主：<strong>'+d.info.mingZhu+'</strong>　五行局：'+d.info.wuxingJu+'</p>';
+  
+  // 十二宫主星
+  ['命宫','夫妻','财帛','官禄','福德','疾厄','迁移','交友','子女','兄弟','田宅','父母'].forEach(pnName=>{
+    const p=pn(d,pnName);
+    if(p){
+      const stars=ms(p).map(s=>s.name).join('、');
+      txt+='<p>'+pnName+'：'+(stars||'空宫')+'</p>';
+    }
+  });
+  
+  // 特殊格局
+  const patterns=detectPatterns();
+  if(patterns.length>0){
+    txt+='<div class="divider"></div>';
+    txt+='<h4>☯ 特殊格局</h4>';
+    patterns.forEach(p=>{
+      txt+='<p><strong>'+p.name+'</strong>：'+p.desc+'</p>';
+    });
+  }
+  
+  txt+='<div class="divider"></div>';
+  txt+='<p class="dim">批曰：命盘已详析如上。善信若有具体疑问，可针对性赐问，贫道当详细批断。</p>';
+  txt+='<div class="seal">— 综合批命 —</div>';
+  return txt;
+}
+
+// ── 工具函数 ──
+function pn(d,n){return d.palaces.find(p=>p.name===n)}
+function ms(p){return p.stars.filter(s=>s.type==='major')}
+function hn(v){const m={lu:'禄',quan:'权',ke:'科',ji:'忌'};return m[v]||v}
+function getCurrentDaXian(){
+  const d=chartData;if(!d||!d.pastYears)return '';
+  const nowXu=d.currentAge||(currentYear-d.birth.year);
+  const y=d.pastYears.find(y=>y.daXian&&nowXu>=y.daXian.startAge&&nowXu<=y.daXian.endAge);
+  return y?y.daXian.startAge+'-'+y.daXian.endAge+'岁（'+y.daXian.palacesName+'宫）':'';
+}
+function detectPatterns(){
+  const d=chartData;if(!d)return [];
+  const allMajors=[];
+  d.palaces.forEach(p=>ms(p).forEach(s=>{if(!allMajors.includes(s.name))allMajors.push(s.name)}));
+  const patterns=[];
+  const ming=ms(pn(d,'命宫')).map(s=>s.name);
+  if(ming.includes('紫微')&&ming.includes('天府'))patterns.push({name:'紫府同宫',desc:'命宫紫微天府同坐，一生尊贵有福气，适合做老板或高管。然需防过于自我。'});
+  if(ming.includes('太阳')&&ming.includes('太阴'))patterns.push({name:'日月同宫',desc:'日月并明，为人光明磊落又温柔细腻，才华横溢。然需注意阴阳平衡。'});
+  if(allMajors.includes('七杀')&&allMajors.includes('破军')&&allMajors.includes('贪狼'))patterns.push({name:'杀破狼',desc:'三颗变动星齐聚，一生波澜壮阔、大起大落。适合创业、军警、艺术。然需防大起大落。'});
+  const luCount=d.palaces.filter(p=>p.stars.some(s=>s.name==='禄存'||s.siHua==='lu')).length;
+  if(luCount>=3)patterns.push({name:'双禄交流',desc:'禄存和化禄在多个宫位，财运非常有利，一生多逢贵人。然需防禄多反溺。'});
+  return patterns;
+}
+
+// ── URL参数自动加载 ──
+(function(){
+  const p=new URLSearchParams(location.search);
+  if(p.get('year')&&p.get('month')&&p.get('day')&&p.get('hour')!=null){
+    document.getElementById('inYear').value=p.get('year');
+    document.getElementById('inMonth').value=p.get('month');
+    document.getElementById('inDay').value=p.get('day');
+    document.getElementById('inHour').value=p.get('hour');
+    document.getElementById('inGender').value=p.get('gender')||'male';
+    setTimeout(()=>doChart(),300);
+  }
+})();
+</script>
+</body>
+</html>

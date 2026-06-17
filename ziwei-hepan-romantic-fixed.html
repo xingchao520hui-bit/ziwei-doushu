@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>💕 紫微斗数缘分合盘 💕</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Microsoft YaHei', 'SimSun', serif;
+  background: linear-gradient(135deg, #fff0f5 0%, #ffe4e9 25%, #ffd6e0 50%, #ffc2d1 75%, #ffb3c6 100%);
+  color: #4a2030;
+  line-height: 1.8;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* 爱心漂浮动画 */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+body::before {
+  content: '💕';
+  position: fixed;
+  top: 20px;
+  left: 30px;
+  font-size: 60px;
+  opacity: 0.15;
+  z-index: 0;
+  animation: float 6s ease-in-out infinite;
+}
+
+body::after {
+  content: '💖';
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  font-size: 60px;
+  opacity: 0.15;
+  z-index: 0;
+  animation: float 6s ease-in-out infinite reverse;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* 标题区域 - 浪漫风格 */
+.header {
+  text-align: center;
+  padding: 50px 20px;
+  border-bottom: 3px solid #ff69b4;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(255, 105, 180, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '💑';
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 40px;
+  opacity: 0.3;
+}
+
+.header::after {
+  content: '💗';
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 40px;
+  opacity: 0.3;
+}
+
+.header h1 {
+  color: #ff1493;
+  font-size: 42px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(255, 20, 147, 0.2);
+}
+
+.header .subtitle {
+  color: #d1477a;
+  font-size: 16px;
+  font-style: italic;
+}
+
+/* 输入区域 */
+.input-section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.person-input {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border: 2px solid #ffb6c1;
+  border-radius: 15px;
+  flex: 1;
+  min-width: 300px;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+}
+
+.person-input h2 {
+  color: #ff1493;
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: center;
+  border-bottom: 2px solid #ffb6c1;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  color: #d1477a;
+  font-size: 12px;
+  margin-bottom: 4px;
+  display: block;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  background: #fff;
+  border: 2px solid #ffb6c1;
+  color: #4a2030;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+  transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #ff1493;
+  box-shadow: 0 0 10px rgba(255, 20, 147, 0.3);
+}
+
+/* 按钮 */
+.btn-submit {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 状态提示 */
+.status {
+  text-align: center;
+  margin-bottom: 20px;
+  display: none;
+  padding: 10px;
+}
+
+.status.show {
+  display: block;
+}
+
+.status.error {
+  color: #dc3545;
+}
+
+.status.loading {
+  color: #ff1493;
+}
+
+/* 结果区域 */
+.result-area {
+  display: none;
+}
+
+.result-area.show {
+  display: block;
+}
+
+/* 命盘显示 */
+.chart-section {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border: 2px solid #ffb6c1;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+}
+
+.chart-title {
+  color: #ff1493;
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px solid #ffb6c1;
+  padding-bottom: 10px;
+}
+
+.palace-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: #ffb6c1;
+  border: 2px solid #ff69b4;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.palace {
+  background: rgba(255, 240, 245, 0.9);
+  padding: 10px;
+  min-height: 100px;
+  border: 1px solid #ffc2d1;
+  position: relative;
+}
+
+.palace.ming {
+  background: rgba(255, 228, 225, 0.9);
+  border-color: #ff69b4;
+}
+
+.palace.shen {
+  background: rgba(255, 228, 225, 0.9);
+  border-color: #ff1493;
+}
+
+.palace-name {
+  font-size: 11px;
+  color: #d1477a;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.palace-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.badge-ming {
+  background: #ff69b4;
+  color: white;
+}
+
+.badge-shen {
+  background: #ff1493;
+  color: white;
+}
+
+.star-list {
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.star-main {
+  color: #ff1493;
+  font-weight: bold;
+}
+
+.star-lucky {
+  color: #28a745;
+}
+
+.star-evil {
+  color: #dc3545;
+}
+
+.star-minor {
+  color: #888;
+}
+
+/* 分数显示 */
+.score-section {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border: 2px solid #ffb6c1;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+}
+
+.score-circle {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 105, 180, 0.1);
+  color: #ff1493;
+  font-size: 3em;
+  font-weight: bold;
+  line-height: 150px;
+  margin-bottom: 20px;
+  border: 3px solid #ff69b4;
+  box-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+}
+
+.score-text {
+  color: #4a2030;
+  font-size: 1.3em;
+  margin-top: 10px;
+}
+
+/* 大白话点评 */
+.plain-talk {
+  background: rgba(255, 240, 245, 0.8);
+  border: 2px solid #ff69b4;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  line-height: 2;
+}
+
+.plain-talk h3 {
+  color: #ff1493;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.plain-talk p {
+  margin-bottom: 10px;
+  color: #4a2030;
+}
+
+.plain-talk .highlight {
+  color: #ff1493;
+  font-weight: bold;
+}
+
+/* 分析区域 */
+.section {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border: 2px solid #ffb6c1;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+}
+
+.section-title {
+  color: #ff1493;
+  font-size: 18px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ffb6c1;
+  padding-bottom: 10px;
+}
+
+/* 维度显示 */
+.dimensions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.dimension {
+  background: rgba(255, 240, 245, 0.9);
+  padding: 20px;
+  border: 2px solid #ffc2d1;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.dimension h3 {
+  color: #ff1493;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.dimension .score {
+  font-size: 2em;
+  font-weight: bold;
+  color: #4a2030;
+  margin: 10px 0;
+}
+
+.dimension .max {
+  color: #d1477a;
+  font-size: 0.9em;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #ffc2d1;
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff69b4, #ff1493);
+  border-radius: 4px;
+  transition: width 1s;
+}
+
+/* 宫位分析项 */
+.palace-item {
+  background: rgba(255, 240, 245, 0.9);
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ffc2d1;
+  border-radius: 10px;
+  border-left: 4px solid #ff69b4;
+}
+
+.palace-item.negative {
+  border-left-color: #dc3545;
+}
+
+.palace-item.positive {
+  border-left-color: #28a745;
+}
+
+/* 关系标签 */
+.relation-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.relation-tag.chong {
+  background: #dc3545;
+  color: white;
+}
+
+.relation-tag.xing {
+  background: #c0392b;
+  color: white;
+}
+
+.relation-tag.hai {
+  background: #e67e22;
+  color: white;
+}
+
+.relation-tag.ke {
+  background: #d35400;
+  color: white;
+}
+
+.relation-tag.liuhe {
+  background: #28a745;
+  color: white;
+}
+
+.relation-tag.sanhe {
+  background: #27ae60;
+  color: white;
+}
+
+.relation-tag.same {
+  background: #3498db;
+  color: white;
+}
+
+.relation-tag.neutral {
+  background: #6c757d;
+  color: white;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .palace-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .input-section {
+    flex-direction: column;
+  }
+  
+  .header h1 {
+    font-size: 28px;
+  }
+  
+  .palace {
+    min-height: 75px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>💕 紫微斗数缘分合盘 💕</h1>
+    <p class="subtitle">天定缘分 · 星盘相映 · 爱情匹配分析</p>
+  </div>
+
+  <!-- 输入区域 -->
+  <div class="input-section">
+    <div class="person-input">
+      <h2>💘 第一人信息</h2>
+      <div class="form-group">
+        <label>年份</label>
+        <input type="number" id="a_year" value="1993" min="1900" max="2100">
+      </div>
+      <div class="form-group">
+        <label>月份</label>
+        <input type="number" id="a_month" value="5" min="1" max="12">
+      </div>
+      <div class="form-group">
+        <label>日期</label>
+        <input type="number" id="a_day" value="3" min="1" max="31">
+      </div>
+      <div class="form-group">
+        <label>时辰</label>
+        <select id="a_hour">
+          <option value="0">子时 (23:00-01:00)</option>
+          <option value="1">丑时 (01:00-03:00)</option>
+          <option value="2">寅时 (03:00-05:00)</option>
+          <option value="3">卯时 (05:00-07:00)</option>
+          <option value="4">辰时 (07:00-09:00)</option>
+          <option value="5">巳时 (09:00-11:00)</option>
+          <option value="6">午时 (11:00-13:00)</option>
+          <option value="7">未时 (13:00-15:00)</option>
+          <option value="8">申时 (15:00-17:00)</option>
+          <option value="9">酉时 (17:00-19:00)</option>
+          <option value="10">戌时 (19:00-21:00)</option>
+          <option value="11">亥时 (21:00-23:00)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>性别</label>
+        <select id="a_gender">
+          <option value="male">男</option>
+          <option value="female">女</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="person-input">
+      <h2>💝 第二人信息</h2>
+      <div class="form-group">
+        <label>年份</label>
+        <input type="number" id="b_year" value="1988" min="1900" max="2100">
+      </div>
+      <div class="form-group">
+        <label>月份</label>
+        <input type="number" id="b_month" value="6" min="1" max="12">
+      </div>
+      <div class="form-group">
+        <label>日期</label>
+        <input type="number" id="b_day" value="20" min="1" max="31">
+      </div>
+      <div class="form-group">
+        <label>时辰</label>
+        <select id="b_hour">
+          <option value="0">子时 (23:00-01:00)</option>
+          <option value="1">丑时 (01:00-03:00)</option>
+          <option value="2">寅时 (03:00-05:00)</option>
+          <option value="3">卯时 (05:00-07:00)</option>
+          <option value="4">辰时 (07:00-09:00)</option>
+          <option value="5">巳时 (09:00-11:00)</option>
+          <option value="6" selected>午时 (11:00-13:00)</option>
+          <option value="7">未时 (13:00-15:00)</option>
+          <option value="8">申时 (15:00-17:00)</option>
+          <option value="9">酉时 (17:00-19:00)</option>
+          <option value="10">戌时 (19:00-21:00)</option>
+          <option value="11">亥时 (21:00-23:00)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>性别</label>
+        <select id="b_gender">
+          <option value="male">男</option>
+          <option value="female" selected>女</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-submit" id="btnSubmit" onclick="startHepan()">💖 开始缘分分析 💖</button>
+  
+  <div class="status" id="status"></div>
+
+  <!-- 结果区域 -->
+  <div class="result-area" id="result">
+    <!-- 命盘显示 -->
+    <div class="chart-section">
+      <div class="chart-title" id="chartATitle"></div>
+      <div class="palace-grid" id="palaceGridA"></div>
+    </div>
+    
+    <div class="chart-section">
+      <div class="chart-title" id="chartBTitle"></div>
+      <div class="palace-grid" id="palaceGridB"></div>
+    </div>
+
+    <!-- 合盘结果 -->
+    <div id="hepanResult" style="display:none;">
+      <div class="score-section">
+        <div class="score-circle" id="scoreCircle">0</div>
+        <div class="score-text" id="scoreText"></div>
+      </div>
+
+      <div class="plain-talk" id="overallPlainTalk"></div>
+
+      <div class="section">
+        <div class="section-title">📊 各维度评分</div>
+        <div class="dimensions" id="dimensions"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🏠 宫位对齐分析</div>
+        <div id="palaceSummary"></div>
+        <div id="palaceHits"></div>
+        <div class="plain-talk" id="palacePlainTalk"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">⭐ 星曜互动分析</div>
+        <div id="starSummary"></div>
+        <div id="starHits"></div>
+        <div class="plain-talk" id="starPlainTalk"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">✨ 四化互动分析</div>
+        <div id="mutagenSummary"></div>
+        <div id="mutagenHits"></div>
+        <div class="plain-talk" id="mutagenPlainTalk"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// 大白话点评生成函数
+function generateOverallPlainTalk(score) {
+  let html = '<h3>💬 大白话点评</h3>';
+  
+  if (score >= 80) {
+    html += '<p>天造地设的一对！你们的星盘配合度非常高，<span class="highlight">天生缘分深厚</span>，在一起会很幸福。但要注意，缘分好也要懂得珍惜，不要因为太顺利就忽略了对对方的关心。</p>';
+  } else if (score >= 60) {
+    html += '<p>很有潜力的一对！你们有合适的方面，也有需要磨合的地方。<span class="highlight">互相理解、多多沟通</span>是关键。只要愿意为对方付出，你们的关系会越来越好。</p>';
+  } else if (score >= 40) {
+    html += '<p>需要努力的一对。你们的性格和处事方式有较大差异，<span class="highlight">需要更多包容和理解</span>。建议多站在对方角度思考，不要固执己见。缘分可以培养，关键是双方都愿意付出。</p>';
+  } else {
+    html += '<p>挑战较大的一对。你们的星盘显示很多不同之处，在一起需要<span class="highlight">更多的耐心和智慧</span>。如果真心想在一起，就要做好长期磨合的准备。有时候，差异也能成为互补，关键是心态。</p>';
+  }
+  
+  return html;
+}
+
+function generatePalacePlainTalk(data) {
+  const hits = data.hits || [];
+  const palaceHits = hits.filter(h => h.dimension === 'palace_alignment');
+  
+  let html = '<h3>💬 宫位分析大白话</h3>';
+  html += '<p>宫位对齐就是看你们十二个生活领域（性格、兄弟、夫妻、子女、财运等）的配合程度。</p>';
+  
+  if (palaceHits.length === 0) {
+    html += '<p>你们的宫位关系比较平和，没有特别强烈的冲克，但也没有特别强的助力。<span class="highlight">平淡中见真情</span>，踏实过日子也很重要。</p>';
+  } else {
+    const hasChong = palaceHits.some(h => h.evidence.relation === '冲');
+    const hasHai = palaceHits.some(h => h.evidence.relation === '害');
+    const hasXing = palaceHits.some(h => h.evidence.relation === '刑');
+    
+    if (hasChong) {
+      html += '<p>你们在某些方面容易有<span class="highlight">意见不合</span>，比如性格、价值观等。这很正常，关键是学会沟通和妥协。冲也不是坏事，有时反而能激发成长。</p>';
+    }
+    if (hasHai) {
+      html += '<p>在某些生活领域，你们可能会<span class="highlight">无意中伤害对方</span>（可能不是故意的）。建议多关注对方的感受，不要觉得"我就是这种性格"。</p>';
+    }
+    if (hasXing) {
+      html += '<p>你们的性格中有些<span class="highlight">固执的一面</span>，容易坚持己见。学会放下身段，感情才能更和谐。</p>';
+    }
+  }
+  
+  return html;
+}
+
+function generateStarPlainTalk(data) {
+  const starHits = data.hits.filter(h => h.dimension === 'star_harmony');
+  
+  let html = '<h3>💬 星曜分析大白话</h3>';
+  html += '<p>星曜互动就是看你们命盘中的星星是否和谐。有些星在一起会互相帮助，有些星在一起容易吵架。</p>';
+  
+  if (starHits.length === 0) {
+    html += '<p>你们的星曜互动比较平和，没有特别大的冲突，但也没有特别强的化学反应。<span class="highlight">细水长流</span>，感情稳定也很重要。</p>';
+  } else {
+    const positiveHits = starHits.filter(h => h.effect > 0);
+    const negativeHits = starHits.filter(h => h.effect < 0);
+    
+    if (positiveHits.length > negativeHits.length) {
+      html += '<p>好消息！你们的命盘星星很多是<span class="highlight">互相帮助</span>的。这意味着你们在一起会越来越好，互相旺对方。好好珍惜这段缘分！</p>';
+    } else if (negativeHits.length > positiveHits.length) {
+      html += '<p>你们的星星有些<span class="highlight">不太合拍</span>，在一起可能会有一些摩擦。但不要担心，星星只是影响因素之一，<span class="highlight">真心和努力更重要</span>。</p>';
+    } else {
+      html += '<p>你们的星曜互动有好的方面，也有挑战的方面。<span class="highlight">发挥优势，面对挑战</span>，感情会越来越深。</p>';
+    }
+  }
+  
+  return html;
+}
+
+function generateMutagenPlainTalk(data) {
+  const mutagenHits = data.hits.filter(h => h.dimension === 'mutagen_interaction' && h.evidence.matched);
+  
+  let html = '<h3>💬 四化分析大白话</h3>';
+  html += '<p>四化就是化禄（带来好运）、化忌（带来挑战）。看四化如何影响对方，就能知道你们在一起后运势会如何变化。</p>';
+  
+  if (mutagenHits.length === 0) {
+    html += '<p>你们的四化互动比较平和，在一起后<span class="highlight">运势不会有太大波动</span>。这不是坏事，平稳也是一种福气。</p>';
+  } else {
+    const luHits = mutagenHits.filter(h => h.evidence.type === 'lu');
+    const jiHits = mutagenHits.filter(h => h.evidence.type === 'ji');
+    
+    if (luHits.length > 0) {
+      html += '<p>好消息！你们的化禄能量会<span class="highlight">给彼此带来好运</span>，比如财运变好、事业顺利、心情愉快等。在一起后会越来越旺！</p>';
+    }
+    if (jiHits.length > 0) {
+      html += '<p>你们在一起后可能会面临一些<span class="highlight">挑战</span>（比如压力增大、需要更多付出等）。但化忌也代表成长，一起面对困难，感情会更牢固。</p>';
+    }
+  }
+  
+  return html;
+}
+
+// 渲染命盘
+function renderChart(which, d) {
+  const chartDiv = document.getElementById('chart' + which);
+  const titleDiv = document.getElementById('chart' + which + 'Title');
+  const gridDiv = document.getElementById('palaceGrid' + which);
+  
+  // 显示标题 - 使用 birth_info 而不是 birth
+  const genderTitle = d.birth_info.gender === '男' ? '乾造' : '坤造';
+  const ymd = d.birth_info.solar_date.replace(/-/g, '年') + '日';
+  titleDiv.textContent = `第${which === 'A' ? '一' : '二'}人命盘 — ${genderTitle} ${ymd}`;
+  
+  // 清空网格
+  gridDiv.innerHTML = '';
+  
+  // 按顺序显示十二宫
+  const palaceOrder = ['命宫', '兄弟', '夫妻', '子女', '财帛', '疾厄', '迁移', '仆役', '官禄', '田宅', '福德', '父母'];
+  
+  palaceOrder.forEach(pname => {
+    const p = d.palaces.find(pal => pal.name === pname);
+    if (!p) return;
+    
+    const div = document.createElement('div');
+    div.className = 'palace';
+    if (p.name === '命宫') div.classList.add('ming');
+    if (p.name === '身宫') div.classList.add('shen');
+    
+    let html = `<div class="palace-name">${p.name} (${p.earthly_branch})</div>`;
+    
+    // 修复：major_stars 可能是对象数组 [{name,type},...]，需要正确提取 name
+    let majorStars = '';
+    if (p.major_stars) {
+      if (Array.isArray(p.major_stars)) {
+        // 检查数组元素是否是对象（有 name 属性）
+        if (p.major_stars.length > 0 && typeof p.major_stars[0] === 'object' && p.major_stars[0].name) {
+          majorStars = p.major_stars.map(s => s.name).join(' ');
+        } else {
+          majorStars = p.major_stars.join(' ');
+        }
+      } else {
+        majorStars = p.major_stars.toString();
+      }
+    }
+    
+    if (majorStars.trim()) {
+      html += `<div class="star-list"><span class="star-main">${majorStars}</span></div>`;
+    }
+    
+    // 同样修复 minor_stars
+    let minorStars = '';
+    if (p.minor_stars) {
+      if (Array.isArray(p.minor_stars)) {
+        // 检查数组元素是否是对象（有 name 属性）
+        if (p.minor_stars.length > 0 && typeof p.minor_stars[0] === 'object' && p.minor_stars[0].name) {
+          minorStars = p.minor_stars.map(s => s.name).join(' ');
+        } else {
+          minorStars = p.minor_stars.join(' ');
+        }
+      } else {
+        minorStars = p.minor_stars.toString();
+      }
+    }
+    
+    if (minorStars.trim()) {
+      html += `<div class="star-list"><span class="star-lucky">${minorStars}</span></div>`;
+    }
+    
+    div.innerHTML = html;
+    gridDiv.appendChild(div);
+  });
+}
+
+// 显示合盘结果
+function displayResult(data) {
+  // 显示总分
+  const score = Math.round(data.score || 0);
+  document.getElementById('scoreCircle').textContent = score;
+  
+  let scoreText = '';
+  if (score >= 80) scoreText = '🌟🌟🌟🌟🌟 天作之合，缘分深厚！';
+  else if (score >= 60) scoreText = '🌟🌟🌟🌟 很有潜力，多沟通会更幸福！';
+  else if (score >= 40) scoreText = '🌟🌟🌟 需要磨合，互相理解很重要';
+  else scoreText = '🌟🌟 挑战较大，但真心可以克服一切';
+  
+  document.getElementById('scoreText').textContent = scoreText;
+  
+  // 大白话点评
+  document.getElementById('overallPlainTalk').innerHTML = generateOverallPlainTalk(score);
+  
+  // 显示各维度评分
+  displayDimensions(data);
+  
+  // 显示宫位对齐分析
+  displayPalaceAnalysis(data);
+  
+  // 显示星曜互动分析
+  displayStarAnalysis(data);
+  
+  // 显示四化互动分析
+  displayMutagenAnalysis(data);
+}
+
+function displayDimensions(data) {
+  const dimensionsDiv = document.getElementById('dimensions');
+  dimensionsDiv.innerHTML = '';
+  
+  data.dimensions.forEach(dim => {
+    const pct = Math.round((dim.score / dim.max) * 100);
+    const item = document.createElement('div');
+    item.className = 'dimension';
+    item.innerHTML = `
+      <h3>${dim.reason_summary.display_text}</h3>
+      <div class="score">${dim.score.toFixed(1)}</div>
+      <div class="max">/ ${dim.max}</div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${pct}%"></div>
+      </div>
+    `;
+    dimensionsDiv.appendChild(item);
+  });
+}
+
+function displayPalaceAnalysis(data) {
+  const palaceHits = data.hits.filter(h => h.dimension === 'palace_alignment');
+  const summary = data.dimensions.find(d => d.id === 'palace_alignment');
+  
+  const summaryDiv = document.getElementById('palaceSummary');
+  if (summary && summary.reason_summary) {
+    summaryDiv.innerHTML = `<p>${summary.reason_summary.display_text}</p>`;
+  }
+  
+  const hitsDiv = document.getElementById('palaceHits');
+  hitsDiv.innerHTML = '';
+  
+  if (palaceHits.length === 0) {
+    hitsDiv.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">你们的宫位关系比较平和，没有特别强烈的冲克，但也没有特别强的助力。平淡中见真情，踏实过日子也很重要。</p>';
+    return;
+  }
+  
+  // 宫位含义映射
+  const palaceMeanings = {
+    '命宫': '性格、本性',
+    '兄弟': '兄弟姐妹、朋友',
+    '夫妻': '感情、婚姻',
+    '子女': '子女、创意',
+    '财帛': '财运、收入',
+    '疾厄': '健康、疾病',
+    '迁移': '旅行、外地发展',
+    '交友': '人际关系、朋友',
+    '事业': '事业、工作',
+    '田宅': '家庭、房产',
+    '福德': '精神世界、福气',
+    '父母': '父母、长辈'
+  };
+  
+  // 显示宫位对比列表（改进版）
+  palaceHits.forEach(h => {
+    const ev = h.evidence;
+    const palaceAName = ev.left_palace || '未知';
+    const palaceBName = ev.right_palace || '未知';
+    const meaningA = palaceMeanings[palaceAName] || palaceAName;
+    const meaningB = palaceMeanings[palaceBName] || palaceBName;
+    
+    // 根据关系类型设置颜色和图标
+    let relationText = '';
+    let relationColor = '';
+    let relationIcon = '';
+    let plainTalk = '';
+    
+    switch(ev.relation) {
+      case 'he':
+        relationText = '和谐互助';
+        relationColor = '#4caf50';
+        relationIcon = '✅';
+        plainTalk = `你们在${meaningA}和${meaningB}方面很合拍，互相帮助，是加分项。`;
+        break;
+      case 'chong':
+        relationText = '相冲对立';
+        relationColor = '#f44336';
+        relationIcon = '❌';
+        plainTalk = `你们在${meaningA}和${meaningB}方面容易有冲突，需要多沟通和理解。`;
+        break;
+      case 'xing':
+        relationText = '相刑伤害';
+        relationColor = '#ff9800';
+        relationIcon = '⚠️';
+        plainTalk = `你们在${meaningA}和${meaningB}方面容易互相伤害（可能不是故意的），需要多注意。`;
+        break;
+      case 'hai':
+        relationText = '相害拖累';
+        relationColor = '#ff9800';
+        relationIcon = '⚠️';
+        plainTalk = `你们在${meaningA}和${meaningB}方面容易互相拖累，需要互相支持而不是消耗。`;
+        break;
+      case 'ke':
+        relationText = '相克压制';
+        relationColor = '#f44336';
+        relationIcon = '❌';
+        plainTalk = `你们在${meaningA}和${meaningB}方面容易有压制关系，一方可能会觉得被束缚。`;
+        break;
+      default: // neutral
+        relationText = '中性偏和谐';
+        relationColor = '#2196f3';
+        relationIcon = '➕';
+        plainTalk = `你们在${meaningA}和${meaningB}方面关系平平，没有明显冲突，但也没有特别强的助力。`;
+    }
+    
+    const item = document.createElement('div');
+    item.className = 'palace-item';
+    item.style.borderLeft = `4px solid ${relationColor}`;
+    
+    item.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="font-size: 16px; font-weight: bold; color: #333;">
+          ${palaceAName} ↔ ${palaceBName}
+        </div>
+        <div style="background: ${relationColor}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">
+          ${relationIcon} ${relationText}
+        </div>
+      </div>
+      <div style="margin-top: 8px; color: #666; font-size: 14px;">
+        💬 ${plainTalk}
+      </div>
+      <div style="margin-top: 8px; text-align: right; color: ${h.effect > 0 ? '#4caf50' : '#f44336'}; font-weight: bold;">
+        ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)} 分
+      </div>
+    `;
+    hitsDiv.appendChild(item);
+  });
+  
+  // 添加大白话点评（使用已存在的palacePlainTalk div）
+  const plainTalkHtml = generatePalacePlainTalk(data);
+  const plainTalkDiv = document.getElementById('palacePlainTalk');
+  if (plainTalkDiv) {
+    plainTalkDiv.innerHTML = plainTalkHtml;
+    plainTalkDiv.style.display = 'block';
+  }
+}
+
+function displayStarAnalysis(data) {
+  const starHits = data.hits.filter(h => h.dimension === 'star_harmony');
+  const summary = data.dimensions.find(d => d.id === 'star_harmony');
+  
+  const summaryDiv = document.getElementById('starSummary');
+  if (summary && summary.reason_summary) {
+    summaryDiv.innerHTML = `<h3>星曜和谐得分: ${summary.score}/${summary.max}</h3><p>${summary.reason_summary.display_text}</p>`;
+  }
+  
+  const hitsDiv = document.getElementById('starHits');
+  hitsDiv.innerHTML = '';
+  starHits.forEach(h => {
+    const ev = h.evidence;
+    const item = document.createElement('div');
+    item.className = 'palace-item';
+    item.innerHTML = `
+      <div><strong>${ev.pair}</strong></div>
+      <div style="margin-top: 8px; font-size: 0.95em;">
+        主星对比: ${ev.stars_a.join(', ')} ↔ ${ev.stars_b.join(', ')}
+      </div>
+      <div style="margin-top: 8px; color: #666;">
+        和谐程度: ${(ev.harmony * 100).toFixed(0)}% | 影响分值: ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)}
+      </div>
+    `;
+    hitsDiv.appendChild(item);
+  });
+  
+  // 添加大白话点评
+  const starSection = hitsDiv.closest('.section');
+  const existingPlainTalk = starSection.querySelector('.plain-talk');
+  if (existingPlainTalk) existingPlainTalk.remove();
+  starSection.insertAdjacentHTML('beforeend', generateStarPlainTalk(data));
+}
+
+function displayMutagenAnalysis(data) {
+  const mutagenHits = data.hits.filter(h => h.dimension === 'mutagen_interaction');
+  const summary = data.dimensions.find(d => d.id === 'mutagen_interaction');
+  
+  const summaryDiv = document.getElementById('mutagenSummary');
+  if (summary && summary.reason_summary) {
+    summaryDiv.innerHTML = `<h3>四化互动得分: ${summary.score}/${summary.max}</h3><p>${summary.reason_summary.display_text}</p>`;
+  }
+  
+  const hitsDiv = document.getElementById('mutagenHits');
+  hitsDiv.innerHTML = '';
+  mutagenHits.forEach(h => {
+    if (!h.evidence.matched) return;
+    const ev = h.evidence;
+    const directionText = ev.direction === 'A->B' ? '第一人 → 第二人' : '第二人 → 第一人';
+    const typeText = ev.type === 'lu' ? '化禄' : '化忌';
+    
+    const item = document.createElement('div');
+    item.className = `palace-item ${h.effect < 0 ? 'negative' : 'positive'}`;
+    item.innerHTML = `
+      <div><strong>${directionText}</strong>: ${typeText}</div>
+      <div style="margin-top: 8px;">
+        落入 <strong>${ev.target_palace}</strong> 宫 (${ev.target_branch})
+      </div>
+      <div style="margin-top: 8px; color: #666;">
+        影响分值: ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)}
+      </div>
+    `;
+    hitsDiv.appendChild(item);
+  });
+  
+  // 添加大白话点评
+  const mutagenSection = hitsDiv.closest('.section');
+  const existingPlainTalk = mutagenSection.querySelector('.plain-talk');
+  if (existingPlainTalk) existingPlainTalk.remove();
+  mutagenSection.insertAdjacentHTML('beforeend', generateMutagenPlainTalk(data));
+}
+
+// 开始合盘分析
+async function startHepan() {
+  const btn = document.getElementById('btnSubmit');
+  const st = document.getElementById('status');
+  
+  btn.disabled = true;
+  btn.textContent = '💕 正在分析中...';
+  st.className = 'status show loading';
+  st.textContent = '正在准备...';
+  
+  try {
+    // 获取输入参数
+    const a_params = {
+      year: document.getElementById('a_year').value,
+      month: document.getElementById('a_month').value,
+      day: document.getElementById('a_day').value,
+      hour: document.getElementById('a_hour').value,
+      gender: document.getElementById('a_gender').value
+    };
+    
+    const b_params = {
+      year: document.getElementById('b_year').value,
+      month: document.getElementById('b_month').value,
+      day: document.getElementById('b_day').value,
+      hour: document.getElementById('b_hour').value,
+      gender: document.getElementById('b_gender').value
+    };
+    
+    // 排第一人命盘
+    st.textContent = '正在排第一人命盘...';
+    const a_query = Object.keys(a_params).map(k => `${k}=${a_params[k]}`).join('&');
+    const a_res = await fetch(`/chart?${a_query}&_t=${Date.now()}`);
+    const a_data = await a_res.json();
+    if (a_data.error) throw new Error('第一人排盘失败: ' + a_data.error);
+    if (!a_data.success) throw new Error('第一人排盘失败');
+    const a_chart = a_data.data;  // 后端返回 { success: true, data: chartData }
+    
+    // 排第二人命盘
+    st.textContent = '正在排第二人命盘...';
+    const b_query = Object.keys(b_params).map(k => `${k}=${b_params[k]}`).join('&');
+    const b_res = await fetch(`/chart?${b_query}&_t=${Date.now()}`);
+    const b_data = await b_res.json();
+    if (b_data.error) throw new Error('第二人排盘失败: ' + b_data.error);
+    if (!b_data.success) throw new Error('第二人排盘失败');
+    const b_chart = b_data.data;
+    
+    // 显示两个命盘
+    renderChart('A', a_chart);
+    renderChart('B', b_chart);
+    
+    // 合盘分析
+    st.textContent = '正在合盘分析...';
+    const hepan_params = {
+      a_year: a_params.year,
+      a_month: a_params.month,
+      a_day: a_params.day,
+      a_hour: a_params.hour,
+      a_gender: a_params.gender,
+      b_year: b_params.year,
+      b_month: b_params.month,
+      b_day: b_params.day,
+      b_hour: b_params.hour,
+      b_gender: b_params.gender
+    };
+    const hepan_query = Object.keys(hepan_params).map(k => `${k}=${hepan_params[k]}`).join('&');
+    const hepan_res = await fetch(`/hepan?${hepan_query}&_t=${Date.now()}`);
+    const hepan_data = await hepan_res.json();
+    if (hepan_data.error) throw new Error('合盘失败: ' + hepan_data.error);
+    if (!hepan_data.success) throw new Error('合盘失败');
+    
+    // 显示合盘结果
+    displayResult(hepan_data.data);
+    
+    // 显示结果区域
+    document.getElementById('result').classList.add('show');
+    document.getElementById('hepanResult').style.display = 'block';
+    
+    st.className = 'status';
+    btn.disabled = false;
+    btn.textContent = '💖 开始缘分分析 💖';
+    
+    // 滚动到结果区域
+    document.getElementById('result').scrollIntoView({behavior: 'smooth'});
+    
+  } catch(err) {
+    st.className = 'status show error';
+    st.textContent = '错误: ' + err.message;
+    btn.disabled = false;
+    btn.textContent = '💖 开始缘分分析 💖';
+  }
+}
+</script>
+
+</body>
+</html>

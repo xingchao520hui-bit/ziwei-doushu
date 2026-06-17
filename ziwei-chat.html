@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>紫微斗数 · 命理对话解读</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;background:#1a1a2e;color:#e0d5c1;min-height:100vh;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#16213e,#0f3460);padding:20px;text-align:center;border-bottom:1px solid #e94560;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(233,69,96,0.1) 0%,transparent 70%);animation:pulse 6s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.header h1{font-size:28px;color:#e94560;text-shadow:0 0 20px rgba(233,69,96,0.5);position:relative;z-index:1}
+.header p{color:#a89b8c;font-size:14px;margin-top:5px;position:relative;z-index:1}
+.header .tag{display:inline-block;background:rgba(233,69,96,0.2);color:#e94560;padding:2px 10px;border-radius:12px;font-size:12px;margin-top:8px;position:relative;z-index:1}
+.container{flex:1;display:flex;flex-direction:column;max-width:900px;margin:0 auto;width:100%}
+/* 输入表单 */
+.input-panel{background:#16213e;border-radius:12px;margin:20px;padding:20px;border:1px solid rgba(233,69,96,0.3)}
+.input-panel.collapsed{padding:12px 20px;cursor:pointer}
+.input-panel.collapsed:hover{border-color:rgba(233,69,96,0.6)}
+.input-panel.collapsed .form-fields{display:none}
+.input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px}
+.input-group label{display:block;color:#a89b8c;font-size:12px;margin-bottom:4px}
+.input-group input,.input-group select{background:#1a1a2e;color:#e0d5c1;border:1px solid #333;border-radius:8px;padding:8px 12px;font-size:14px;width:100%}
+.input-group input:focus,.input-group select:focus{outline:none;border-color:#e94560}
+.btn-primary{background:linear-gradient(135deg,#e94560,#c73659);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer;transition:all 0.3s}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(233,69,96,0.4)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+.btn-row{margin-top:12px;display:flex;gap:10px;align-items:center}
+.status-text{color:#e94560;font-size:12px}
+/* 概要区 */
+.summary-bar{background:#16213e;border-radius:12px;margin:0 20px;padding:12px 16px;border:1px solid rgba(233,69,96,0.2);display:none;font-size:13px;color:#a89b8c}
+.summary-bar.show{display:block}
+.summary-bar .name{color:#e94560;font-weight:bold}
+/* 聊天区 */
+.chat-area{flex:1;padding:0 20px 20px;overflow-y:auto}
+.chat-messages{display:flex;flex-direction:column;gap:16px}
+.msg{max-width:85%;padding:14px 18px;border-radius:16px;line-height:1.7;font-size:14px;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg.bot{align-self:flex-start;background:#16213e;border:1px solid rgba(233,69,96,0.2);border-bottom-left-radius:4px}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,#e94560,#c73659);color:#fff;border-bottom-right-radius:4px}
+.msg .label{font-size:11px;color:#666;margin-bottom:4px;font-weight:bold}
+.msg.bot .label{color:#e94560}
+.msg.user .label{color:rgba(255,255,255,0.7)}
+.msg h4{color:#e94560;margin:8px 0 4px;font-size:14px}
+.msg strong{color:#ffd700}
+.msg .star-lucky{color:#50fa7b}
+.msg .star-evil{color:#ff5555}
+.msg .dim{color:#888;font-size:12px}
+/* 快捷问题 */
+.quick-bar{padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.quick-btn{background:#16213e;border:1px solid #333;color:#a89b8c;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;transition:all 0.3s}
+.quick-btn:hover{border-color:#e94560;color:#e94560}
+/* 输入框 */
+.chat-input-bar{padding:16px 20px;background:#16213e;border-top:1px solid rgba(233,69,96,0.2);display:flex;gap:10px;align-items:center}
+.chat-input-bar input{flex:1;background:#1a1a2e;color:#e0d5c1;border:1px solid #333;border-radius:24px;padding:12px 20px;font-size:14px}
+.chat-input-bar input:focus{outline:none;border-color:#e94560}
+.chat-input-bar button{background:#e94560;color:#fff;border:none;padding:12px 20px;border-radius:24px;cursor:pointer;font-size:14px;transition:all 0.3s}
+.chat-input-bar button:hover{background:#c73659}
+.typing{align-self:flex-start;padding:10px 20px;color:#888;font-size:13px;font-style:italic}
+/* 滚动条 */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#555}
+/* 响应式 */
+@media(max-width:600px){
+.header h1{font-size:22px}
+.input-grid{grid-template-columns:1fr 1fr}
+.msg{max-width:92%}
+}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>🔮 紫微斗数 · 命理对话</h1>
+<p>上传命盘或输入出生信息，向我提问任何命理问题</p>
+<span class="tag">基于 iztro 开源引擎 · 14主星×12宫位数据库</span>
+</div>
+
+<div class="container">
+<div class="input-panel" id="inputPanel">
+<div class="panel-header" onclick="togglePanel()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+<span style="color:#e94560;font-size:15px;font-weight:bold">📋 输入出生信息</span>
+<span id="toggleIcon" style="color:#888;font-size:12px">▼ 收起</span>
+</div>
+<div class="form-fields">
+<div class="input-grid">
+<div class="input-group"><label>出生年（公历）</label><input type="number" id="year" min="1900" max="2100" placeholder="如 1999"></div>
+<div class="input-group"><label>月</label><input type="number" id="month" min="1" max="12" placeholder="如 2"></div>
+<div class="input-group"><label>日</label><input type="number" id="day" min="1" max="31" placeholder="如 17"></div>
+<div class="input-group"><label>时（24小时制）</label><input type="number" id="hour" min="0" max="23" placeholder="如 22"></div>
+<div class="input-group"><label>性别</label><select id="gender"><option value="male">男</option><option value="female">女</option></select></div>
+</div>
+<div class="btn-row">
+<button class="btn-primary" id="btnChart" onclick="doChart()">开始排盘</button>
+<span class="status-text" id="statusText"></span>
+</div>
+</div>
+</div>
+
+<div class="summary-bar" id="summaryBar"></div>
+
+<div class="chat-area" id="chatArea">
+<div class="chat-messages" id="chatMessages"></div>
+</div>
+
+<div class="quick-bar" id="quickBar" style="display:none">
+<button class="quick-btn" onclick="ask('帮我看看今年运势')">今年运势</button>
+<button class="quick-btn" onclick="ask('事业怎么样')">事业运</button>
+<button class="quick-btn" onclick="ask('财运如何')">财运</button>
+<button class="quick-btn" onclick="ask('感情婚姻')">婚姻</button>
+<button class="quick-btn" onclick="ask('健康方面')">健康</button>
+<button class="quick-btn" onclick="ask('性格分析')">性格</button>
+<button class="quick-btn" onclick="ask('适合什么行业')">适合行业</button>
+<button class="quick-btn" onclick="ask('明年运势')">明年</button>
+<button class="quick-btn" onclick="ask('桃花缘分')">桃花</button>
+<button class="quick-btn" onclick="ask('贵人运')">贵人</button>
+<button class="quick-btn" onclick="ask('人生建议')">人生建议</button>
+<button class="quick-btn" onclick="ask('子女运')">子女</button>
+</div>
+
+<div class="chat-input-bar" id="inputBar" style="display:none">
+<input type="text" id="chatInput" placeholder="输入你的问题...如"今年财运怎么样"" onkeydown="if(event.key==='Enter')sendChat()">
+<button onclick="sendChat()">发送</button>
+</div>
+</div>
+
+<script>
+const API = window.location.port === '3211' ? '' : 'http://localhost:3211';
+let chartData = null; // 命盘数据缓存
+let chatHistory = []; // 对话历史
+
+// ── 面板折叠 ──
+function togglePanel(){
+  const p = document.getElementById('inputPanel');
+  const f = p.querySelector('.form-fields');
+  const icon = document.getElementById('toggleIcon');
+  if(f.style.display==='none'){f.style.display='';icon.textContent='▼ 收起';}
+  else{f.style.display='none';icon.textContent='▶ 展开';}
+}
+
+// ── 排盘 ──
+async function doChart(){
+  const y=parseInt(document.getElementById('year').value);
+  const m=parseInt(document.getElementById('month').value);
+  const d=parseInt(document.getElementById('day').value);
+  const h=parseInt(document.getElementById('hour').value);
+  const g=document.getElementById('gender').value;
+  const st=document.getElementById('statusText');
+  const btn=document.getElementById('btnChart');
+  if(!y||!m||!d||h===undefined||isNaN(h)){st.textContent='请填写完整出生信息';return;}
+  btn.disabled=true; st.textContent='排盘中...';
+  try{
+    const resp=await fetch(API+'/chart?year='+y+'&month='+m+'&day='+d+'&hour='+h+'&gender='+g);
+    if(!resp.ok)throw new Error('排盘失败');
+    const data=await resp.json();
+    if(data.error)throw new Error(data.error);
+    chartData=data;
+    // 加载流年数据
+    try{
+      const pyResp=await fetch(API+'/past-years?year='+y+'&month='+m+'&day='+d+'&hour='+h+'&gender='+g);
+      if(pyResp.ok) chartData.pastYears=(await pyResp.json()).years;
+    }catch(e){}
+    initChat();
+    st.textContent='✅ 排盘完成';btn.disabled=false;
+  }catch(e){
+    st.textContent='❌ '+e.message;btn.disabled=false;btn.textContent='重试';
+  }
+}
+
+// ── 自动排盘（URL参数） ──
+(function autoLoad(){
+  const p=new URLSearchParams(location.search);
+  if(p.get('year')&&p.get('month')&&p.get('day')&&p.get('hour')!==null){
+    document.getElementById('year').value=p.get('year');
+    document.getElementById('month').value=p.get('month');
+    document.getElementById('day').value=p.get('day');
+    document.getElementById('hour').value=p.get('hour');
+    if(p.get('gender'))document.getElementById('gender').value=p.get('gender');
+    setTimeout(doChart,300);
+  }
+})();
+
+// ── 初始化聊天 ──
+function initChat(){
+  // 显示概要
+  const d=chartData;
+  const sb=document.getElementById('summaryBar');
+  sb.className='summary-bar show';
+  sb.innerHTML=`<span class="name">${d.birth.gender==='male'?'男':'女'} · ${d.birth.year}年${d.birth.month}月${d.birth.day}日${d.birth.hour}时</span> &nbsp; 命主<strong style="color:#ffd700">${d.info.mingZhu}</strong> · 身主${d.info.shenZhu} · ${d.info.wuxingJu} · ${d.lunar.yearName}`;
+  // 显示聊天区
+  document.getElementById('quickBar').style.display='';
+  document.getElementById('inputBar').style.display='';
+  // 清空聊天
+  document.getElementById('chatMessages').innerHTML='';
+  chatHistory=[];
+  // 欢迎消息
+  const ming=pn(d,'命宫');
+  const mingStars=ming.stars.map(s=>s.name+(s.siHua?'['+hn(s.siHua)+']':'')+'['+(s.brightness||'平')+']').join('、');
+  let welcome=`排盘完成！您的命盘如下：\n\n`;
+  welcome+=`🔹 <strong>命宫</strong>：${mingStars}\n`;
+  welcome+=`🔹 <strong>五行局</strong>：${d.info.wuxingJu}  |  <strong>当前虚岁</strong>：${d.currentAge}\n\n`;
+  welcome+=`您可以问我任何关于命盘的问题，例如：\n`;
+  welcome+=`• "今年运势怎么样？"\n• "我适合做什么工作？"\n• "感情什么时候来？"\n• "2027年会发生什么？"\n• "帮我分析一下性格"\n• "夫妻宫有什么星？"\n\n`;
+  welcome+=`直接在下方输入，或点击快捷按钮~`;
+  addBotMsg(welcome);
+  // 滚动到底部
+  scrollBottom();
+}
+
+// ── 发送消息 ──
+function ask(text){sendChat(text);}
+function sendChat(text){
+  const input=document.getElementById('chatInput');
+  const q=text||input.value.trim();
+  if(!q)return;
+  input.value='';
+  chatHistory.push({role:'user',text:q});
+  addUserMsg(q);
+  // 显示思考动画
+  showTyping();
+  setTimeout(()=>{
+    hideTyping();
+    const answer=generateAnswer(q,chartData);
+    chatHistory.push({role:'bot',text:answer});
+    addBotMsg(answer);
+    scrollBottom();
+  },500+Math.random()*800);
+}
+
+function addUserMsg(text){
+  const div=document.createElement('div');
+  div.className='msg user';
+  div.innerHTML='<div class="label">你</div>'+escHTML(text);
+  document.getElementById('chatMessages').appendChild(div);
+  scrollBottom();
+}
+function addBotMsg(text){
+  const div=document.createElement('div');
+  div.className='msg bot';
+  div.innerHTML='<div class="label">🔮 命理师</div>'+formatAnswer(text);
+  document.getElementById('chatMessages').appendChild(div);
+  scrollBottom();
+}
+function showTyping(){
+  const div=document.createElement('div');
+  div.className='typing';div.id='typingIndicator';
+  div.textContent='🔮 正在分析命盘...';
+  document.getElementById('chatMessages').appendChild(div);
+  scrollBottom();
+}
+function hideTyping(){
+  const el=document.getElementById('typingIndicator');
+  if(el)el.remove();
+}
+function scrollBottom(){
+  const area=document.getElementById('chatArea');
+  setTimeout(()=>area.scrollTop=area.scrollHeight,100);
+}
+function escHTML(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function formatAnswer(text){
+  return text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/【(.*?)】/g,'<strong class="star-lucky">【$1】</strong>').replace(/⚠️(.*?)(<br>|$)/g,'<span class="star-evil">⚠️$1</span>$2');
+}
+
+// ── 辅助函数 ──
+function pn(d,n){return d.palaces.find(p=>p.name===n)}
+function hn(v){const m={lu:'禄',quan:'权',ke:'科',ji:'忌'};return m[v]||v}
+function ms(p){return p.stars.filter(s=>s.type==='major')}
+function hs(p,n){return p.stars.some(s=>s.name===n)}
+function gs(p,n){return p.stars.find(s=>s.name===n)}
+function getAge(){return chartData?chartData.currentAge:0}
+function getCurrentYear(){return new Date().getFullYear()}
+function getNextYear(){return getCurrentYear()+1}
+
+// ── 星曜解读数据库 ──
+function starNature(nm){
+  const n={'紫微':'帝王星·主尊贵/领导力/创造力','天机':'智慧星·主谋略/变通/善机变','太阳':'光明星·主热情/公益/社交/发散','武曲':'财星·主刚毅/执行力/金融','天同':'福星·主安逸/享福/温和善良','廉贞':'囚星·主拘束/血光/是非/精密','天府':'库星·主包容/稳重/富足积累','太阴':'富星·主细腻/温柔/洁净/暗财','贪狼':'桃花星·主欲望/人缘/才艺/交际','巨门':'暗星·主是非/口舌/深究/隐密','天相':'印星·主辅佐/协调/公正/服务','天梁':'荫星·主长寿/庇护/学术/清贵','七杀':'将星·主果断/竞争/开拓/威权','破军':'耗星·主改革/破坏重建/敢作敢为'};
+  return n[nm]||'';
+}
+
+function getPalaceStarMeaning(star,palace){
+  const k=star+'_'+palace;
+  const m={
+    '紫微_命宫':'天生领袖气质，自尊心强，有管理才能，适合独立创业或担任领导',
+    '紫微_夫妻':'配偶有才干有地位，但紫微为帝，夫妻关系中谁主沉浮是核心课题',
+    '紫微_财帛':'帝王掌财，财路宽广，花钱也有帝王气——大方不吝啬',
+    '紫微_官禄':'事业发展有帝王之气，适合做老板或高管，独立掌管一方',
+    '紫微_田宅':'家宅贵气，住所体面环境好，房产运旺，晚年可安居',
+    '紫微_福德':'内心自尊极高，精神享受是最大追求，晚年安康体面',
+    '紫微_父母':'父母有社会地位，对命主期望高，管教偏严格，但也提供好资源',
+    '紫微_子女':'子女有出息、性格独立，不服管教但能成器',
+    '紫微_迁移':'外出有贵人提携，容易在外地获得尊重和机遇',
+    '紫微_疾厄':'身体底子不错，但紫微为火，需注意心脏、头部',
+    '紫微_交友':'朋友圈中地位高，被众人仰望而非深交',
+    '天机_命宫':'思维敏捷善谋划，学习能力强，适合咨询/策划/IT等行业',
+    '天机_夫妻':'配偶聪明机敏，但天机善变，感情需要稳定经营',
+    '天机_财帛':'财运多变动，收入来源多元化，不宜单一收入模式',
+    '天机_疾厄':'神经敏感，思虑过重影响睡眠，注意神经系统保养',
+    '天机_迁移':'异地发展靠智慧谋生，信息差是核心竞争力',
+    '天机_官禄':'事业靠智谋策划，适合做参谋/分析师/科技行业',
+    '天机_福德':'精神世界丰富但思虑过重——这是命主一生需修的课题',
+    '太阳_命宫':'为人光明磊落热情外向，适合面向人群的工作如教育/传媒',
+    '太阳_夫妻':'配偶性格外向开朗善于社交，但太阳易急躁需包容',
+    '太阳_财帛':'赚钱走明路不喜暗箱，收入与付出成正比，坦坦荡荡',
+    '太阳_疾厄':'注意眼睛、心血管，中年后尤其需关注血压',
+    '太阳_迁移':'外地发展顺利人气旺，适合销售/外交/旅游行业',
+    '太阳_官禄':'适合公职/教育/公益等公开事业，仕途平顺',
+    '武曲_命宫':'性格刚毅果断执行力强，适合金融/技术/军警等行业',
+    '武曲_夫妻':'配偶性格刚强务实重物质基础，但浪漫不足需理解',
+    '武曲_财帛':'正财运极好，靠硬实力赚钱，财源稳定可靠',
+    '武曲_疾厄':'注意呼吸道/肺部/大肠，金气盛需防秋燥伤身',
+    '武曲_官禄':'事业靠实力说话，适合专业技术岗/管理层',
+    '武曲_田宅':'不动产积累能力强，房产多为投资所得而非继承',
+    '天同_命宫':'性格温和善良有福气，人缘好但缺冲劲，适合文职/艺术',
+    '天同_夫妻':'感情平和温馨，配偶温柔，但不宜找事业心太强对象',
+    '天同_财帛':'财运不求暴富但求够用，常有意外之财帮衬',
+    '天同_疾厄':'身体偏弱，注意免疫系统/肾脏，不宜过度透支',
+    '天同_福德':'内心平和享福，晚年生活安逸满足',
+    '天同_父母':'父母温和慈爱，对命主呵护有加，童年幸福',
+    '廉贞_命宫':'性格严谨自律有原则，但易钻牛角尖，适合法律/纪检',
+    '廉贞_夫妻':'感情认真投入但标准高，需避免苛求对方',
+    '廉贞_财帛':'财运靠专业知识和自律获取，绝不投机取巧',
+    '廉贞_疾厄':'重点注意血液循环/皮肤/免疫系统，远离高风险活动',
+    '廉贞_官禄':'适合严谨精细的工作：审计/法律/科研/质检',
+    '天府_命宫':'性情稳重包容有容人之量，做事稳妥可靠值得信赖',
+    '天府_夫妻':'配偶稳重可靠是人生好伴侣，感情细水长流',
+    '天府_财帛':'财运稳定不虚浮，财富积累慢但实在，守财型',
+    '天府_官禄':'事业稳步发展不贪快但根基扎实，适合管理岗位',
+    '天府_田宅':'不动产富足家宅安稳，是安身立命的坚固堡垒',
+    '天府_福德':'精神世界丰富从容，晚年安逸享受生活',
+    '太阴_命宫':'性格温柔细腻善解人意，适合文职/艺术/服务行业',
+    '太阴_夫妻':'配偶温柔体贴，感情细腻有深度，是善解人意的伴侣',
+    '太阴_财帛':'财运细水长流善于理财规划，暗财运（副业/投资）佳',
+    '太阴_疾厄':'注意泌尿系统/妇科（女性），湿气重注意保暖驱寒',
+    '太阴_官禄':'适合需要细心和审美的职业：设计/护理/会计',
+    '贪狼_命宫':'性格活跃机敏多才多艺，人缘桃花旺，适合演艺/销售',
+    '贪狼_夫妻':'感情热烈丰富，桃花运旺盛选择多，但需定心',
+    '贪狼_财帛':'财运靠人脉和才艺，做资源整合型生意很合适',
+    '贪狼_疾厄':'注意肝胆/内分泌，桃花多也需注意个人健康管理',
+    '贪狼_官禄':'适合需要人脉的行业：市场/商务/娱乐/文旅',
+    '贪狼_迁移':'在外人缘桃花旺盛，社交场合如鱼得水',
+    '巨门_命宫':'性格善辩深思口才好但藏锋，适合研究/法律/辩论',
+    '巨门_夫妻':'夫妻沟通是核心课题——坦诚表达是解药，冷战是毒药',
+    '巨门_财帛':'财运靠口才和专业分析，适合咨询/律师行业',
+    '巨门_疾厄':'注意口腔/消化系统，肠胃功能需悉心调养',
+    '巨门_官禄':'适合需要分析和表达的工作：律师/记者/教师/科研',
+    '天相_命宫':'性格公正不偏善协调有服务精神，适合行政/HR',
+    '天相_夫妻':'配偶正派婚姻稳定，是理性平和的结合',
+    '天相_官禄':'适合幕僚/助理/行政等协调型工作，辅佐能力突出',
+    '天相_福德':'内心追求公平正义，晚年享清福心安',
+    '天梁_命宫':'心慈善良有智慧有担当，贵人多助，适合教育/医疗',
+    '天梁_夫妻':'配偶成熟稳重有长者风范，年龄差可能较大',
+    '天梁_财帛':'财运靠专业学识和资历——越老越值钱，晚年最富',
+    '天梁_疾厄':'身体尚可但中年后注意骨骼关节，适当运动保灵活',
+    '天梁_官禄':'适合学术/法律/医疗/公务员等清贵行业，口碑事业',
+    '天梁_福德':'晚年享清福子女孝顺，心态平和满足',
+    '七杀_命宫':'性格果断果敢敢闯敢拼，适合开创性工作/军警/创业',
+    '七杀_夫妻':'感情激烈但易冲突，需学会包容对方的棱角',
+    '七杀_财帛':'财运大起大落，敢投资有魄力但必须控制风险',
+    '七杀_疾厄':'重点注意外伤/意外，高风险活动务必谨慎',
+    '七杀_官禄':'适合决断力强的工作：创业/管理/军警/探险',
+    '破军_命宫':'性格敢作敢为不拘一格，适合艺术/创业/改革型工作',
+    '破军_夫妻':'感情多变需不断新鲜感维持，不适合传统婚姻模式',
+    '破军_财帛':'财运大起大落先破后立，创业型收入模式',
+    '破军_疾厄':'身体消耗大代谢快，注意休息和恢复以免透支',
+    '破军_官禄':'事业格局多变，适合创新/创业/艺术非传统领域'
+  };
+  return m[k]||'';
+}
+
+// ── 宫位通用分析 ──
+function analyzePalace(palaceName){
+  const d=chartData;
+  if(!d)return '请先排盘';
+  const p=pn(d,palaceName);
+  if(!p)return '未找到'+palaceName;
+  let txt='';
+  const majors=p.stars.filter(s=>s.type==='major');
+  const luckies=p.stars.filter(s=>['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(s.name));
+  const evils=p.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+  if(majors.length===0){
+    txt+='此宫无主星（空宫），需借对宫星曜来论。该领域受外在影响大，弹性强。';
+  }else{
+    majors.forEach(s=>{
+      const m=getPalaceStarMeaning(s.name,palaceName);
+      const bw=s.brightness||'平';
+      const sh=s.siHua?`【化${hn(s.siHua)}】`:'';
+      if(m)txt+=`**${s.name}**[${bw}]${sh}坐${palaceName}：${m}。`;
+      if(bw==='旺'||bw==='庙')txt+='庙旺有力，能量正向发挥。';
+      else if(bw==='陷')txt+='⚠️落陷无力，能量受阻，需格外努力。';
+      if(s.siHua==='lu')txt+=' 化禄——此宫非常有利，锦上添花。';
+      else if(s.siHua==='quan')txt+=' 化权——掌控力增强，主动权在手。';
+      else if(s.siHua==='ke')txt+=' 化科——名声提升，学业/事业有突破。';
+      else if(s.siHua==='ji')txt+=' ⚠️化忌——能量阻塞，需格外注意。';
+    });
+  }
+  if(luckies.length>0){
+    const names=luckies.map(s=>s.name).join('、');
+    txt+=`\n【吉星加会】${names}`;
+    if(luckies.some(s=>s.name==='天魁'||s.name==='天钺'))txt+='，贵人运旺';
+    if(luckies.some(s=>s.name==='左辅'||s.name==='右弼'))txt+='，有人帮衬不孤单';
+    if(luckies.some(s=>s.name==='文昌'||s.name==='文曲'))txt+='，才华为此增色';
+    if(luckies.some(s=>s.name==='禄存'))txt+='，财库稳固不流失';
+  }
+  if(evils.length>0){
+    const names=evils.map(s=>s.name).join('、');
+    txt+=`\n⚠️【煞星入宫】${names}，带来波折考验`;
+    if(evils.some(s=>s.name==='擎羊'||s.name==='陀罗'))txt+='，有反复纠缠之事';
+    if(evils.some(s=>s.name==='火星'||s.name==='铃星'))txt+='，突发状况多需留余地';
+    if(evils.some(s=>s.name==='地空'||s.name==='地劫'))txt+='，注意计划落空';
+  }
+  return txt;
+}
+
+// ── 格局判断 ──
+function detectPatterns(){
+  const d=chartData;
+  const ming=pn(d,'命宫');
+  const caib=pn(d,'财帛');
+  const guan=pn(d,'官禄');
+  const fuqi=pn(d,'夫妻');
+  const ms1=ms(ming).map(s=>s.name);
+  const ms2=ms(caib).map(s=>s.name);
+  const ms3=ms(guan).map(s=>s.name);
+  const allMajor=[];
+  d.palaces.forEach(p=>p.stars.filter(s=>s.type==='major').forEach(s=>{if(!allMajor.includes(s.name))allMajor.push(s.name)}));
+  const patterns=[];
+  // 紫府同宫
+  if(ms1.includes('紫微')&&ms1.includes('天府'))patterns.push({name:'紫府同宫',desc:'命宫紫微天府同坐，一生尊贵有福气，适合做老板或高管。婚姻宜找性格温和的对象，事业宜稳健发展不冒进。'});
+  // 日月同宫
+  if(ms1.includes('太阳')&&ms1.includes('太阴'))patterns.push({name:'日月同宫',desc:'日月并明于命宫，为人光明磊落又温柔细腻，才华横溢但性格有时矛盾。适合教育、传媒、文艺类工作。'});
+  // 杀破狼
+  if(allMajor.includes('七杀')&&allMajor.includes('破军')&&allMajor.includes('贪狼'))patterns.push({name:'杀破狼格局',desc:'七杀、破军、贪狼三颗变动星齐聚命盘，一生波澜壮阔、大起大落。适合创业/军警/艺术/武术等领域，越折腾越有成就。'});
+  // 机月同梁
+  if(allMajor.includes('天机')&&allMajor.includes('太阳')&&allMajor.includes('天同')&&allMajor.includes('天梁'))patterns.push({name:'机月同梁',desc:'天机、太阳、天同、天梁四吉星齐聚，适合公职/教育/医疗/行政等体制内工作。为人正直有担当，口碑事业。'});
+  // 府相朝垣
+  if(allMajor.includes('天府')&&allMajor.includes('天相')&&d.palaces.filter(p=>ms(p).some(s=>s.name==='天府'||s.name==='天相')).length>=2)patterns.push({name:'府相朝垣',desc:'天府天相分布命盘，为人稳重公正、人缘极佳。适合从事管理、协调、行政类工作，人际关系和睦。'});
+  // 双禄交流
+  const luPalaces=[];
+  d.palaces.forEach(p=>{if(p.stars.some(s=>s.name==='禄存'||s.siHua==='lu'))luPalaces.push(p.name)});
+  if(luPalaces.length>=3)patterns.push({name:'双禄交流',desc:'禄存和化禄在多个宫位出现，财运非常有利。一生多逢贵人相助，赚钱机会多且来源广。'});
+  // 空亡入命
+  if(evils_in('命宫'))patterns.push({name:'命宫逢煞',desc:'命宫有煞星入宫，人生波折较多，需靠后天努力弥补先天不足。但煞星也有磨练意志的好处。'});
+  return patterns;
+}
+function evils_in(palaceName){
+  const p=pn(chartData,palaceName);
+  return p&&p.stars.some(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+}
+
+// ── 流年分析 ──
+function analyzeYear(year){
+  const d=chartData;
+  if(!d||!d.pastYears)return null;
+  const yData=d.pastYears.find(y=>y.year===year);
+  if(!yData)return null;
+  let txt=`**${year}年流年分析**（虚岁 ${year-d.birth.year}）\n\n`;
+  if(yData.sihua&&yData.sihua.length>0){
+    txt+='**四化引动：**\n';
+    yData.sihua.forEach(s=>{
+      if(s.palace&&s.star){
+        const shName=s.fly?'飞化'+hn(s.fly):'会照';
+        txt+=`• ${s.palace}宫：${s.star} ${shName} → `;
+        if(s.fly==='lu')txt+='财禄增加，该领域有利\n';
+        else if(s.fly==='quan')txt+='权力/掌控增强，主动权增加\n';
+        else if(s.fly==='ke')txt+='名声/才华展现，人缘好转\n';
+        else if(s.fly==='ji')txt+='⚠️能量阻塞，需格外注意此领域\n';
+      }
+    });
+  }
+  if(yData.palace){
+    txt+=`\n**流年命宫：**${yData.palace.name}（${yData.palace.branch||''}）\n`;
+    const liuStars=yData.palace.stars||[];
+    if(liuStars.length>0){
+      txt+='流年星曜：'+liuStars.map(s=>s.name).join('、')+'\n';
+    }
+    // 流年命宫与原局宫位重叠
+    const origPalace=d.palaces.find(p=>p.branch===(yData.palace.branch||''));
+    if(origPalace){
+      txt+=`\n流年命宫与原局**${origPalace.name}**重叠，${origPalace.name}领域将受到重点影响。`;
+      const origMajor=origPalace.stars.filter(s=>s.type==='major');
+      if(origMajor.length>0){
+        txt+='原局星曜：'+origMajor.map(s=>s.name+'['+(s.brightness||'平')+']').join('、');
+      }
+    }
+  }
+  // 大限信息
+  if(yData.daXian){
+    txt+=`\n**当前大限：**${yData.daXian.startAge}-${yData.daXian.endAge}岁 · ${yData.daXian.palaceName}宫`;
+  }
+  return txt;
+}
+
+// ── 核心问答引擎 ──
+function generateAnswer(question,d){
+  if(!d)return '请先输入出生信息完成排盘，才能为您解答命理问题。';
+  const q=question.toLowerCase().trim();
+  // 提取年份
+  const yearMatch=q.match(/(20\d{2}|19\d{2})/);
+  const askYear=yearMatch?parseInt(yearMatch[1]):null;
+  const thisYear=getCurrentYear();
+  const nextYear=getNextYear();
+  // 关键词匹配路由
+  // 1. 询问某年运势
+  if(askYear&&(q.includes('年')||(q.includes('运势')||q.includes('流年')||q.includes('怎么样')))){
+    const yAns=analyzeYear(askYear);
+    if(yAns)return yAns;
+    return `${askYear}年流年数据暂未加载，请稍后再试。`;
+  }
+  // 2. 今年运势
+  if((q.includes('今年')||q.includes(thisYear)||(q.includes('今年')&&q.includes('运')))&&!askYear){
+    const yAns=analyzeYear(thisYear);
+    if(yAns)return yAns;
+  }
+  // 3. 明年运势
+  if(q.includes('明年')){
+    const yAns=analyzeYear(nextYear);
+    if(yAns)return yAns;
+  }
+  // 4. 事业/工作
+  if(q.includes('事业')||q.includes('工作')||q.includes('官禄')||q.includes('职业')||q.includes('职业')){
+    return answerCareer();
+  }
+  // 5. 财运/赚钱
+  if(q.includes('财')||q.includes('赚钱')||q.includes('收入')||q.includes('钱')){
+    return answerWealth();
+  }
+  // 6. 感情/婚姻/恋爱/桃花
+  if(q.includes('感情')||q.includes('婚')||q.includes('恋')||q.includes('桃花')||q.includes('对象')||q.includes('姻缘')||q.includes('伴侣')||q.includes('老公')||q.includes('老婆')||q.includes('男朋友')||q.includes('女朋友')||q.includes('另一半')){
+    return answerLove();
+  }
+  // 7. 健康
+  if(q.includes('健康')||q.includes('身体')||q.includes('病')||q.includes('疾厄')){
+    return answerHealth();
+  }
+  // 8. 性格
+  if(q.includes('性格')||q.includes('命宫')||q.includes('为人')||q.includes('我是什么')||q.includes('我是')){
+    return answerPersonality();
+  }
+  // 9. 适合什么行业
+  if(q.includes('行业')||q.includes('适合')||q.includes('做什么')||q.includes('方向')){
+    return answerCareer();
+  }
+  // 10. 子女
+  if(q.includes('子女')||q.includes('小孩')||q.includes('孩子')||q.includes('生')){
+    return analyzePalace('子女');
+  }
+  // 11. 父母
+  if(q.includes('父母')||q.includes('爸爸')||q.includes('妈妈')||q.includes('父亲')||q.includes('母亲')){
+    return analyzePalace('父母');
+  }
+  // 12. 福德/精神
+  if(q.includes('福德')||q.includes('精神')||q.includes('内心')||q.includes('心理')){
+    return analyzePalace('福德');
+  }
+  // 13. 迁移/出差/出国
+  if(q.includes('迁移')||q.includes('出差')||q.includes('出国')||q.includes('外地')||q.includes('旅行')||q.includes('旅游')){
+    return analyzePalace('迁移');
+  }
+  // 14. 田宅/房产
+  if(q.includes('田宅')||q.includes('房产')||q.includes('房子')||q.includes('家居')||q.includes('装修')||q.includes('搬家')){
+    return analyzePalace('田宅');
+  }
+  // 15. 兄弟/朋友
+  if(q.includes('兄弟')||q.includes('朋友')||q.includes('人际')){
+    return analyzePalace('兄弟');
+  }
+  // 16. 交友/人缘
+  if(q.includes('交友')||q.includes('人缘')||q.includes('社交')){
+    return analyzePalace('仆役');
+  }
+  // 17. 贵人
+  if(q.includes('贵人')){
+    return answerNoble();
+  }
+  // 18. 格局
+  if(q.includes('格局')||q.includes('命格')||q.includes('命局')){
+    return answerPattern();
+  }
+  // 19. 建议/人生
+  if(q.includes('建议')||q.includes('人生')||q.includes('怎么')||q.includes('如何')){
+    return answerAdvice();
+  }
+  // 20. 具体宫位查询
+  const palaces=['命宫','夫妻','财帛','官禄','迁移','田宅','福德','疾厄','子女','父母','兄弟','仆役'];
+  for(const pal of palaces){
+    if(q.includes(pal))return analyzePalace(pal);
+  }
+  // 21. 具体星曜查询
+  const starNames=['紫微','天机','太阳','武曲','天同','廉贞','天府','太阴','贪狼','巨门','天相','天梁','七杀','破军','禄存','文昌','文曲','左辅','右弼','天魁','天钺','擎羊','陀罗','火星','铃星','地空','地劫','天马'];
+  for(const star of starNames){
+    if(q.includes(star)){
+      return answerStarInChart(star);
+    }
+  }
+  // 22. 大限
+  if(q.includes('大限')||q.includes('运程')||q.includes('十年')){
+    return answerDaXian();
+  }
+  // 23. 过去/之前的事
+  if(q.includes('过去')||q.includes('之前')||q.includes('从前')||q.includes('以前')){
+    return answerPastYears();
+  }
+  // 24. 未来
+  if(q.includes('未来')||q.includes('以后')||q.includes('以后')||q.includes('往后')){
+    return answerFuture();
+  }
+  // 25. 综合运势
+  if(q.includes('运')||q.includes('运势')){
+    return answerOverall();
+  }
+  // 26. 有什么星
+  if(q.includes('什么星')||q.includes('哪些星')||q.includes('有星')){
+    return answerAllStars();
+  }
+  // 默认：综合回答
+  return answerDefault(q);
+}
+
+// ── 各专题回答函数 ──
+
+function answerCareer(){
+  const d=chartData;
+  const guan=pn(d,'官禄');
+  const ming=pn(d,'命宫');
+  let txt='**事业分析**\n\n';
+  txt+='**官禄宫（'+guan.branch+'宫）：**\n';
+  txt+=analyzePalace('官禄')+'\n\n';
+  txt+='**命宫主星影响事业方向：**\n';
+  const mStars=ms(ming);
+  mStars.forEach(s=>{
+    const career={'紫微':'适合做老板、管理者、创业者','天机':'适合咨询、策划、分析、IT、学术','太阳':'适合教育、传媒、公关、公务员、公益','武曲':'适合金融、技术、军警、工程管理','天同':'适合文职、艺术、服务业、安稳的体制内工作','廉贞':'适合法律、审计、质检、科研、纪律部队','天府':'适合管理、财务、银行、政府机构','太阴':'适合设计、会计、护理、文艺、美容','贪狼':'适合演艺、销售、公关、娱乐、社交平台','巨门':'适合律师、教师、记者、医生、研究员','天相':'适合HR、行政、助理、秘书、协调岗','天梁':'适合教育、医疗、法律、公务员、学术研究','七杀':'适合创业、军警、企业家、体育竞技','破军':'适合创新、创业、艺术、互联网、跨界工作'};
+    if(career[s.name])txt+=`• ${s.name}：${career[s.name]}\n`;
+  });
+  // 财帛宫补充
+  const caib=pn(d,'财帛');
+  txt+='\n**财帛宫参考：**'+analyzePalace('财帛').split('\n')[0];
+  return txt;
+}
+
+function answerWealth(){
+  const d=chartData;
+  let txt='**财运分析**\n\n';
+  txt+='**财帛宫：**\n'+analyzePalace('财帛')+'\n\n';
+  txt+='**财运判断：**\n';
+  const cai=pn(d,'财帛');
+  const hasLu=cai.stars.some(s=>s.name==='禄存'||s.siHua==='lu');
+  const hasWu=ms(cai).some(s=>['武曲','天府','太阴','紫微'].includes(s.name));
+  const hasEvil=cai.stars.some(s=>['地空','地劫'].includes(s.name));
+  if(hasLu)txt+='• 禄存或化禄入财帛宫，**正财运极好**，赚钱比较轻松有保障\n';
+  if(hasWu)txt+='• 财星坐守财帛宫，**财源有保障**，适合稳健投资\n';
+  if(hasEvil)txt+='⚠️ 煞星入财帛宫，需注意理财风险，不宜投机\n';
+  if(!hasLu&&!hasWu&&!hasEvil)txt+='• 财帛宫无特殊吉煞星加持，财运平平，靠后天努力\n';
+  // 福德宫看花钱习惯
+  const fude=pn(d,'福德');
+  const fudeStars=ms(fude).map(s=>s.name);
+  if(fudeStars.includes('天同')||fudeStars.includes('太阴'))txt+='\n**消费习惯：**花钱比较节制理性，喜欢存钱\n';
+  else if(fudeStars.includes('贪狼')||fudeStars.includes('七杀'))txt+='\n**消费习惯：**花钱比较大方，容易冲动消费，建议做预算\n';
+  // 流年财运
+  const thisYear=getCurrentYear();
+  const yAns=analyzeYear(thisYear);
+  if(yAns){
+    const luLines=yAns.split('\n').filter(l=>l.includes('禄')&&l.includes('财'));
+    if(luLines.length>0)txt+='\n**'+thisYear+'年财运提示：**\n'+luLines.join('\n');
+  }
+  return txt;
+}
+
+function answerLove(){
+  const d=chartData;
+  let txt='**感情婚姻分析**\n\n';
+  txt+='**夫妻宫：**\n'+analyzePalace('夫妻')+'\n\n';
+  // 命宫看择偶倾向
+  const ming=pn(d,'命宫');
+  const mStars=ms(ming).map(s=>s.name);
+  txt+='**择偶倾向：**\n';
+  const prefs={'紫微':'喜欢有才华有地位的人，配偶需有能力让你敬仰','天机':'喜欢聪明灵活的伴侣，聊得来最重要','太阳':'喜欢热情开朗阳光的人，能一起社交互动','武曲':'看重对方的经济能力和务实性格，物质基础很重要','天同':'喜欢温柔体贴的伴侣，追求安逸温馨的家庭生活','廉贞':'择偶标准较高，看重对方的品格和责任感','天府':'喜欢稳重可靠的人，细水长流胜过轰轰烈烈','太阴':'喜欢温柔细腻有内涵的伴侣，感情需要深度','贪狼':'桃花旺选择多，但需定心选择真正适合自己的','巨门':'需要能沟通的对象，言语交流和理解是感情基础','天相':'喜欢正派靠谱的人，婚姻求稳定不求刺激','天梁':'可能找年龄差距较大的伴侣，或成熟稳重的对象','七杀':'感情热烈但需磨合，适合有独立个性的伴侣','破军':'感情生活多变，可能经历多次感情才能找到归宿'};
+  mStars.forEach(s=>{if(prefs[s.name])txt+=`• ${s.name}坐命：${prefs[s.name]}\n`});
+  // 桃花判断
+  const fuqi=pn(d,'夫妻');
+  const taohua=fuqi.stars.some(s=>['贪狼','廉贞','文曲','天姚','咸池'].includes(s.name));
+  if(taohua)txt+='\n**桃花缘分：**夫妻宫有桃花星，异性缘好，但需分辨真情与诱惑\n';
+  return txt;
+}
+
+function answerHealth(){
+  const d=chartData;
+  let txt='**健康分析**\n\n';
+  txt+='**疾厄宫：**\n'+analyzePalace('疾厄')+'\n\n';
+  txt+='**重点养生提醒：**\n';
+  const jie=pn(d,'疾厄');
+  const jStars=ms(jie).map(s=>s.name);
+  const tips={'紫微':'注意心脏、头部、血压\n','天机':'注意神经系统、肝胆、避免过度用脑\n','太阳':'注意眼睛、心血管、血压、避免暴晒\n','武曲':'注意呼吸道、肺部、大肠、秋季防燥\n','天同':'注意肾脏、泌尿系统、增强免疫力\n','廉贞':'注意血液循环、皮肤、避免高风险活动\n','天府':'注意消化系统、脾胃，饮食宜规律\n','太阴':'注意泌尿系统、妇科，注意保暖驱寒\n','贪狼':'注意肝胆、内分泌，保持生活规律\n','巨门':'注意口腔、消化系统、肠胃调养\n','天相':'注意肾脏、泌尿系统、保持作息规律\n','天梁':'注意骨骼关节、适量运动保灵活\n','七杀':'⚠️注意外伤、意外伤害，高风险活动需谨慎\n','破军':'注意过度消耗和体力透支，保证休息恢复\n'};
+  jStars.forEach(s=>{if(tips[s.name])txt+='• '+tips[s.name]});
+  if(jStars.length===0)txt+='• 疾厄宫无主星，身体素质视大限流年而定\n';
+  // 煞星提示
+  const evils=jie.stars.filter(s=>['火星','铃星','擎羊','陀罗'].includes(s.name));
+  if(evils.length>0)txt+='\n⚠️ 煞星入疾厄宫：'+evils.map(s=>s.name).join('、')+'——需格外注意突发健康问题，建议定期体检\n';
+  return txt;
+}
+
+function answerPersonality(){
+  const d=chartData;
+  const ming=pn(d,'命宫');
+  let txt='**性格分析（命宫解读）**\n\n';
+  txt+='**命宫主星：**\n';
+  const mStars=ms(ming);
+  if(mStars.length===0){
+    txt+='命宫空宫（无主星），需借对宫星曜来论。空宫之人性格弹性大，受环境影响多，善于适应变化，但内心可能缺乏归属感。\n';
+  }else{
+    mStars.forEach(s=>{
+      const nature=starNature(s.name);
+      const bw=s.brightness||'平';
+      const sh=s.siHua?'【化'+hn(s.siHua)+'】':'';
+      txt+=`**${s.name}**[${bw}]${sh}：${nature}\n`;
+      if(bw==='旺'||bw==='庙')txt+='庙旺——正面特质发挥充分，性格鲜明突出\n';
+      else if(bw==='陷')txt+='⚠️落陷——正面特质打折扣，可能表现出相反的性格面\n';
+      if(s.siHua==='lu')txt+='化禄——为人慷慨大方，人缘极佳\n';
+      if(s.siHua==='quan')txt+='化权——性格强势有主见，掌控欲强\n';
+      if(s.siHua==='ke')txt+='化科——聪明有才华，气质儒雅\n';
+      if(s.siHua==='ji')txt+='⚠️化忌——性格偏执或压抑，容易钻牛角尖\n';
+    });
+  }
+  // 身宫补充
+  const shen=d.palaces.find(p=>p.isBodyPalace);
+  if(shen){
+    txt+=`\n**身宫在${shen.name}**：后天努力的方向在${shen.name}领域，随着年龄增长，${shen.name}方面的特质会越来越明显。\n`;
+  }
+  // 五行局
+  txt+=`\n**五行局：${d.info.wuxingJu}**——这是命盘的基本格局，影响一生的基调\n`;
+  // 来因宫
+  const ly=d.palaces.find(p=>p.branch===getLaiYinBranch(d));
+  if(ly)txt+=`**来因宫在${ly.name}**——前世因果落在${ly.name}领域，此生与${ly.name}相关的事情特别有缘\n`;
+  return txt;
+}
+
+function answerNoble(){
+  const d=chartData;
+  let txt='**贵人运分析**\n\n';
+  let hasKui=false,hasYue=false;
+  d.palaces.forEach(p=>{
+    const kui=p.stars.find(s=>s.name==='天魁');
+    const yue=p.stars.find(s=>s.name==='天钺');
+    if(kui){hasKui=true;txt+=`**天魁**在${p.name}宫：白天/阳面贵人，事业上有长辈或上级提携\n`;}
+    if(yue){hasYue=true;txt+=`**天钺**在${p.name}宫：夜间/阴面贵人，关键时刻有贵人暗中相助\n`;}
+  });
+  if(!hasKui&&!hasYue){
+    txt+='命盘天魁天钺不明显，贵人运需靠后天积累。建议多结交正能量的人，主动维护人脉关系。\n';
+  }
+  // 左辅右弼
+  let hasZuo=false,hasYou=false;
+  d.palaces.forEach(p=>{
+    if(p.stars.some(s=>s.name==='左辅')){hasZuo=true;txt+=`**左辅**在${p.name}宫：有贵人同行，遇到困难有人帮忙\n`;}
+    if(p.stars.some(s=>s.name==='右弼')){hasYou=true;txt+=`**右弼**在${p.name}宫：有贵人暗中助力，顺水推舟\n`;}
+  });
+  if(!hasZuo&&!hasYou)txt+='\n左辅右弼不明显，做事需要更多依靠自己，但这也锻炼独立能力。\n';
+  return txt;
+}
+
+function answerPattern(){
+  const patterns=detectPatterns();
+  if(patterns.length===0)return '您命盘中未发现特殊格局。不过每个命盘都有其独特之处，请告诉我您想了解哪个具体方面。';
+  let txt='**格局分析**\n\n';
+  patterns.forEach(p=>{
+    txt+=`**${p.name}**：${p.desc}\n\n`;
+  });
+  return txt;
+}
+
+function answerAdvice(){
+  const d=chartData;
+  let txt='**人生建议**\n\n';
+  // 基于命宫主星给出建议
+  const ming=pn(d,'命宫');
+  const mStars=ms(ming).map(s=>s.name);
+  const advice={'紫微':['学会放下身段，不要过于在意面子','适合当领导但要培养团队精神','晚年享受尊贵但需避免孤独'],'天机':['不要想太多，行动比思考更重要','适合脑力工作但要避免精神内耗','多运动释放压力，保持身心平衡'],'太阳':['注意不要太冲动，做事留有余地','对家人要多些耐心，不要把热情都给了外人','注意保护眼睛和心血管'],'武曲':['学会灵活变通，不要太固执己见','理财方面可以更大胆一些','注意呼吸道健康，少熬夜'],'天同':['需要主动出击，不要过于被动安逸','可以找一个强势的合伙人互补','锻炼身体增强体质'],'廉贞':['对自己和他人都宽容一些','适合从事需要坚持的工作','注意控制情绪，远离是非之地'],'天府':['保持稳健的理财风格','适合做幕后管理','生活品质高，注意不要过度享受'],'太阴':['相信自己的直觉，女性的直觉力很强','适合从事与美相关的工作','注意保暖，少碰冷饮'],'贪狼':['桃花虽好但需专一','多才多艺是优势但需要专注一个方向','注意肝胆健康，少熬夜喝酒'],'巨门':['说话要注意方式方法','口才是优势但要用在正道上','适合做需要深度研究的工作'],'天相':['不要总是当老好人，学会拒绝','适合做幕僚但也要争取自己的利益','人际关系是最大优势要好好维护'],'天梁':['学识越老越值钱，终身学习很重要','照顾他人的同时也要照顾自己','适合从事教育或传承类工作'],'七杀':['学会控制脾气，做事三思而后行','适合开创性工作但要注意风险','注意安全，避免高风险活动'],'破军':['不要害怕改变，变化是你的优势','专注做好一件事比频繁切换更重要','注意休息，保持精力充沛']};
+  mStars.forEach(s=>{
+    if(advice[s.name]){
+      txt+=`**${s.name}坐命建议：**\n`;
+      advice[s.name].forEach(a=>txt+=`• ${a}\n`);
+      txt+='\n';
+    }
+  });
+  // 通用建议
+  txt+='**通用建议：**\n';
+  txt+='• 根据大限走向调整人生重心，顺势而为\n';
+  txt+='• 化禄的宫位是优势领域，多加利用\n';
+  txt+='• 化忌的宫位是挑战领域，需格外用心经营\n';
+  txt+='• 善用吉星加持的宫位，减少煞星宫位的冒险\n';
+  return txt;
+}
+
+function answerStarInChart(starName){
+  const d=chartData;
+  let txt=`**${starName}在命盘中的分布**\n\n`;
+  let found=false;
+  d.palaces.forEach(p=>{
+    const star=p.stars.find(s=>s.name===starName);
+    if(star){
+      found=true;
+      const bw=star.brightness||'平';
+      const sh=star.siHua?'【化'+hn(star.siHua)+'】':'';
+      const nature=starNature(starName);
+      txt+=`**${starName}**在**${p.name}**（${p.branch}宫）[${bw}]${sh}\n`;
+      if(nature)txt+=`星性：${nature}\n`;
+      const meaning=getPalaceStarMeaning(starName,p.name);
+      if(meaning)txt+=`解译：${meaning}\n`;
+      txt+='\n';
+    }
+  });
+  if(!found)txt+='您命盘中没有'+starName+'，该星不在本命盘内。\n';
+  return txt;
+}
+
+function answerAllStars(){
+  const d=chartData;
+  let txt='**命盘全部星曜一览**\n\n';
+  d.palaces.forEach(p=>{
+    const majors=p.stars.filter(s=>s.type==='major');
+    if(majors.length>0){
+      txt+=`**${p.name}**（${p.branch}）：${majors.map(s=>s.name+(s.siHua?'['+hn(s.siHua)+']':'')+'['+(s.brightness||'平')+']').join('、')}\n`;
+    }
+  });
+  // 吉星煞星
+  txt+='\n**吉星分布：**\n';
+  d.palaces.forEach(p=>{
+    const luckies=p.stars.filter(s=>['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(s.name));
+    if(luckies.length>0)txt+=`• ${p.name}：${luckies.map(s=>s.name).join('、')}\n`;
+  });
+  txt+='\n**煞星分布：**\n';
+  d.palaces.forEach(p=>{
+    const evils=p.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+    if(evils.length>0)txt+=`⚠️ ${p.name}：${evils.map(s=>s.name).join('、')}\n`;
+  });
+  return txt;
+}
+
+function answerDaXian(){
+  const d=chartData;
+  if(!d.daXians)return '大限数据暂未加载';
+  let txt='**大限运程**\n\n';
+  d.daXians.forEach((dx,i)=>{
+    const palace=pn(d,dx.palaceName);
+    const stars=palace?ms(palace).map(s=>s.name).join('、'):'无主星';
+    const current=getAge();
+    const isActive=current>=dx.startAge&&current<=dx.endAge;
+    txt+=`**${dx.startAge}-${dx.endAge}岁** · ${dx.palaceName}宫${isActive?' ← 当前大限':''}\n`;
+    txt+=`  主星：${stars}\n`;
+    if(isActive){
+      txt+=`  ⚡ 当前正处于此大限，重点关注${dx.palaceName}领域\n`;
+    }
+    txt+='\n';
+  });
+  return txt;
+}
+
+function answerPastYears(){
+  const d=chartData;
+  if(!d.pastYears)return '流年数据暂未加载，请稍后再试';
+  const thisYear=getCurrentYear();
+  let txt='**断前事——关键年份回顾**\n\n';
+  const years=d.pastYears.filter(y=>y.year>=2005&&y.year<thisYear);
+  years.reverse().forEach(y=>{
+    const highlights=[];
+    if(y.sihua)y.sihua.forEach(s=>{
+      if(s.fly==='ji')highlights.push('化忌引动（重要事件）');
+      else if(s.fly==='lu')highlights.push('化禄引动（好事）');
+    });
+    if(y.isFirstYear)highlights.push('大限转换年（人生转折点）');
+    if(y.isLastYear)highlights.push('大限最后一年（阶段总结）');
+    if(y.palace){
+      const origPalace=d.palaces.find(p=>p.branch===(y.palace.branch||''));
+      if(origPalace)highlights.push(`流年命宫叠原局${origPalace.name}`);
+    }
+    if(highlights.length>0){
+      txt+=`**${y.year}年**（${y.year-d.birth.year}岁）：${highlights.join('、')}\n`;
+    }
+  });
+  if(txt==='**断前事——关键年份回顾**\n\n')txt+='暂无关键年份数据\n';
+  return txt;
+}
+
+function answerFuture(){
+  const d=chartData;
+  const thisYear=getCurrentYear();
+  const next=getNextYear();
+  let txt='**未来运势展望**\n\n';
+  // 当前大限
+  if(d.daXians){
+    const current=d.daXians.find(dx=>getAge()>=dx.startAge&&getAge()<=dx.endAge);
+    if(current){
+      txt+=`**当前大限**（${current.startAge}-${current.endAge}岁）：${current.palaceName}宫\n`;
+      txt+=analyzePalace(current.palaceName).split('\n')[0]+'\n\n';
+    }
+  }
+  // 今明两年
+  const y1=analyzeYear(thisYear);
+  if(y1)txt+=y1.split('\n').slice(0,6).join('\n')+'\n\n';
+  const y2=analyzeYear(next);
+  if(y2)txt+=y2.split('\n').slice(0,6).join('\n')+'\n';
+  return txt;
+}
+
+function answerOverall(){
+  const d=chartData;
+  let txt='**综合运势概览**\n\n';
+  txt+='**命宫：**'+ms(pn(d,'命宫')).map(s=>s.name).join('、')+'（'+d.info.mingZhu+'）\n';
+  txt+='**五行局：**'+d.info.wuxingJu+'\n\n';
+  // 各宫简要
+  const briefPalaces=['命宫','夫妻','财帛','官禄','福德','疾厄'];
+  briefPalaces.forEach(pal=>{
+    const p=pn(d,pal);
+    const stars=ms(p).map(s=>s.name+(s.siHua?'['+hn(s.siHua)+']':'')).join('、');
+    const evils=p.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+    const eNames=evils.map(s=>s.name).join('、');
+    txt+=`**${pal}**：${stars||'空宫'}${eNames?' ⚠️'+eNames:''}\n`;
+  });
+  // 格局
+  const patterns=detectPatterns();
+  if(patterns.length>0){
+    txt+='\n**特殊格局：**\n';
+    patterns.forEach(p=>txt+=`• ${p.name}：${p.desc}\n`);
+  }
+  return txt;
+}
+
+function answerDefault(q){
+  // 尝试更宽泛匹配
+  if(q.includes('星')||q.includes('曜'))return answerAllStars();
+  if(q.includes('运'))return answerOverall();
+  // 回答综合信息
+  return answerOverall()+'\n\n如果您有更具体的问题，比如"今年财运怎么样"、"适合什么工作"、"婚姻感情如何"等，请直接问我，我会为您详细分析~';
+}
+
+function getLaiYinBranch(d){
+  const stems=['癸','甲','乙','丙','丁','戊','己','庚','辛','壬'];
+  const remainder=(d.birth.year-3)%10;
+  const stem=stems[remainder];
+  const mapping={'甲':'戌','丙':'申','戊':'午','庚':'辰','壬':'寅','乙':'酉','丁':'未','己':'巳','辛':'卯','癸':'亥'};
+  return mapping[stem]||'戌';
+}
+
+// 自动打印
+if(new URLSearchParams(location.search).get('print')==='1'){
+  setTimeout(()=>{document.getElementById('inputPanel').style.display='none';document.getElementById('chatInputBar').style.display='none';document.getElementById('quickBar').style.display='none';setTimeout(()=>window.print(),2000);},3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+node_modules/
+.next/
+.vercel/
+.env*
+!.env.example
+dist/
+*.tsbuildinfo
+.DS_Store
+
+# 调试脚本
+_*.js
+_*.py
+
+# 临时文件
+tmp_*.js
+tmp_*.html
+_tmp_*.js
+_tmp_*.html
+test_*.py
+test_*.js
+_test*.js
+*_test*.js
+
+# 日志
+*.log
+
+# 备份
+*.bak
+
+# 二进制
+cloudflared.exe
+
+# 临时笔记
+temp_cleanup_*.md
+计费改造_*.md
+
+# Python 临时
+__pycache__/
+*.pyc
+
+# 废弃文件
+chart-server-v2.js
+http_server.py
+launch_browser.py
+navigate_page.py
+open_browser.py
+reload_browser.py
+snapshot_page.py

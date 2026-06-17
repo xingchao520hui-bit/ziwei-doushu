@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>合盘测试 - 去重+排序+针对性大白话</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+    .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h1 { color: #ff69b4; text-align: center; }
+    .input-section { display: flex; gap: 20px; margin: 20px 0; }
+    .input-group { flex: 1; padding: 20px; border: 2px solid #ff69b4; border-radius: 10px; }
+    .input-group h2 { color: #ff69b4; margin-top: 0; }
+    label { display: block; margin: 10px 0 5px; font-weight: bold; }
+    input, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+    button { background: #ff69b4; color: white; padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; display: block; margin: 20px auto; }
+    button:hover { background: #ff1493; }
+    .result-section { margin-top: 30px; }
+    .palace-comparison { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #4caf50; }
+    .palace-comparison.chong { border-left-color: #f44336; }
+    .palace-comparison.neutral { border-left-color: #2196f3; }
+    .score { font-weight: bold; color: #4caf50; }
+    .score.negative { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💖 合盘分析测试 - 去重+排序+针对性大白话 💖</h1>
+    
+    <div class="input-section">
+      <div class="input-group">
+        <h2>第一人</h2>
+        <label>年份:</label>
+        <input type="number" id="a_year" value="1993">
+        <label>月份:</label>
+        <input type="number" id="a_month" value="5" min="1" max="12">
+        <label>日:</label>
+        <input type="number" id="a_day" value="3" min="1" max="31">
+        <label>时辰:</label>
+        <select id="a_hour">
+          <option value="0">子时 (23:00-01:00)</option>
+          <option value="1">丑时 (01:00-03:00)</option>
+          <option value="2">寅时 (03:00-05:00)</option>
+          <option value="3">卯时 (05:00-07:00)</option>
+          <option value="4">辰时 (07:00-09:00)</option>
+          <option value="5">巳时 (09:00-11:00)</option>
+          <option value="6">午时 (11:00-13:00)</option>
+          <option value="7">未时 (13:00-15:00)</option>
+          <option value="8">申时 (15:00-17:00)</option>
+          <option value="9">酉时 (17:00-19:00)</option>
+          <option value="10">戌时 (19:00-21:00)</option>
+          <option value="11" selected>亥时 (21:00-23:00)</option>
+        </select>
+        <label>性别:</label>
+        <select id="a_gender">
+          <option value="male">男</option>
+          <option value="female">女</option>
+        </select>
+      </div>
+      
+      <div class="input-group">
+        <h2>第二人</h2>
+        <label>年份:</label>
+        <input type="number" id="b_year" value="1988">
+        <label>月份:</label>
+        <input type="number" id="b_month" value="6" min="1" max="12">
+        <label>日:</label>
+        <input type="number" id="b_day" value="20" min="1" max="31">
+        <label>时辰:</label>
+        <select id="b_hour">
+          <option value="0">子时 (23:00-01:00)</option>
+          <option value="1">丑时 (01:00-03:00)</option>
+          <option value="2">寅时 (03:00-05:00)</option>
+          <option value="3">卯时 (05:00-07:00)</option>
+          <option value="4">辰时 (07:00-09:00)</option>
+          <option value="5">巳时 (09:00-11:00)</option>
+          <option value="6" selected>午时 (11:00-13:00)</option>
+          <option value="7">未时 (13:00-15:00)</option>
+          <option value="8">申时 (15:00-17:00)</option>
+          <option value="9">酉时 (17:00-19:00)</option>
+          <option value="10">戌时 (19:00-21:00)</option>
+          <option value="11">亥时 (21:00-23:00)</option>
+        </select>
+        <label>性别:</label>
+        <select id="b_gender">
+          <option value="male">男</option>
+          <option value="female" selected>女</option>
+        </select>
+      </div>
+    </div>
+    
+    <button onclick="startTest()">💖 开始测试 💖</button>
+    
+    <div class="result-section" id="result" style="display: none;">
+      <h2>📊 合盘分析结果</h2>
+      <div id="palaceAnalysis"></div>
+    </div>
+  </div>
+  
+  <script>
+    async function startTest() {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = '💕 分析中...';
+      
+      try {
+        // 获取输入参数
+        const a_params = {
+          year: document.getElementById('a_year').value,
+          month: document.getElementById('a_month').value,
+          day: document.getElementById('a_day').value,
+          hour: document.getElementById('a_hour').value,
+          gender: document.getElementById('a_gender').value
+        };
+        
+        const b_params = {
+          year: document.getElementById('b_year').value,
+          month: document.getElementById('b_month').value,
+          day: document.getElementById('b_day').value,
+          hour: document.getElementById('b_hour').value,
+          gender: document.getElementById('b_gender').value
+        };
+        
+        // 调用合盘API
+        const hepan_params = {
+          a_year: a_params.year,
+          a_month: a_params.month,
+          a_day: a_params.day,
+          a_hour: a_params.hour,
+          a_gender: a_params.gender,
+          b_year: b_params.year,
+          b_month: b_params.month,
+          b_day: b_params.day,
+          b_hour: b_params.hour,
+          b_gender: b_params.gender
+        };
+        
+        const hepan_query = Object.keys(hepan_params).map(k => `${k}=${hepan_params[k]}`).join('&');
+        const hepan_res = await fetch(`/hepan?${hepan_query}`);
+        const hepan_data = await hepan_res.json();
+        
+        if (hepan_data.error) throw new Error('合盘失败: ' + hepan_data.error);
+        if (!hepan_data.success) throw new Error('合盘失败');
+        
+        // 显示结果
+        displayPalaceAnalysisFixed(hepan_data.data);
+        
+        document.getElementById('result').style.display = 'block';
+        
+      } catch(err) {
+        alert('错误: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '💖 开始测试 💖';
+      }
+    }
+    
+    // 修复版：去重+排序+针对性大白话
+    function displayPalaceAnalysisFixed(data) {
+      const palaceHits = data.hits.filter(h => h.dimension === 'palace_alignment');
+      
+      const analysisDiv = document.getElementById('palaceAnalysis');
+      analysisDiv.innerHTML = '<h3>🏠 宫位对齐分析（修复版）</h3>';
+      
+      if (palaceHits.length === 0) {
+        analysisDiv.innerHTML += '<p>没有宫位对齐数据。</p>';
+        return;
+      }
+      
+      // 1. 去重：只保留唯一对比
+      const uniqueHits = [];
+      const seenPairs = new Set();
+      
+      palaceHits.forEach(h => {
+        const palaceA = h.evidence.left_palace;
+        const palaceB = h.evidence.right_palace;
+        const pairKey = [palaceA, palaceB].sort().join('-');
+        
+        if (!seenPairs.has(pairKey)) {
+          seenPairs.add(pairKey);
+          uniqueHits.push(h);
+        }
+      });
+      
+      // 2. 排序：按对感情影响排序
+      const palacePriority = {
+        '夫妻': 1,
+        '福德': 2,
+        '命宫': 3,
+        '财帛': 4,
+        '田宅': 5,
+        '子女': 6,
+        '迁移': 7,
+        '交友': 8,
+        '事业': 9,
+        '疾厄': 10,
+        '兄弟': 11,
+        '父母': 12
+      };
+      
+      uniqueHits.sort((a, b) => {
+        const priorityA = palacePriority[a.evidence.left_palace] || 99;
+        const priorityB = palacePriority[b.evidence.left_palace] || 99;
+        return priorityA - priorityB;
+      });
+      
+      // 3. 显示（针对性大白话）
+      uniqueHits.forEach(h => {
+        const ev = h.evidence;
+        const palaceA = ev.left_palace;
+        const palaceB = ev.right_palace;
+        
+        let relationText = '';
+        let relationClass = 'neutral';
+        let plainTalk = '';
+        
+        // 根据宫位生成针对性大白话
+        if (palaceA === '夫妻' || palaceB === '夫妻') {
+          // 夫妻宫：分析感情模式
+          switch(ev.relation) {
+            case 'he':
+              relationText = '感情和谐';
+              relationClass = 'he';
+              plainTalk = '你们对感情的需求很匹配，都渴望稳定的关系，在一起会很甜蜜。';
+              break;
+            case 'chong':
+              relationText = '感情冲突';
+              relationClass = 'chong';
+              plainTalk = '你们在感情表达上容易有冲突，一方可能需要更多安全感，另一方可能觉得被束缚。需要多沟通。';
+              break;
+            default:
+              relationText = '感情平和';
+              plainTalk = '你们对感情的态度比较平和，没有特别强烈的吸引力，但也没有明显冲突。细水长流也很不错。';
+          }
+        } else if (palaceA === '福德' || palaceB === '福德') {
+          // 福德宫：分析精神契合度
+          switch(ev.relation) {
+            case 'he':
+              relationText = '精神契合';
+              relationClass = 'he';
+              plainTalk = '你们的精神世界很契合，价值观、兴趣爱好都很像，在一起会很舒服，有说不完的话。';
+              break;
+            case 'chong':
+              relationText = '精神冲突';
+              relationClass = 'chong';
+              plainTalk = '你们的精神追求不太一样，一方可能更注重精神生活，另一方可能更务实。需要互相包容。';
+              break;
+            default:
+              relationText = '精神平和';
+              plainTalk = '你们的精神世界各有特色，虽然不完全一样，但也没有明显冲突。可以互相学习。';
+          }
+        } else if (palaceA === '命宫' || palaceB === '命宫') {
+          // 命宫：分析性格兼容性
+          switch(ev.relation) {
+            case 'he':
+              relationText = '性格合拍';
+              relationClass = 'he';
+              plainTalk = '你们性格很合拍，相处起来很自然，互相欣赏对方的优点。是加分项！';
+              break;
+            case 'chong':
+              relationText = '性格冲突';
+              relationClass = 'chong';
+              plainTalk = '你们性格差异较大，容易有摩擦。但差异也能互补，关键是互相尊重。';
+              break;
+            default:
+              relationText = '性格平和';
+              plainTalk = '你们性格各有特点，没有明显冲突，但也没有特别强的吸引力。需要时间培养默契。';
+          }
+        } else {
+          // 其他宫位：通用解释
+          switch(ev.relation) {
+            case 'he':
+              relationText = '和谐';
+              relationClass = 'he';
+              break;
+            case 'chong':
+              relationText = '冲突';
+              relationClass = 'chong';
+              break;
+            default:
+              relationText = '平和';
+          }
+          plainTalk = `你们在${palaceA}和${palaceB}方面${relationText}，影响分值: ${h.effect.toFixed(2)}`;
+        }
+        
+        const html = `
+          <div class="palace-comparison ${relationClass}">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 18px; font-weight: bold;">${palaceA} ↔ ${palaceB}</div>
+              <div style="padding: 5px 15px; background: ${relationClass === 'he' ? '#4caf50' : relationClass === 'chong' ? '#f44336' : '#2196f3'}; color: white; border-radius: 20px;">
+                ${relationText}
+              </div>
+            </div>
+            <div style="margin-top: 10px; color: #666; font-size: 14px;">
+              💬 ${plainTalk}
+            </div>
+            <div style="margin-top: 8px; text-align: right;" class="score ${h.effect < 0 ? 'negative' : ''}">
+              ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)} 分
+            </div>
+          </div>
+        `;
+        
+        analysisDiv.innerHTML += html;
+      });
+      
+      // 添加统计信息
+      analysisDiv.innerHTML += `
+        <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 5px;">
+          <p>📊 <strong>统计</strong>:</p>
+          <p>原始对比数: ${palaceHits.length}</p>
+          <p>去重后对比数: ${uniqueHits.length}</p>
+          <p>✅ 已按感情相关度排序（夫妻宫→福德宫→命宫→其他）</p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

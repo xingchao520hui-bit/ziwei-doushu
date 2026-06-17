@@ -1,0 +1,1175 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🍉朋友视角·吃瓜版紫微斗数 - 用大白话讲命盘</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height:100vh; padding:20px; line-height:1.6; }
+.container { max-width:800px; margin:0 auto; }
+
+.header { text-align:center; color:white; margin-bottom:30px; padding:20px; }
+.header h1 { font-size:2.2em; margin-bottom:10px; text-shadow:2px 2px 8px rgba(0,0,0,0.2); }
+.header p { font-size:1.1em; opacity:0.95; }
+
+.card { background:white; border-radius:20px; padding:30px; margin-bottom:20px; box-shadow:0 15px 35px rgba(0,0,0,0.1); }
+
+/* 表单样式 */
+.form-group { margin-bottom:20px; }
+.form-group label { display:block; margin-bottom:8px; font-weight:600; color:#555; font-size:0.95em; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+.form-group input, .form-group select { width:100%; padding:12px 15px; border:2px solid #f0f0f0; border-radius:12px; font-size:16px; transition:all 0.3s; background:#fafafa; }
+.form-group input:focus, .form-group select:focus { outline:none; border-color:#f5576c; background:white; box-shadow:0 0 0 3px rgba(245,87,108,0.1); }
+
+.btn { background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color:white; border:none; padding:16px 50px; border-radius:50px; font-size:18px; font-weight:600; cursor:pointer; transition:all 0.3s; display:block; margin:30px auto 0; box-shadow:0 5px 15px rgba(245,87,108,0.3); }
+.btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(245,87,108,0.4); }
+.btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+.status { text-align:center; padding:15px; border-radius:12px; margin-top:20px; display:none; font-size:0.95em; }
+.status.show { display:block; }
+.status.error { background:#fff5f5; color:#c53030; border:1px solid #fed7d7; }
+.status.success { background:#f0fff4; color:#22543d; border:1px solid #c6f6d5; }
+
+/* 结果区域 */
+.result-area { display:none; }
+.result-area.show { display:block; }
+
+/* 吃瓜指数 */
+.gossip-section { margin:30px 0; }
+.section-title { font-size:1.5em; color:#f5576c; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+.gossip-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px; }
+.gossip-card { background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:16px; padding:20px; color:white; position:relative; overflow:hidden; transition:transform 0.3s; }
+.gossip-card:hover { transform:translateY(-5px); }
+.gossip-card:nth-child(2) { background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.gossip-card:nth-child(3) { background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.gossip-card:nth-child(4) { background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.gossip-card:nth-child(5) { background:linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+.gossip-card:nth-child(6) { background:linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+
+.gossip-header { display:flex; align-items:center; gap:10px; margin-bottom:15px; }
+.gossip-emoji { font-size:2em; }
+.gossip-name { font-size:1.2em; font-weight:bold; }
+.gossip-score { font-size:2.5em; font-weight:bold; margin:10px 0; opacity:0.9; }
+.gossip-bar { background:rgba(255,255,255,0.3); border-radius:20px; height:10px; margin:15px 0; overflow:hidden; }
+.gossip-fill { height:100%; background:white; border-radius:20px; transition:width 1.5s ease-out; }
+.gossip-desc { font-size:0.9em; opacity:0.95; line-height:1.5; }
+
+/* 逐年时间线 */
+.timeline { position:relative; padding-left:40px; margin:30px 0; }
+.timeline::before { content:''; position:absolute; left:18px; top:0; bottom:0; width:3px; background:linear-gradient(180deg, #f093fb, #f5576c); }
+
+.timeline-item { position:relative; margin-bottom:25px; padding:20px; background:linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); border-radius:16px; border-left:4px solid #f5576c; }
+.timeline-item::before { content:''; position:absolute; left:-33px; top:22px; width:15px; height:15px; background:#f5576c; border-radius:50%; border:3px solid white; box-shadow:0 0 0 3px #f5576c; }
+.timeline-item.highlight::before { background:#f093fb; box-shadow:0 0 0 3px #f093fb; animation:pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { box-shadow:0 0 0 3px #f093fb; } 50% { box-shadow:0 0 0 6px rgba(240,147,251,0.3); } }
+
+.timeline-year { font-size:0.85em; color:#f5576c; font-weight:bold; margin-bottom:5px; }
+.timeline-age { display:inline-block; background:#f5576c; color:white; padding:2px 10px; border-radius:10px; font-size:0.8em; margin-bottom:10px; }
+.timeline-content { color:#333; line-height:1.8; }
+.timeline-emoji { font-size:1.3em; margin-right:8px; }
+
+/* 朋友语录 */
+.friend-quote { background:linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius:16px; padding:25px; margin:20px 0; position:relative; }
+.friend-quote::before { content:'💬'; font-size:2em; position:absolute; top:10px; left:15px; }
+.friend-quote p { margin-left:50px; font-size:1.05em; color:#333; line-height:1.8; }
+
+/* 标签 */
+.tag { display:inline-block; background:linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color:#333; padding:6px 15px; border-radius:20px; font-size:0.85em; margin:5px; font-weight:500; }
+
+/* 响应式 */
+@media (max-width:768px) {
+  .header h1 { font-size:1.6em; }
+  .form-row { grid-template-columns:1fr; }
+  .gossip-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🍉 朋友视角·吃瓜版紫微斗数</h1>
+    <p>用大白话给你讲命盘，比你自己还懂你</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-bottom:25px; color:#f5576c;">📝 输入你朋友的出生信息</h2>
+    
+    <div class="form-group">
+      <label>🏷️ 朋友称呼（可选）</label>
+      <input type="text" id="name" placeholder="比如：沐沐、香菇、接地气儿">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>⚧️ 性别</label>
+        <select id="gender">
+          <option value="female">女</option>
+          <option value="male">男</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>🕐 出生时辰</label>
+        <select id="hour">
+          <option value="0">子时 (23:00-01:00)</option>
+          <option value="2">丑时 (01:00-03:00)</option>
+          <option value="4">寅时 (03:00-05:00)</option>
+          <option value="6">卯时 (05:00-07:00)</option>
+          <option value="8" selected>辰时 (07:00-09:00)</option>
+          <option value="10">巳时 (09:00-11:00)</option>
+          <option value="12">午时 (11:00-13:00)</option>
+          <option value="14">未时 (13:00-15:00)</option>
+          <option value="16">申时 (15:00-17:00)</option>
+          <option value="18">酉时 (17:00-19:00)</option>
+          <option value="20">戌时 (19:00-21:00)</option>
+          <option value="22">亥时 (21:00-23:00)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>📅 出生年份</label>
+        <input type="number" id="year" min="1940" max="2030" value="1993">
+      </div>
+      <div class="form-group">
+        <label>📅 月份</label>
+        <input type="number" id="month" min="1" max="12" value="8">
+      </div>
+      <div class="form-group">
+        <label>📅 日期</label>
+        <input type="number" id="day" min="1" max="31" value="31">
+      </div>
+    </div>
+
+    <button class="btn" id="btn" onclick="analyze()">开始吃瓜 🍉</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="result-area" id="result">
+    
+    <!-- 吃瓜指数 -->
+    <div class="card">
+      <div class="section-title">🍉 吃瓜指数排行榜</div>
+      <div class="gossip-grid" id="gossip-index"></div>
+    </div>
+
+    <!-- 逐年回顾 -->
+    <div class="card">
+      <div class="section-title">📅 逐年吃瓜回顾（<span id="friend-name">这位朋友</span>的成长史）</div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+
+    <!-- 朋友真心话 -->
+    <div class="card">
+      <div class="section-title">💬 朋友视角的真心话</div>
+      <div id="friend-advice"></div>
+    </div>
+
+    <!-- 前世因果推断 -->
+    <div class="card">
+      <div class="section-title">🎭 前世因果推断·搞笑动物版</div>
+      <div id="past-life"></div>
+    </div>
+
+    <!-- 姻缘流年预测 -->
+    <div class="card">
+      <div class="section-title">💘 姻缘流年预测·吃瓜版</div>
+      <div id="marriage-prediction"></div>
+    </div>
+
+    <!-- 人生走势曲线 -->
+    <div class="card">
+      <div class="section-title">📈 人生走势曲线·可视化版</div>
+      <div id="life-trend"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:3211';
+
+// 辅助函数：获取指定宫殿的星星名称数组
+function getPalaceStars(d, palaceName) {
+  const palace = d.palaces.find(p => p.name === palaceName);
+  if (!palace || !palace.stars) return [];
+  return palace.stars.map(s => s.name);
+}
+
+// 计算吃瓜指数
+function calcGossipIndex(d) {
+  const ming = getPalaceStars(d, '命宫');
+  const fu = getPalaceStars(d, '夫妻');
+  const guan = getPalaceStars(d, '官禄');
+  const cai = getPalaceStars(d, '财帛');
+  const all = [...ming, ...fu, ...guan, ...cai];
+
+  // 桃花指数
+  let peach = 50;
+  if (ming.some(s => s.includes('红鸾') || s.includes('天喜'))) peach += 30;
+  if (ming.some(s => s.includes('咸池') || s.includes('沐浴'))) peach += 20;
+  if (fu.some(s => s.includes('红鸾') || s.includes('天喜'))) peach += 15;
+  if (all.some(s => s.includes('太阳') && s.includes('太阴'))) peach += 10;
+  peach = Math.min(peach, 100);
+
+  // 恋爱脑指数
+  let loveBrain = 40;
+  if (ming.some(s => s.includes('太阴'))) loveBrain += 25;
+  if (ming.some(s => s.includes('天同'))) loveBrain += 20;
+  if (ming.some(s => s.includes('巨门'))) loveBrain += 15;
+  if (fu.some(s => s.includes('太阳') || s.includes('太阴'))) loveBrain += 10;
+  if (ming.some(s => s.includes('天姚') || s.includes('咸池'))) loveBrain += 15;
+  loveBrain = Math.min(loveBrain, 100);
+
+  // 搞钱指数
+  let money = 50;
+  if (ming.some(s => s.includes('武曲'))) money += 25;
+  if (ming.some(s => s.includes('天府'))) money += 20;
+  if (cai.some(s => s.includes('禄存') || s.includes('化禄'))) money += 20;
+  if (guan.some(s => s.includes('武曲'))) money += 10;
+  if (ming.some(s => s.includes('火星') || s.includes('铃星'))) money -= 10;
+  money = Math.min(Math.max(money, 10), 100);
+
+  // 作死指数
+  let zuosi = 30;
+  if (ming.some(s => s.includes('擎羊') || s.includes('陀罗'))) zuosi += 25;
+  if (ming.some(s => s.includes('火星') || s.includes('铃星'))) zuosi += 20;
+  if (ming.some(s => s.includes('化忌'))) zuosi += 15;
+  if (ming.some(s => s.includes('七杀') || s.includes('破军'))) zuosi += 10;
+  zuosi = Math.min(zuosi, 100);
+
+  // 事业心指数
+  let career = 50;
+  if (ming.some(s => s.includes('紫微'))) career += 20;
+  if (ming.some(s => s.includes('七杀') || s.includes('破军'))) career += 20;
+  if (guan.some(s => s.includes('紫微') || s.includes('天机'))) career += 15;
+  if (ming.some(s => s.includes('天同') || s.includes('太阴'))) career -= 15;
+  career = Math.min(Math.max(career, 10), 100);
+
+  // 八卦指数
+  let gossip = 40;
+  if (ming.some(s => s.includes('天机'))) gossip += 25;
+  if (ming.some(s => s.includes('巨门'))) gossip += 20;
+  if (ming.some(s => s.includes('文昌') || s.includes('文曲'))) gossip += 15;
+  if (ming.some(s => s.includes('天同'))) gossip += 10;
+  gossip = Math.min(gossip, 100);
+
+  return [
+    {
+      name: '桃花指数',
+      emoji: '🌸',
+      value: peach,
+      desc: peach > 80 ? '天选桃花体质！从小到大不缺人追，可能同时为好几个人纠结' : 
+           peach > 60 ? '桃花运不错，时不时有人表白或暗恋，感情生活比较丰富' :
+           peach > 40 ? '桃花运一般，需要主动一点，但真心喜欢你的人会出现' :
+           '桃花运比较淡，可能不是特别在意感情，或者比较慢热',
+      detail: peach > 80 ? '建议：小心烂桃花，别同时吊太多人' :
+              peach > 60 ? '建议：桃花旺的时候要擦亮眼睛，别被表面迷惑' :
+              '建议：缘分来了要抓住，别总是等待'
+    },
+    {
+      name: '恋爱脑指数',
+      emoji: '💕',
+      value: loveBrain,
+      desc: loveBrain > 80 ? '一恋爱就上头，容易为爱情冲锋，甚至牺牲其他东西' :
+           loveBrain > 60 ? '对待感情比较认真，容易投入，但也会保持一定理智' :
+           loveBrain > 40 ? '比较理性，不会完全被感情冲昏头脑，有自己的底线' :
+           '超级理智，不容易恋爱脑，可能比较难动心',
+      detail: loveBrain > 80 ? '建议：恋爱时要保持自我，别丢了自己' :
+              '建议：偶尔上头也没关系，但要记得爱自己'
+    },
+    {
+      name: '搞钱指数',
+      emoji: '💰',
+      value: money,
+      desc: money > 80 ? '赚钱能力超强！财运不错，可能是隐形富豪' :
+           money > 60 ? '赚钱能力还可以，稳定收入，偶尔有意外之财' :
+           money > 40 ? '赚钱需要努力，但只要肯干就能有收获' :
+           '财运一般，需要精打细算，别乱花钱',
+      detail: money > 80 ? '建议：财运好也要懂得守财，别挥霍' :
+              '建议：可以多学习理财，增加被动收入'
+    },
+    {
+      name: '作死指数',
+      emoji: '🤡',
+      value: zuosi,
+      desc: zuosi > 80 ? '容易冲动作死！可能会做一些让别人无语的事' :
+           zuosi > 60 ? '偶尔会作，但还能控制，有时候需要别人拉一把' :
+           zuosi > 40 ? '比较稳重，不容易作死，但偶尔也会头脑发热' :
+           '超级稳！不容易作死，做事有条理',
+      detail: zuosi > 80 ? '建议：做决定前多问问朋友的意见' :
+              '建议：偶尔作一下也没关系，人生需要刺激'
+    },
+    {
+      name: '事业心指数',
+      emoji: '📈',
+      value: career,
+      desc: career > 80 ? '事业心超强！可能是卷王，工作狂' :
+           career > 60 ? '有事业心，但也会享受生活，比较平衡' :
+           career > 40 ? '比较佛系，不太卷，更看重生活质量' :
+           '超级佛系！可能更喜欢安逸的生活',
+      detail: career > 80 ? '建议：事业重要，但也要注意休息，别累坏了' :
+              '建议：可以适当卷一点，但别勉强自己'
+    },
+    {
+      name: '八卦指数',
+      emoji: '🍵',
+      value: gossip,
+      desc: gossip > 80 ? '小道消息灵通！朋友圈情报站，谁和谁有点啥你都知道' :
+           gossip > 60 ? '偶尔八卦一下，知道一些朋友圈的动态' :
+           gossip > 40 ? '不太关心八卦，但偶尔也会听听' :
+           '超级专注！不太关心别人的事，只关注自己',
+      detail: gossip > 80 ? '建议：知道太多秘密也不好，偶尔装傻挺好的' :
+              '建议：偶尔八卦一下也挺有意思的，别太严肃'
+    }
+  ];
+}
+
+// 逐年吃瓜回顾
+function renderTimeline(d){
+  if(!d.pastYears||d.pastYears.length===0){
+    return '<div style="background:#fff0f5;border:2px dashed #ff69b4;border-radius:12px;padding:24px;text-align:center;font-size:15px;color:#e91e8c;">💔 暂无流年数据，无法分析~请检查排盘服务是否运行</div>';
+  }
+  const GAN='甲乙丙丁戊己庚辛壬癸';
+  const GSH={
+    '甲':['廉贞禄','破军权','武曲科','太阳忌'],'乙':['天机禄','天梁权','紫微科','太阴忌'],
+    '丙':['天同禄','天机权','文昌科','廉贞忌'],'丁':['太阴禄','天同权','天机科','巨门忌'],
+    '戊':['贪狼禄','太阴权','右弼科','天机忌'],'己':['武曲禄','贪狼权','天梁科','文曲忌'],
+    '庚':['太阳禄','武曲权','太阴科','天同忌'],'辛':['巨门禄','太阳权','文曲科','文昌忌'],
+    '壬':['天梁禄','紫微权','左辅科','武曲忌'],'癸':['破军禄','巨门权','太阴科','贪狼忌']
+  };
+  const R1_PALACES=['命','夫妻','官禄','财帛','疾厄'];
+  const R2_PALACES=['命','夫妻','官禄','财帛','疾厄','田宅'];
+  const SPM={};
+  d.palaces.forEach(p=>{
+    (p.stars||[]).forEach(s=>{
+      const starName=typeof s==='string'?s:(s.name||'');
+      if(starName)SPM[starName]=p.name;
+    });
+  });
+  const BPM={};
+  d.palaces.forEach(p=>{if(p.branch)BPM[p.branch]=p.name;});
+
+  const candidates=[];
+  d.pastYears.forEach(y=>{
+    const yr=y.year;
+    if(yr<2016||yr>new Date().getFullYear())return;
+    const ag=y.age;
+    const gan=GAN[(yr-4)%10];
+    const sihua=GSH[gan]||[];
+    const pb=(y.yearlyPalaceBranch||'').trim();
+    const origName=BPM[pb]||'';
+
+    const r1Hits=[];
+    sihua.forEach(s=>{
+      const sn=s.replace(/[禄权科忌]/g,'');
+      const ht=s.replace(/[^禄权科忌]/g,'');
+      if(ht!=='禄'&&ht!=='忌')return;
+      const sp=(SPM[sn]||'').replace('宫','');
+      if(sp&&R1_PALACES.includes(sp)){r1Hits.push({star:sn,type:ht,palace:sp});}
+    });
+    const hasR1=r1Hits.length>0;
+    const jiHits=r1Hits.filter(m=>m.type==='忌');
+    const luHits=r1Hits.filter(m=>m.type==='禄');
+    const primary=(jiHits.length>0?jiHits[0]:(luHits.length>0?luHits[0]:null));
+
+    const en=(origName||'').replace('宫','');
+    const hasR2=en&&R2_PALACES.includes(en);
+
+    const idx=d.pastYears.indexOf(y);
+    const prev=idx>0?d.pastYears[idx-1]:null;
+    const next=idx<d.pastYears.length-1?d.pastYears[idx+1]:null;
+    const isFirst=prev&&prev.decadalPalace!==y.decadalPalace;
+    const isLast=next&&next.decadalPalace!==y.decadalPalace;
+    let dxHit=false;
+    const dxp=y.decadalPalace.replace('宫','');
+    sihua.forEach(s=>{
+      const sn=s.replace(/[禄权科忌]/g,'');
+      const ht=s.replace(/[^禄权科忌]/g,'');
+      if(ht!=='禄'&&ht!=='忌')return;
+      const sp=(SPM[sn]||'').replace('宫','');
+      if(sp.replace('宫','')===dxp)dxHit=true;
+    });
+    const hasR3=isFirst||isLast||dxHit;
+    const rc=(hasR1?1:0)+(hasR2?1:0)+(hasR3?1:0);
+    if(rc<2)return;
+
+    const rd=[];
+    r1Hits.forEach(m=>rd.push('流年'+m.star+'化'+m.type+'入'+m.palace+'宫'));
+    if(hasR2)rd.push('流年命宫叠'+en+'宫');
+    if(isFirst){rd.push(y.decadalPalace+'大限开启');}
+    else if(isLast){rd.push(y.decadalPalace+'大限收官');}
+    else if(dxHit){rd.push('流年四化引动大限');}
+
+    let domain='事业';
+    if(primary){
+      const pm=primary.palace;
+      if(pm.includes('夫妻'))domain='感情🍑';
+      else if(pm.includes('官禄'))domain='事业💼';
+      else if(pm.includes('财帛'))domain='财运💰';
+      else if(pm.includes('疾厄'))domain='健康🏥';
+      else if(pm.includes('命'))domain='事业💼';
+    }else{
+      if(en==='夫妻')domain='感情🍑';
+      else if(en==='官禄')domain='事业💼';
+      else if(en==='财帛')domain='财运💰';
+      else if(en==='疾厄')domain='健康🏥';
+      else if(en==='田宅')domain='家庭🏠';
+    }
+    const tendency=getTendency(primary,hasR2,en,isFirst,isLast,dxHit);
+    candidates.push({year:yr,age:ag,rc,hasR1,hasR2,hasR3,primary,ruleDesc:rd.join(' + '),domain,tendency});
+  });
+
+  candidates.sort((a,b)=>{
+    if(a.rc!==b.rc)return b.rc-a.rc;
+    if(a.hasR1!==b.hasR1)return a.hasR1?-1:1;
+    if(a.primary&&a.primary.type==='忌'&&(!b.primary||b.primary.type!=='忌'))return -1;
+    if(b.primary&&b.primary.type==='忌'&&(!a.primary||a.primary.type!=='忌'))return 1;
+    return 0;
+  });
+
+  const top=candidates.slice(0,5);
+
+  let txt='<div style="background:linear-gradient(135deg,#fff0f8 0%,#ffe4f0 100%);border:2px solid #ff69b4;border-radius:16px;padding:16px 20px;margin:12px 0;font-size:14px;color:#88006a;line-height:1.7;">';
+  txt+='<p style="margin:0 0 6px;font-weight:bold;color:#c2185b;">🎯 吃瓜筛选规则（满足至少2条才上榜）</p>';
+  txt+='<p style="margin:2px 0;">① 流年四化引动：化禄或化忌落入命/夫/官/财/疾宫</p>';
+  txt+='<p style="margin:2px 0;">② 流年命宫叠原局：叠命/夫/官/财/疾/田宫</p>';
+  txt+='<p style="margin:2px 0;">③ 大限引动：大限开启/收官年、或流年四化引动大限宫</p>';
+  txt+='</div>';
+
+  txt+='<div style="max-height:600px;overflow-y:auto;">';
+  top.forEach((yr,i)=>{
+    const isNow=yr.year===new Date().getFullYear();
+    const isBad=yr.primary&&yr.primary.type==='忌';
+    const badge=yr.primary?(isBad?'<span style="background:#f44336;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:6px;">有点背</span>':'<span style="background:#4caf50;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:6px;">运气不错</span>'):'';
+    
+    // 大白话解释
+    let plainTalk='';
+    if(isBad){
+      const p=yr.primary.palace;
+      if(p==='夫妻')plainTalk='这年感情不太顺，可能分手了或者吵得很凶，单身的话桃花虽然多但质量不行~';
+      else if(p==='财帛')plainTalk='这年钱包大出血，可能丢了钱或者买了没用的东西，要控制消费~';
+      else if(p==='官禄')plainTalk='这年工作/学习上遇到阻碍，可能是换工作、被批评或者考试没考好~';
+      else if(p==='疾厄')plainTalk='这年身体不太好，可能是生病了或者太累了，要注意休息~';
+      else if(p==='命宫')plainTalk='这年整体运势低迷，做什么都不太顺，要低调行事~';
+    }else{
+      const p=yr.primary?yr.primary.palace:'';
+      if(p==='夫妻')plainTalk='这年桃花运不错，可能有新的恋情或者感情升温~';
+      else if(p==='财帛')plainTalk='这年财运不错，可能涨工资了或者有意外的收入~';
+      else if(p==='官禄')plainTalk='这年事业运不错，可能升职了或者工作上有好消息~';
+      else if(p==='命宫')plainTalk='这年整体运势不错，干啥都顺，可以考虑做一些大的决定~';
+      else plainTalk='这年运气还可以，平平稳稳过日子~';
+    }
+
+    txt+=`<div style="background:#fffafc;margin:10px 0;padding:16px 18px;border-radius:14px;border-left:5px solid ${isBad?'#f44336':'#4caf50'};box-shadow:0 2px 8px rgba(0,0,0,0.08);">`;
+    txt+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">`;
+    txt+=`<span style="font-size:16px;font-weight:bold;color:${isBad?'#d32f2f':'#2e7d32'};">${yr.year}年（虚${yr.age}岁）${badge}</span>`;
+    if(isNow)txt+=`<span style="background:#2196f3;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">就是今年</span>`;
+    txt+=`</div>`;
+    txt+=`<p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${plainTalk}</p>`;
+    txt+=`</div>`;
+  });
+  
+  if(top.length===0){
+    txt+=`<p style="text-align:center;color:#999;padding:20px;">这10年比较平稳，没有特别强烈的大事件~</p>`;
+  }
+  
+  txt+=`</div>`;
+  return txt;
+}
+
+// 事件倾向生成器
+function getTendency(primary,hasR2,origPalace,isFirst,isLast,dxHit){
+  const parts=[];
+  if(primary){
+    const p=primary.palace;
+    const t=primary.type;
+    if(t==='忌'){
+      if(p==='命')parts.push('自我怀疑，决策容易失误，要稳住别浪');
+      else if(p==='夫妻')parts.push('感情翻车，单身继续单，有伴的多忍让');
+      else if(p==='官禄')parts.push('工作/学业有阻碍，别硬刚，绕路走');
+      else if(p==='财帛')parts.push('钱包瘪了，控制消费，意外开支预警');
+      else if(p==='疾厄')parts.push('身体报警，少熬夜，多喝热水早点睡');
+    }else{
+      if(p==='命')parts.push('得人赏识，但别飘，安分守己');
+      else if(p==='夫妻')parts.push('感情升温，脱单有望，但别海王');
+      else if(p==='官禄')parts.push('事业/学业遇良机，冲就完了');
+      else if(p==='财帛')parts.push('财神爷敲门，小钱钱进账，开源节流');
+      else if(p==='疾厄')parts.push('身体倍棒，吃嘛嘛香，精神好');
+    }
+  }
+  if(hasR2&&origPalace==='田宅')parts.push('家里有变动，可能搬家或家庭关系调整');
+  if(isFirst)parts.push('人生新阶段开启，大运来了！');
+  else if(isLast)parts.push('这阶段要收尾了，复盘一下');
+  else if(dxHit&&!primary)parts.push('大限能量来袭，这年变化不小');
+  return parts.join('，')||'多重能量叠加，这年注定不平凡';
+}
+
+// 朋友视角的真心话
+function renderFriendAdvice(d) {
+  // 使用 getPalaceStars 获取命宫星曜（更可靠）
+  const ming = getPalaceStars(d, '命宫');
+  const fu = getPalaceStars(d, '夫妻');
+  const cai = getPalaceStars(d, '财帛');
+  const guan = getPalaceStars(d, '官禄');
+  const allStars = ming.join('') + fu.join('') + cai.join('') + guan.join('');
+  
+  // 判断性别（从多个可能的位置获取）
+  const gender = (d.birth && d.birth.gender) || (d.gender) || 'female';
+
+  let html = '';
+
+  // 开头语
+  html += '<div class="friend-quote"><p>';
+  html += '作为你的朋友，我得说几句真心话（都是为你好才说的哦）：';
+  html += '</p></div>';
+
+  // 根据命宫主星给建议
+  const adviceList = [];
+
+  if (ming.some(s => s.includes('紫微'))) {
+    adviceList.push('🔸 你命宫有紫微，天生有领导气质，大家都挺服你的。但有时候可能太要面子了，放下身段会更好，别老是端着');
+  }
+  if (ming.some(s => s.includes('天机'))) {
+    adviceList.push('🔸 你命宫有天机，脑子超好使，学东西快，想法也多。但容易想太多，有时候行动比思考更重要，别光想不做');
+  }
+  if (ming.some(s => s.includes('太阳'))) {
+    adviceList.push('🔸 你命宫有太阳，性格开朗大方，对人真诚，大家都喜欢你。但有时候太直了，容易得罪人而不自知，说话前多想想');
+  }
+  if (ming.some(s => s.includes('武曲'))) {
+    adviceList.push('🔸 你命宫有武曲，赚钱能力强，做事果断。但有时候太刚了，柔一点会更好，别老是硬碰硬');
+  }
+  if (ming.some(s => s.includes('天同'))) {
+    adviceList.push('🔸 你命宫有天同，性格温和好人缘，谁都喜欢和你相处。但有时候太佛系了，该争的时候要争，别老是让着别人');
+  }
+  if (ming.some(s => s.includes('廉贞'))) {
+    adviceList.push('🔸 你命宫有廉贞，感情丰富重情义，对朋友超好。但容易情绪化，要学会控制情绪，别让情绪影响判断');
+  }
+  if (ming.some(s => s.includes('天府'))) {
+    adviceList.push('🔸 你命宫有天府，稳重可靠，做事有条理。但有时候太保守了，可以适当冒险一点，别老是求稳');
+  }
+  if (ming.some(s => s.includes('太阴'))) {
+    adviceList.push('🔸 你命宫有太阴，心思细腻敏感，很会照顾人。但容易多想，有时候要相信自己，别老是怀疑自己');
+  }
+  if (ming.some(s => s.includes('贪狼'))) {
+    adviceList.push('🔸 你命宫有贪狼，多才多艺兴趣爱好广泛，生活很精彩。但容易三分钟热度，要坚持下去才能有收获');
+  }
+  if (ming.some(s => s.includes('巨门'))) {
+    adviceList.push('🔸 你命宫有巨门，口才不错，能说会道。但有时候容易说错话，祸从口出，说话前多想想');
+  }
+  if (ming.some(s => s.includes('天相'))) {
+    adviceList.push('🔸 你命宫有天相，为人正直善良，大家都信任你。但有时候太老实了，要学会保护自己，别被人利用了');
+  }
+  if (ming.some(s => s.includes('天梁'))) {
+    adviceList.push('🔸 你命宫有天梁，有正义感，喜欢帮助别人。但有时候管得太宽了，别人的事让别人自己做主');
+  }
+  if (ming.some(s => s.includes('七杀'))) {
+    adviceList.push('🔸 你命宫有七杀，行动力强，说干就干。但容易冲动，做决定前多想想后果，别后悔');
+  }
+  if (ming.some(s => s.includes('破军'))) {
+    adviceList.push('🔸 你命宫有破军，敢于突破，不走寻常路。但容易破坏性太强，要懂得建设和创造，别老是推倒重来');
+  }
+
+  // 如果建议列表为空（命宫没有主星），给一个默认建议
+  if (adviceList.length === 0) {
+    adviceList.push('🔸 你命宫没有主星，借对宫星曜，性格比较随和，适应性很强~');
+    adviceList.push('🔸 这种格局的人通常比较灵活，能屈能伸，是很好的合作伙伴~');
+  }
+
+  // 随机选3-5条建议
+  const selected = adviceList.sort(() => Math.random() - 0.5).slice(0, Math.min(5, adviceList.length));
+  html += selected.map(a => `<p style="margin:15px 0; padding-left:20px;">${a}</p>`).join('');
+
+  // 结尾语
+  html += '<div class="friend-quote" style="margin-top:25px;"><p>';
+  html += '总之呢，命盘只是参考，人生还是要靠自己努力啦！';
+  html += '你这么优秀，肯定能过得很好的，加油！💪';
+  html += '</p></div>';
+
+  // 标签云（增加更多标签）
+  html += '<div style="margin-top:25px;"><p style="font-weight:bold; margin-bottom:10px;">🏷️ 你的性格标签：</p>';
+  const tags = [];
+  
+  // 辅助函数：检查星曜
+  const hasStar = (arr, ...keywords) => arr.some(s => typeof s === 'string' && keywords.some(k => s.includes(k)));
+  
+  // 基本性格标签
+  if (hasStar(ming, '太阳', '紫微')) tags.push('领导型');
+  if (hasStar(ming, '天同', '太阴')) tags.push('温柔型');
+  if (hasStar(ming, '七杀', '破军')) tags.push('行动派');
+  if (hasStar(ming, '天机', '天梁')) tags.push('思考型');
+  if (hasStar(ming, '武曲', '廉贞')) tags.push('果断型');
+  
+  // 感情相关标签
+  if (hasStar(ming, '红鸾', '天喜', '咸池')) tags.push('桃花旺');
+  if (hasStar(ming, '贪狼', '廉贞')) tags.push('恋爱脑');
+  if (hasStar(fu, '天同', '太阴')) tags.push('痴情种');
+  if (hasStar(fu, '破军', '七杀')) tags.push('轰轰烈烈');
+  
+  // 事业相关标签
+  if (hasStar(ming, '太阳', '天梁')) tags.push('事业心强');
+  if (hasStar(guan, '紫微', '天府')) tags.push('当老板命');
+  if (hasStar(guan, '武曲', '七杀')) tags.push('拼劲十足');
+  
+  // 财运相关标签
+  if (hasStar(ming, '武曲', '天府')) tags.push('搞钱小能手');
+  if (hasStar(cai, '禄存', '化禄')) tags.push('财神眷顾');
+  if (hasStar(cai, '擎羊', '陀罗')) tags.push('破财体质');
+  
+  // 才艺相关标签
+  if (hasStar(ming, '文昌', '文曲')) tags.push('才艺型');
+  if (hasStar(ming, '贪狼', '天同')) tags.push('多才多艺');
+  
+  // 性格缺陷标签
+  if (hasStar(ming, '擎羊', '火星', '铃星')) tags.push('暴脾气');
+  if (hasStar(ming, '陀罗', '天刑')) tags.push('钻牛角尖');
+  if (hasStar(ming, '巨门', '天机')) tags.push('想太多');
+  
+  // 外貌相关标签
+  if (hasStar(ming, '太阳', '太阴')) tags.push('颜值在线');
+  if (hasStar(ming, '红鸾', '天喜')) tags.push('气质佳');
+  
+  // 性别标签
+  tags.push(gender === 'female' ? '小仙女' : '帅哥');
+  
+  // 如果没有标签，给个默认的
+  if (tags.length === 0) {
+    tags.push('普通人');
+    tags.push('好人');
+  }
+  
+  html += tags.map(t => `<span class="tag">${t}</span>`).join('');
+  html += '</div>';
+
+  return html;
+}
+
+// 主动吃瓜分析
+async function analyze() {
+  const name = document.getElementById('name').value.trim() || '这位朋友';
+  const gender = document.getElementById('gender').value;
+  const year = document.getElementById('year').value;
+  const month = document.getElementById('month').value;
+  const day = document.getElementById('day').value;
+  const hour = document.getElementById('hour').value;
+
+  const btn = document.getElementById('btn');
+  const st = document.getElementById('status');
+  btn.disabled = true;
+  btn.textContent = '正在吃瓜分析中...';
+  st.className = 'status';
+
+  try {
+    const params = new URLSearchParams({ year, month, day, hour, gender });
+    st.textContent = '正在排盘...';
+    st.className = 'status show';
+
+    // 获取排盘数据
+    const resp = await fetch(API + '/chart?' + params);
+    if (!resp.ok) throw new Error('排盘失败：服务器返回 ' + resp.status);
+    const d = await resp.json();
+
+    // 转换数据结构：从 palaces 提取 stars，方便后续使用
+    // 确保所有 star 名称都是字符串（防止 .includes() 报错）
+    d.stars = {};
+    const palaceKeyMap = {
+      '命宫': 'ming',
+      '夫妻': 'fu',
+      '官禄': 'guan',
+      '财帛': 'cai',
+      '福德': 'fude',
+      '迁移': 'qianyi',
+      '疾厄': 'jie',
+      '奴仆': 'nupu',
+      '子女': 'zinu',
+      '兄弟': 'xiongdi',
+      '父母': 'fumu',
+      '田宅': 'tianzhai'
+    };
+    d.palaces.forEach(p => {
+      // 确保 p.stars 是字符串数组（防止 .includes() 报错）
+      const stars = Array.isArray(p.stars) ? p.stars.map(s => String(s)) : [];
+      // d.stars 同时支持中文和拼音键
+      d.stars[p.name] = stars;
+      if (palaceKeyMap[p.name]) {
+        d.stars[palaceKeyMap[p.name]] = stars;
+      }
+    });
+
+    // 获取流年数据
+    st.textContent = '正在分析流年...';
+    try {
+      const pyResp = await fetch(API + '/past-years?' + params);
+      if (pyResp.ok) {
+        const pyData = await pyResp.json();
+        d.pastYears = pyData.years;
+      }
+    } catch (e) {
+      console.log('流年数据加载失败', e);
+    }
+
+    // 渲染结果
+    document.getElementById('friend-name').textContent = name;
+
+    // 吃瓜指数
+    const indexData = calcGossipIndex(d);
+    document.getElementById('gossip-index').innerHTML = indexData.map((idx, i) => `
+      <div class="gossip-card">
+        <div class="gossip-header">
+          <span class="gossip-emoji">${idx.emoji}</span>
+          <span class="gossip-name">${idx.name}</span>
+        </div>
+        <div class="gossip-score">${idx.value}</div>
+        <div class="gossip-bar">
+          <div class="gossip-fill" style="width:0%" data-width="${idx.value}"></div>
+        </div>
+        <div class="gossip-desc">${idx.desc}</div>
+        <div style="margin-top:10px; font-size:0.85em; opacity:0.9;">${idx.detail}</div>
+      </div>
+    `).join('');
+
+    // 动画显示进度条
+    setTimeout(() => {
+      document.querySelectorAll('.gossip-fill').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+      });
+    }, 100);
+
+    // 逐年回顾
+    document.getElementById('timeline').innerHTML = renderTimeline(d);
+
+    // 朋友建议
+    document.getElementById('friend-advice').innerHTML = renderFriendAdvice(d);
+    
+    // 前世因果
+    document.getElementById('past-life').innerHTML = renderPastLife(d);
+    
+    // 七、姻缘流年
+    document.getElementById('marriage-prediction').innerHTML = renderMarriagePrediction(d);
+    
+    // 八、人生走势曲线
+    document.getElementById('life-trend').innerHTML = renderLifeTrend(d);
+
+    // 显示结果
+    st.className = 'status show success';
+    st.textContent = `✅ ${name}的吃瓜分析完成！快来吃瓜～`;
+    document.getElementById('result').classList.add('show');
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+
+  } catch (e) {
+    st.textContent = '分析失败：' + e.message + '\n（请确认服务已启动: node chart-server.js）';
+    st.className = 'status show error';
+    console.error('分析失败:', e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '重新吃瓜 🍉';
+  }
+}
+
+// 自动填充URL参数并开始测算
+window.addEventListener('DOMContentLoaded', () => {
+  const p = new URLSearchParams(location.search);
+  if (p.get('name')) document.getElementById('name').value = p.get('name');
+  if (p.get('gender')) document.getElementById('gender').value = p.get('gender');
+  if (p.get('year')) document.getElementById('year').value = p.get('year');
+  if (p.get('month')) document.getElementById('month').value = p.get('month');
+  if (p.get('day')) document.getElementById('day').value = p.get('day');
+  if (p.get('hour')) document.getElementById('hour').value = p.get('hour');
+  // 只要URL包含 year+month+day 参数，就自动开始测算（用于PDF生成）
+  if (p.get('year') && p.get('month') && p.get('day')) {
+    analyze();
+  }
+});
+
+
+// 六、前世因果推断·搞笑动物版
+// 前世因果推断·动物版（结合来因宫+福德宫+命宫+田宅宫+疾厄宫综合分析）
+function renderPastLife(d) {
+  // 获取所有关键宫位
+  const ming = getPalaceStars(d, '命宫');
+  const fude = getPalaceStars(d, '福德');
+  const jie = getPalaceStars(d, '疾厄');
+  const tian = getPalaceStars(d, '田宅');
+  const laiyin = getPalaceStars(d, '来因') || ming;
+  
+  const mingStars = ming.join('');
+  const fudeStars = fude.join('');
+  const jieStars = jie.join('');
+  const tianStars = tian.join('');
+  const laiyinStars = laiyin.join('');
+  
+  // 综合所有星曜
+  const allStars = mingStars + fudeStars + jieStars + tianStars + laiyinStars;
+  
+  // 来因宫主星 → 前世身份动物
+  let animalEmoji = '🐣', animalType = '小鸡崽', animalDesc = '前世投胎当鸡，这辈子要努力出人头地！';
+  
+  if (allStars.match(/紫微/)) {
+    animalEmoji = '🦁'; animalType = '狮子王'; 
+    animalDesc = '上辈子是草原霸主，一声吼叫众兽臣服！骨子里自带王者之气，这辈子也是当领导的命，就是有点爱面子~';
+  } else if (allStars.match(/天府/)) {
+    animalEmoji = '🐘'; animalType = '大象'; 
+    animalDesc = '上辈子是象群首领，稳重又有钱（象牙值钱嘛~）。这辈子也是存钱小能手，但偶尔会"内存溢出"想太多~';
+  } else if (allStars.match(/太阳/)) {
+    animalEmoji = '🦅'; animalType = '金翅大鹏'; 
+    animalDesc = '上辈子是神鸟大鹏，一飞冲天扶摇直上九万里！这辈子也闲不住，总想搞点大新闻，就是别忘了落地的脚~';
+  } else if (allStars.match(/太阴/)) {
+    animalEmoji = '🦋'; animalType = '蝴蝶仙子'; 
+    animalDesc = '上辈子是蝴蝶变的，前世为了破茧拼尽全力！这辈子外表软萌内心戏多，是那种一个人能演完整部宫斗剧的类型~';
+  } else if (allStars.match(/天同/)) {
+    animalEmoji = '🐼'; animalType = '熊猫'; 
+    animalDesc = '上辈子就是国宝熊猫！吃吃喝喝睡大觉是祖传技能。这辈子最大的烦恼是：中午吃什么、晚上吃什么~';
+  } else if (allStars.match(/天机/)) {
+    animalEmoji = '🦊'; animalType = '狐狸精'; 
+    animalDesc = '上辈子是九尾狐，聪明狡猾人尽皆知！这辈子脑子转得比谁都快，就是想太多容易秃头~';
+  } else if (allStars.match(/武曲/)) {
+    animalEmoji = '🐯'; animalType = '东北虎'; 
+    animalDesc = '上辈子是百兽之王，一声虎啸震山林！这辈子脾气犟，不服就干，但有时候干完又后悔~';
+  } else if (allStars.match(/贪狼/)) {
+    animalEmoji = '🐺'; animalType = '狼'; 
+    animalDesc = '上辈子是头狼，贪心得很，什么都想要！这辈子桃花旺、野心也旺，就是"贪"字要修一修~';
+  } else if (allStars.match(/巨门/)) {
+    animalEmoji = '🦉'; animalType = '猫头鹰'; 
+    animalDesc = '上辈子是夜猫子，专门值夜班那种！这辈子嘴上功夫厉害，但有时候话说太多容易得罪人~';
+  } else if (allStars.match(/天梁/)) {
+    animalEmoji = '🦩'; animalType = '丹顶鹤'; 
+    animalDesc = '上辈子是仙鹤，活了几百年见过太多！这辈子自带养生体质，喜欢讲道理，是朋友圈里的"老中医"~';
+  } else if (allStars.match(/七杀/)) {
+    animalEmoji = '🐉'; animalType = '龙'; 
+    animalDesc = '上辈子是条龙！呼风唤雨那种！这辈子也是天不怕地不怕，但龙也需要水——记得多喝水~';
+  } else if (allStars.match(/破军/)) {
+    animalEmoji = '🦅'; animalType = '海燕'; 
+    animalDesc = '上辈子是海燕，在暴风雨中飞翔的那种！喜欢折腾，这辈子闲不住，搞不好还会搞砸重建~';
+  } else if (allStars.match(/廉贞/)) {
+    animalEmoji = '🦂'; animalType = '蝎子'; 
+    animalDesc = '上辈子是毒蝎子，爱恨分明螫人狠！这辈子也是敢爱敢恨，但别随便蜇人——容易两败俱伤~';
+  } else if (allStars.match(/天相/)) {
+    animalEmoji = '🐢'; animalType = '灵龟'; 
+    animalDesc = '上辈子是千年老龟，稳得一批！这辈子也是慢悠悠的性格，但别急——龟兔赛跑赢的是你~';
+  } else {
+    animalEmoji = '🐰'; animalType = '小白兔'; 
+    animalDesc = '上辈子是只小白兔，可可爱爱没有脑袋~这辈子也是萌萌哒，但遇到危险别光顾着蹦跶~';
+  }
+  
+  // 福德宫 → 今生灵魂课题
+  let soulLesson = '继续当个快乐小天使~';
+  if (fudeStars.match(/天机|天机/)) soulLesson = '少想点！脑子转太快灵魂跟不上~';
+  else if (fudeStars.match(/陀罗|火星/)) soulLesson = '学会放下！执念太重会原地转圈圈~';
+  else if (fudeStars.match(/贪狼|廉贞/)) soulLesson = '控制欲望！什么都想要容易翻车~';
+  else if (fudeStars.match(/紫微|天府/)) soulLesson = '低调点！主角光环太亮会刺到别人~';
+  else if (fudeStars.match(/太阴|天同/)) soulLesson = '坚强点！玻璃心容易碎~';
+  else if (fudeStars.match(/武曲|七杀/)) soulLesson = '温柔点！太刚容易折断~';
+  else if (fudeStars.match(/太阳|天梁/)) soulLesson = '自私点！总是照亮别人忘了自己~';
+  else if (fudeStars.match(/巨门|文昌/)) soulLesson = '说真话！别藏着掖着憋出内伤~';
+  else soulLesson = '做自己！别太在意别人的眼光~';
+  
+  // 田宅宫 → 前世家底
+  let familyFortune = '上辈子没攒下什么家底，这辈子得自己努力搬砖~';
+  if (tianStars.match(/天府|禄存/)) familyFortune = '上辈子家里有矿！这辈子也是含着金汤匙的命~';
+  else if (tianStars.match(/紫微|太阳/)) familyFortune = '上辈子家族显赫！虽然不一定能继承，但气场摆在那儿~';
+  else if (tianStars.match(/武曲|天机/)) familyFortune = '上辈子是生意人家，财商遗传下来了~';
+  else if (tianStars.match(/太阴|天同/)) familyFortune = '上辈子是书香门第，精神富足但钱包可能有点瘪~';
+  else if (tianStars.match(/贪狼|破军/)) familyFortune = '上辈子家道中落过！深知钱的重要性，这辈子拼命搞钱~';
+  
+  return `<div style="background:linear-gradient(135deg,#fff8e1,#ffecb3);border:2px solid #ff9800;border-radius:16px;padding:20px;margin:16px 0;">
+    <div style="text-align:center; margin-bottom:12px;">
+      <span style="font-size:56px;">${animalEmoji}</span>
+      <p style="margin:8px 0 0;font-size:20px;font-weight:bold;color:#e65100;">🐾 前世是：${animalType}</p>
+    </div>
+    <div style="background:#fffaf0;padding:12px 15px;border-radius:10px;margin-bottom:10px;">
+      <p style="margin:0;font-size:13px;color:#333;line-height:1.7;">${animalDesc}</p>
+    </div>
+    <div style="background:#fff3e0;padding:10px 14px;border-radius:10px;margin-bottom:8px;">
+      <p style="margin:0;font-size:12px;color:#e65100;">💡 今生灵魂课题：${soulLesson}</p>
+    </div>
+    <div style="background:#f5f5f5;padding:8px 12px;border-radius:8px;margin-bottom:8px;">
+      <p style="margin:0;font-size:11px;color:#666;">🏠 前世家底：${familyFortune}</p>
+    </div>
+    <p style="margin:0;font-size:11px;color:#bbb;text-align:center;">*本分析纯属娱乐，前世不可考，今生最重要~</p>
+  </div>`;
+}
+
+// 姻缘流年预测·吃瓜版
+function renderMarriagePrediction(d) {
+  const fu = getPalaceStars(d, '夫妻');
+  const ming = getPalaceStars(d, '命宫');
+  const currentYear = new Date().getFullYear();
+  
+  if (!fu || fu.length === 0) {
+    return '<div style="background:linear-gradient(135deg,#fce4ec,#f8bbd0);border:2px solid #e91e63;border-radius:16px;padding:20px;"><p style="color:#999; text-align:center;">暂无夫妻宫数据</p></div>';
+  }
+  
+  const stars = fu.join('');
+  const mingStars = ming.join('');
+  
+  // 判断姻缘类型
+  let marriageType = '';
+  let marriageEmoji = '';
+  let marriageDesc = '';
+  
+  if (stars.match(/贪狼|廉贞/)) {
+    marriageType = '🔥 魅力四射型';
+    marriageEmoji = '🥰';
+    marriageDesc = '桃花旺到爆炸，从小到大不缺人追，小心成为海王海后';
+  } else if (stars.match(/天同|太阴/)) {
+    marriageType = '💕 浪漫期待型';
+    marriageEmoji = '😊';
+    marriageDesc = '对爱情充满幻想，期待命中注定的那个TA';
+  } else if (stars.match(/太阳|天梁/)) {
+    marriageType = '☀️ 阳光普照型';
+    marriageEmoji = '😎';
+    marriageDesc = '异性缘好，但有时候有点花心或被动';
+  } else if (stars.match(/武曲|天府/)) {
+    marriageType = '💰 务实婚姻型';
+    marriageEmoji = '🤔';
+    marriageDesc = '找对象看条件，宁缺毋滥，不将就';
+  } else if (stars.match(/紫微|天相/)) {
+    marriageType = '👑 霸道总裁型';
+    marriageEmoji = '😤';
+    marriageDesc = '要么不爱，要么爱得轰轰烈烈，控制欲有点强';
+  } else {
+    marriageType = '🌊 顺其自然型';
+    marriageEmoji = '😌';
+    marriageDesc = '缘分到了自然就结婚，不急不躁';
+  }
+  
+  // 恋爱类型判断（搞笑版）
+  let loveType = '';
+  let loveEmoji = '';
+  if (mingStars.match(/贪狼|廉贞|红鸾|天姚/)) {
+    loveType = '🔥 海王海后型 - 中央空调走哪暖哪，暧昧对象能凑一桌麻将';
+    loveEmoji = '🌊';
+  } else if (mingStars.match(/天同|太阴|天喜/)) {
+    loveType = '🍰 小甜豆型 - 恋爱脑本脑，看谁都像韩剧男主/女主';
+    loveEmoji = '💕';
+  } else if (mingStars.match(/紫微|天府|太阳/)) {
+    loveType = '👑 霸总型 - 要么不谈恋爱，谈到就是"你是我的人"';
+    loveEmoji = '😎';
+  } else if (mingStars.match(/武曲|天梁|巨门/)) {
+    loveType = '🤡 嘴硬心软型 - 嘴上说不要，看到帅哥/美女眼睛都直了';
+    loveEmoji = '🙈';
+  } else if (mingStars.match(/天机|文昌/)) {
+    loveType = '🎭 影帝影后型 - 暗恋三年，演了100集内心戏，对方啥都不知道';
+    loveEmoji = '🎬';
+  } else if (mingStars.match(/七杀|破军/)) {
+    loveType = '💥 轰轰烈烈型 - 爱上就all in，分手也要搞得惊天动地';
+    loveEmoji = '💣';
+  } else if (mingStars.match(/天同|太阴/)) {
+    loveType = '🍵 佛系恋爱型 - 不主动不拒绝，缘分到了自然分分合合';
+    loveEmoji = '🧘';
+  } else {
+    loveType = '🎲 随机模式型 - 恋爱玄学，看心情看天气看月亮';
+    loveEmoji = '🎲';
+  }
+  
+  // 脱单年份
+  let years = [];
+  if (stars.match(/贪狼|廉贞|天同|太阳/)) {
+    years = [currentYear + 1, currentYear + 2, currentYear + 4];
+  } else if (stars.match(/天梁|太阴|天机/)) {
+    years = [currentYear + 2, currentYear + 3, currentYear + 5];
+  } else {
+    years = [currentYear + 3, currentYear + 5, currentYear + 7];
+  }
+  
+  let txt = `<div style="background:linear-gradient(135deg,#fce4ec,#f8bbd0);border:2px solid #e91e63;border-radius:16px;padding:20px;">
+    <div style="text-align:center; margin-bottom:15px;">
+      <span style="font-size:48px;">${marriageEmoji}</span>
+      <p style="margin:8px 0 0;font-size:18px;font-weight:bold;color:#c2185b;">${marriageType}</p>
+      <p style="margin:5px 0 0;font-size:14px;color:#666;">${marriageDesc}</p>
+    </div>
+    
+    <div style="background:#fffafc;padding:12px 16px;border-radius:10px;margin-bottom:12px;">
+      <p style="margin:0 0 6px;font-size:13px;"><span style="font-weight:bold;color:#88006a;">💓 恋爱性格：</span><span style="color:#333;">${loveType}</span></p>
+      <p style="margin:0;font-size:14px;"><span style="font-weight:bold;color:#88006a;">夫妻宫星曜：</span><span style="color:#666;">${fu.join('、')}</span></p>
+    </div>
+    
+    <div style="background:#fff0f5;padding:12px 16px;border-radius:10px;">
+      <p style="margin:0 0 8px;font-size:14px;font-weight:bold;color:#c2185b;">🎯 脱单/结婚高危年份：</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">`;
+  
+  years.forEach((yr, i) => {
+    const isNear = yr <= currentYear + 2;
+    txt += `<span style="background:${isNear ? '#e91e63' : '#f8bbd0'};color:${isNear ? 'white' : '#c2185b'};padding:6px 12px;border-radius:20px;font-size:13px;font-weight:bold;">
+        ${yr}年${i === 0 ? '🔥' : ''}
+      </span>`;
+  });
+  
+  txt += `</div>
+      <p style="margin:10px 0 0;font-size:12px;color:#999;text-align:center;">*纯属娱乐，真爱来了挡不住，真爱没来也别焦虑~</p>
+    </div>
+  </div>`;
+  return txt;
+}
+
+// 人生走势曲线·K线蜡烛图版（参考lifekline风格）
+function renderLifeTrend(d) {
+  if (!d.pastYears || !Array.isArray(d.pastYears) || d.pastYears.length === 0) {
+    return '<p style="color:#999; text-align:center; padding:20px;">数据加载中...</p>';
+  }
+  
+  const currentYear = new Date().getFullYear();
+  const birthYear = d.solar && d.solar.birth ? d.solar.birth.year : (currentYear - 30);
+  const age = currentYear - birthYear;
+  
+  // 计算近10年的K线数据
+  const klineData = [];
+  for (let i = 10; i >= 0; i--) {
+    const yr = currentYear - i;
+    const yearData = d.pastYears.find(y => y.year === yr);
+    let open = 50;
+    let close = 50;
+    let high = 50;
+    let low = 50;
+    let reason = '';
+    let isJixiong = '平';
+    
+    if (yearData && yearData.mutagen) {
+      const m = yearData.mutagen;
+      if (m.官禄 === '化禄' || m.官禄 === '化权') { open += 8; isJixiong = '吉'; }
+      if (m.财帛 === '化禄') { open += 10; isJixiong = '吉'; }
+      if (m.夫妻 === '化忌') { open -= 15; isJixiong = '凶'; }
+      if (m.疾厄 === '化忌') { open -= 10; isJixiong = '凶'; }
+      if (m.命宫 === '化禄') { open += 5; }
+      if (m.命宫 === '化忌') { open -= 10; isJixiong = '凶'; }
+      if (m.福德 === '化禄') { open += 5; }
+      
+      // 生成原因描述
+      let reasons = [];
+      Object.entries(m).forEach(([palace, hua]) => {
+        if (hua === '化忌') reasons.push(`${palace}化忌有点背`);
+        if (hua === '化禄') reasons.push(`${palace}化禄财运好`);
+        if (hua === '化权') reasons.push(`${palace}化权事业旺`);
+      });
+      reason = reasons.length > 0 ? reasons.join('；') : '流年平稳，无大波澜';
+    } else {
+      reason = '无四化引动';
+    }
+    
+    close = open + Math.floor(Math.random() * 10) - 5;
+    high = Math.max(open, close) + Math.floor(Math.random() * 5);
+    low = Math.min(open, close) - Math.floor(Math.random() * 5);
+    open = Math.max(0, Math.min(100, open));
+    close = Math.max(0, Math.min(100, close));
+    high = Math.max(open, close, high);
+    low = Math.min(open, close, low);
+    
+    klineData.push({
+      year: yr,
+      age: age - i,
+      open, close, high, low,
+      reason,
+      isJixiong,
+      daYun: yearData ? (yearData.decadalPalace || '本限') : '本限'
+    });
+  }
+  
+  // K线图SVG
+  const svgW = 640, svgH = 260, padL = 50, padR = 20, padT = 20, padB = 40;
+  const chartW = svgW - padL - padR;
+  const chartH = svgH - padT - padB;
+  const candleW = Math.floor(chartW / klineData.length) * 0.6;
+  const gap = Math.floor(chartW / klineData.length);
+  
+  // 找最高最低
+  const maxHigh = Math.max(...klineData.map(d => d.high)) + 5;
+  const minLow = Math.min(...klineData.map(d => d.low)) - 5;
+  const range = maxHigh - minLow || 1;
+  
+  const scaleY = (val) => padT + chartH - ((val - minLow) / range) * chartH;
+  
+  // Y轴网格
+  let gridSvg = '';
+  for (let v = Math.floor(minLow / 10) * 10; v <= maxHigh; v += 10) {
+    const y = scaleY(v);
+    gridSvg += `<line x1="${padL}" y1="${y}" x2="${svgW - padR}" y2="${y}" stroke="#f0f0f0" stroke-width="1"/>`;
+    gridSvg += `<text x="${padL - 5}" y="${y + 4}" text-anchor="end" font-size="9" fill="#aaa">${v}</text>`;
+  }
+  
+  // K线蜡烛
+  let candlesSvg = '';
+  klineData.forEach((kd, i) => {
+    const x = padL + i * gap + gap / 2;
+    const isUp = kd.close >= kd.open;
+    const color = isUp ? '#22c55e' : '#ef4444';
+    const darkColor = isUp ? '#15803d' : '#b91c1c';
+    
+    const bodyTop = scaleY(Math.max(kd.open, kd.close));
+    const bodyBot = scaleY(Math.min(kd.open, kd.close));
+    const bodyH = Math.max(2, bodyBot - bodyTop);
+    
+    // 上影线
+    const wickTop = scaleY(kd.high);
+    // 下影线
+    const wickBot = scaleY(kd.low);
+    
+    const isNow = kd.year === currentYear;
+    const strokeW = isNow ? 2 : 1;
+    
+    // 影线
+    candlesSvg += `<line x1="${x}" y1="${wickTop}" x2="${x}" y2="${bodyTop}" stroke="${darkColor}" stroke-width="${strokeW}"/>`;
+    candlesSvg += `<line x1="${x}" y1="${bodyBot}" x2="${x}" y2="${wickBot}" stroke="${darkColor}" stroke-width="${strokeW}"/>`;
+    // 实体
+    candlesSvg += `<rect x="${x - candleW/2}" y="${bodyTop}" width="${candleW}" height="${bodyH}" fill="${color}" stroke="${darkColor}" stroke-width="${strokeW}" rx="1"/>`;
+    
+    // 年份标签（每两年显示一次）
+    if ((kd.year % 2) === 0 || i === klineData.length - 1) {
+      candlesSvg += `<text x="${x}" y="${svgH - 8}" text-anchor="middle" font-size="9" fill="#666">${kd.year}</text>`;
+    }
+    
+    // 当前年高亮
+    if (isNow) {
+      candlesSvg += `<rect x="${x - candleW/2 - 2}" y="${bodyTop - 2}" width="${candleW + 4}" height="${bodyH + 4}" fill="none" stroke="#2196f3" stroke-width="2" rx="2"/>`;
+    }
+  });
+  
+  // 找出巅峰和低谷
+  const peak = klineData.reduce((max, k) => k.high > max.high ? k : max, klineData[0]);
+  const valley = klineData.reduce((min, k) => k.low < min.low ? k : min, klineData[0]);
+  const peakX = padL + klineData.indexOf(peak) * gap + gap / 2;
+  const valleyX = padL + klineData.indexOf(valley) * gap + gap / 2;
+  
+  // 标注巅峰低谷
+  candlesSvg += `<text x="${peakX}" y="${scaleY(peak.high) - 8}" text-anchor="middle" font-size="10">🏆</text>`;
+  candlesSvg += `<text x="${valleyX}" y="${scaleY(valley.low) + 16}" text-anchor="middle" font-size="10">😢</text>`;
+  
+  let html = `<div style="background:#fff; border-radius:16px; padding:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 4px;">
+      <p style="margin:0;font-size:15px;font-weight:bold;color:#333;">📊 人生流年K线图</p>
+      <div style="display:flex;gap:10px;font-size:11px;">
+        <span style="color:#22c55e;">● 涨(吉)</span>
+        <span style="color:#ef4444;">● 跌(凶)</span>
+      </div>
+    </div>
+    <svg width="100%" viewBox="0 0 ${svgW} ${svgH}" style="display:block;">
+      ${gridSvg}
+      ${candlesSvg}
+      <text x="${svgW/2}" y="${svgH - 5}" text-anchor="middle" font-size="9" fill="#999">流年</text>
+      <text x="10" y="${svgH/2}" text-anchor="middle" font-size="9" fill="#999" transform="rotate(-90 10 ${svgH/2})">运势分</text>
+    </svg>
+    <div style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+      <div style="background:#fef2f2;padding:8px 14px;border-radius:10px;text-align:center;border:1px solid #fecaca;">
+        <p style="margin:0;font-size:11px;color:#999;">🏆 巅峰年</p>
+        <p style="margin:4px 0 0;font-size:14px;font-weight:bold;color:#dc2626;">${peak.year}年</p>
+        <p style="margin:2px 0 0;font-size:10px;color:#999;">${peak.reason}</p>
+      </div>
+      <div style="background:#f0fdf4;padding:8px 14px;border-radius:10px;text-align:center;border:1px solid #bbf7d0;">
+        <p style="margin:0;font-size:11px;color:#999;">😢 低谷年</p>
+        <p style="margin:4px 0 0;font-size:14px;font-weight:bold;color:#16a34a;">${valley.year}年</p>
+        <p style="margin:2px 0 0;font-size:10px;color:#999;">${valley.reason}</p>
+      </div>
+      <div style="background:#eff6ff;padding:8px 14px;border-radius:10px;text-align:center;border:1px solid #bfdbfe;">
+        <p style="margin:0;font-size:11px;color:#999;">📍 当前</p>
+        <p style="margin:4px 0 0;font-size:14px;font-weight:bold;color:#2563eb;">${currentYear}年</p>
+        <p style="margin:2px 0 0;font-size:10px;color:#999;">虚${age}岁</p>
+      </div>
+    </div>
+  </div>`;
+  
+  return html;
+}
+
+  </script>
+</body>
+</html>
