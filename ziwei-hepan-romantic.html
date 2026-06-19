@@ -556,17 +556,17 @@ body::after {
         <label>时辰</label>
         <select id="a_hour">
           <option value="0">子时 (23:00-01:00)</option>
-          <option value="1">丑时 (01:00-03:00)</option>
-          <option value="2">寅时 (03:00-05:00)</option>
-          <option value="3">卯时 (05:00-07:00)</option>
-          <option value="4">辰时 (07:00-09:00)</option>
-          <option value="5">巳时 (09:00-11:00)</option>
-          <option value="6">午时 (11:00-13:00)</option>
-          <option value="7">未时 (13:00-15:00)</option>
-          <option value="8">申时 (15:00-17:00)</option>
-          <option value="9">酉时 (17:00-19:00)</option>
-          <option value="10">戌时 (19:00-21:00)</option>
-          <option value="11">亥时 (21:00-23:00)</option>
+          <option value="2">丑时 (01:00-03:00)</option>
+          <option value="4">寅时 (03:00-05:00)</option>
+          <option value="6">卯时 (05:00-07:00)</option>
+          <option value="8">辰时 (07:00-09:00)</option>
+          <option value="10">巳时 (09:00-11:00)</option>
+          <option value="12">午时 (11:00-13:00)</option>
+          <option value="14">未时 (13:00-15:00)</option>
+          <option value="16">申时 (15:00-17:00)</option>
+          <option value="18">酉时 (17:00-19:00)</option>
+          <option value="20">戌时 (19:00-21:00)</option>
+          <option value="22">亥时 (21:00-23:00)</option>
         </select>
       </div>
       <div class="form-group">
@@ -596,17 +596,17 @@ body::after {
         <label>时辰</label>
         <select id="b_hour">
           <option value="0">子时 (23:00-01:00)</option>
-          <option value="1">丑时 (01:00-03:00)</option>
-          <option value="2">寅时 (03:00-05:00)</option>
-          <option value="3">卯时 (05:00-07:00)</option>
-          <option value="4">辰时 (07:00-09:00)</option>
-          <option value="5">巳时 (09:00-11:00)</option>
-          <option value="6" selected>午时 (11:00-13:00)</option>
-          <option value="7">未时 (13:00-15:00)</option>
-          <option value="8">申时 (15:00-17:00)</option>
-          <option value="9">酉时 (17:00-19:00)</option>
-          <option value="10">戌时 (19:00-21:00)</option>
-          <option value="11">亥时 (21:00-23:00)</option>
+          <option value="2">丑时 (01:00-03:00)</option>
+          <option value="4">寅时 (03:00-05:00)</option>
+          <option value="6">卯时 (05:00-07:00)</option>
+          <option value="8">辰时 (07:00-09:00)</option>
+          <option value="10">巳时 (09:00-11:00)</option>
+          <option value="12" selected>午时 (11:00-13:00)</option>
+          <option value="14">未时 (13:00-15:00)</option>
+          <option value="16">申时 (15:00-17:00)</option>
+          <option value="18">酉时 (17:00-19:00)</option>
+          <option value="20">戌时 (19:00-21:00)</option>
+          <option value="22">亥时 (21:00-23:00)</option>
         </select>
       </div>
       <div class="form-group">
@@ -670,11 +670,35 @@ body::after {
         <div id="mutagenHits"></div>
         <div class="plain-talk" id="mutagenPlainTalk"></div>
       </div>
+
+      <div class="section">
+        <div class="section-title">🧭 缘分深度分析（生肖入宫）</div>
+        <div id="zodiacSummary"></div>
+        <div id="zodiacHits"></div>
+        <div class="plain-talk" id="zodiacPlainTalk"></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
+// 标准化 chart API 返回数据 → hepan 页面格式
+function normalizeChartData(apiData) {
+  const d = apiData;
+  const birth = d.birth || {};
+  const gender = birth.gender === 'male' ? '男' : '女';
+  const solarDate = `${birth.year}-${String(birth.month).padStart(2,'0')}-${String(birth.day).padStart(2,'0')}`;
+  return {
+    birth_info: { gender, solar_date: solarDate },
+    palaces: (d.palaces || []).map(p => ({
+      name: p.name,
+      earthly_branch: p.branch,
+      major_stars: (p.stars || []).filter(s => s.type === 'major').map(s => s.name),
+      is_body: p.isBodyPalace
+    }))
+  };
+}
+
 // 大白话点评生成函数
 function generateOverallPlainTalk(score) {
   let html = '<h3>💬 大白话点评</h3>';
@@ -696,72 +720,171 @@ function generatePalacePlainTalk(data) {
   const hits = data.hits || [];
   const palaceHits = hits.filter(h => h.dimension === 'palace_alignment');
   
-  let html = '<h3>💬 宫位分析大白话</h3>';
-  html += '<p>宫位对齐就是看你们十二个生活领域（性格、兄弟、夫妻、子女、财运等）的配合程度。</p>';
+  let html = '<h3>💬 宫位互动总结</h3>';
   
   if (palaceHits.length === 0) {
-    html += '<p>你们的宫位关系比较平和，没有特别强烈的冲克，但也没有特别强的助力。<span class="highlight">平淡中见真情</span>，踏实过日子也很重要。</p>';
-  } else {
-    const hasChong = palaceHits.some(h => h.evidence.relation === '冲');
-    const hasHai = palaceHits.some(h => h.evidence.relation === '害');
-    const hasXing = palaceHits.some(h => h.evidence.relation === '刑');
-    
-    if (hasChong) {
-      html += '<p>你们在某些方面容易有<span class="highlight">意见不合</span>，比如性格、价值观等。这很正常，关键是学会沟通和妥协。冲也不是坏事，有时反而能激发成长。</p>';
-    }
-    if (hasHai) {
-      html += '<p>在某些生活领域，你们可能会<span class="highlight">无意中伤害对方</span>（可能不是故意的）。建议多关注对方的感受，不要觉得"我就是这种性格"。</p>';
-    }
-    if (hasXing) {
-      html += '<p>你们的性格中有些<span class="highlight">固执的一面</span>，容易坚持己见。学会放下身段，感情才能更和谐。</p>';
-    }
+    html += '<p>双方宫位没有形成明显的冲克或助力关系，感情基础平平，需要后天经营。</p>';
+    return html;
   }
+  
+  // 分类统计
+  const goodRels = ['he','liuhe','sanhe','same'];
+  const badRels = ['chong','xing','hai','ke'];
+  const goodHits = palaceHits.filter(h => goodRels.includes(h.evidence.relation));
+  const badHits = palaceHits.filter(h => badRels.includes(h.evidence.relation));
+  
+  html += '<div style="background:#fdf6f0; border-radius:10px; padding:12px 16px; margin-bottom:10px;">';
+  
+  if (goodHits.length > 0) {
+    html += '<p style="color:#2e7d32;"><strong>✅ 有利方面：</strong></p>';
+    // 去重
+    const seenGood = new Set();
+    goodHits.forEach(h => {
+      const pair = h.evidence.left_palace + '-' + h.evidence.right_palace;
+      if (seenGood.has(pair)) return;
+      seenGood.add(pair);
+      const relCN = {he:'和谐',liuhe:'六合',sanhe:'三合',same:'同宫'}[h.evidence.relation] || h.evidence.relation;
+      html += `<p style="margin:2px 0; padding-left:8px;">• ${h.evidence.left_palace} ↔ ${h.evidence.right_palace}（${relCN}）${
+        h.evidence.left_palace === '夫妻' ? '——感情模式契合，互相能满足对方的情感需求' :
+        h.evidence.left_palace === '福德' ? '——精神追求和内在世界有共鸣，能聊到一起去' :
+        h.evidence.left_palace === '命宫' ? '——性格底色互补，相处自然不累' :
+        h.evidence.left_palace === '财帛' ? '——金钱观和消费习惯比较合拍' : ''
+      }</p>`;
+    });
+  }
+  
+  if (badHits.length > 0) {
+    html += '<p style="color:#c0392b; margin-top:8px;"><strong>⚠️ 需要注意：</strong></p>';
+    const seenBad = new Set();
+    badHits.forEach(h => {
+      const pair = h.evidence.left_palace + '-' + h.evidence.right_palace;
+      if (seenBad.has(pair)) return;
+      seenBad.add(pair);
+      const relCN = {chong:'相冲',xing:'相刑',hai:'相害',ke:'相克'}[h.evidence.relation] || h.evidence.relation;
+      html += `<p style="margin:2px 0; padding-left:8px;">• ${h.evidence.left_palace} ↔ ${h.evidence.right_palace}（${relCN}）${
+        h.evidence.left_palace === '夫妻' ? '——感情需求和表达方式有差异，容易互相不理解' :
+        h.evidence.left_palace === '福德' ? '——精神世界不太同频，需要更多互相包容' :
+        h.evidence.left_palace === '命宫' ? '——性格底色冲突，一个急一个慢（或一个主动一个被动），磨合费劲' :
+        h.evidence.left_palace === '财帛' ? '——消费观或理财方式分歧较大，建议财务独立' : ''
+      }</p>`;
+    });
+  }
+  
+  if (goodHits.length === 0 && badHits.length === 0) {
+    html += '<p>宫位关系以中性为主，没有特别明显的助力也没有明显的冲突。感情发展更多取决于后天的相处和经营。</p>';
+  }
+  
+  html += '</div>';
   
   return html;
 }
 
 function generateStarPlainTalk(data) {
   const starHits = data.hits.filter(h => h.dimension === 'star_harmony');
+  const starDim = data.dimensions.find(d => d.id === 'star_harmony');
+  const lovePct = data.love_score ? (data.love_score.pct || 0) : 0;
   
-  let html = '<h3>💬 星曜分析大白话</h3>';
-  html += '<p>星曜互动就是看你们命盘中的星星是否和谐。有些星在一起会互相帮助，有些星在一起容易吵架。</p>';
+  let html = '<h3>💬 星曜互动具体解读</h3>';
   
   if (starHits.length === 0) {
-    html += '<p>你们的星曜互动比较平和，没有特别大的冲突，但也没有特别强的化学反应。<span class="highlight">细水长流</span>，感情稳定也很重要。</p>';
-  } else {
-    const positiveHits = starHits.filter(h => h.effect > 0);
-    const negativeHits = starHits.filter(h => h.effect < 0);
+    html += '<p>双方命盘的核心星曜没有形成明显的互动关系，吸引力偏弱。感情更多依赖后天相处和共同经历来培养。</p>';
+    return html;
+  }
+  
+  // 逐条解读每个星曜互动
+  html += '<div style="background:#fdf6f0; border-radius:10px; padding:12px 16px; margin-bottom:10px;">';
+  starHits.forEach(h => {
+    const ev = h.evidence;
+    const starsA = (ev.stars_a || []).join('、');
+    const starsB = (ev.stars_b || []).join('、');
+    const harmonyPct = Math.round((ev.harmony || 0) * 100);
+    const effect = h.effect || 0;
+    const pairLabel = ev.pair || '';
     
-    if (positiveHits.length > negativeHits.length) {
-      html += '<p>好消息！你们的命盘星星很多是<span class="highlight">互相帮助</span>的。这意味着你们在一起会越来越好，互相旺对方。好好珍惜这段缘分！</p>';
-    } else if (negativeHits.length > positiveHits.length) {
-      html += '<p>你们的星星有些<span class="highlight">不太合拍</span>，在一起可能会有一些摩擦。但不要担心，星星只是影响因素之一，<span class="highlight">真心和努力更重要</span>。</p>';
+    // 提取关键宫位名
+    const parts = pairLabel.split('_');
+    const aPal = parts[1] || '';
+    const bPal = parts[2] || '';
+    const aPalCN = {'ming':'命宫','fuqi':'夫妻','fude':'福德','caibo':'财帛','zinu':'子女','qianyi':'迁移','jiaoyou':'交友','guanlu':'官禄','tianzhai':'田宅','ji厄':'疾厄','xiongdi':'兄弟','fumu':'父母'}[aPal] || aPal;
+    const bPalCN = {'ming':'命宫','fuqi':'夫妻','fude':'福德','caibo':'财帛','zinu':'子女','qianyi':'迁移','jiaoyou':'交友','guanlu':'官禄','tianzhai':'田宅','ji厄':'疾厄','xiongdi':'兄弟','fumu':'父母'}[bPal] || bPal;
+    
+    html += `<div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed #e0d5c5;">
+      <strong style="color:#c0392b;">${aPalCN} ↔ ${bPalCN}</strong>：第一人「${starsA}」 vs 第二人「${starsB}」<br>
+      <span style="color:#666;">和谐度 ${harmonyPct}%，影响 ${effect > 0 ? '+' : ''}${effect.toFixed(1)} 分</span>
+    </div>`;
+    
+    // 具体解读
+    if (harmonyPct >= 70) {
+      html += `<p style="margin:4px 0 0; color:#2e7d32;">✅ 高度和谐！${starsA}与${starsB}在命理上属同气或相生关系。${aPalCN}是性格/需求的核心领域，${bPalCN}是感情互动的关键宫位——你们在这些方面天然合拍，不需要太多磨合就能理解对方。</p>`;
+    } else if (harmonyPct >= 40) {
+      html += `<p style="margin:4px 0 0; color:#e67e22;">⚠️ 中等和谐。${starsA}和${starsB}有部分契合，但也有差异。${aPalCN}与${bPalCN}的互动说明你们在某些方面能互补，在另一些方面则需要更多的沟通和让步。</p>`;
     } else {
-      html += '<p>你们的星曜互动有好的方面，也有挑战的方面。<span class="highlight">发挥优势，面对挑战</span>，感情会越来越深。</p>';
+      html += `<p style="margin:4px 0 0; color:#c0392b;">❌ 和谐度偏低。${starsA}与${starsB}的星性差异较大，可能在${aPalCN}和${bPalCN}领域产生摩擦。这不是不能在一起，但需要有意识地避开对方的雷区。</p>`;
     }
+  });
+  html += '</div>';
+  
+  // 总体评价
+  if (lovePct >= 60) {
+    html += '<p>总体上，你们的星曜互动偏正面，精神层面的吸引力比较强，容易来电。</p>';
+  } else if (lovePct >= 40) {
+    html += '<p>总体来看，你们的星曜互动中规中矩，有一定的精神共鸣，但不会产生强烈的火花。需要共同经历才能加深感情。</p>';
+  } else {
+    html += '<p>你们的星曜互动整体偏弱，精神层面的连接感不强。如果在一起，需要更多现实的羁绊（共同目标、家庭责任等）来支撑。</p>';
   }
   
   return html;
 }
 
 function generateMutagenPlainTalk(data) {
-  const mutagenHits = data.hits.filter(h => h.dimension === 'mutagen_interaction' && h.evidence.matched);
+  const mutagenDim = data.dimensions.find(d => d.id === 'mutagen_interaction');
+  const allChain = (mutagenDim && mutagenDim.all_mutagen_chain) || [];
+  const matchedHits = data.hits.filter(h => h.dimension === 'mutagen_interaction' && h.evidence.matched);
   
-  let html = '<h3>💬 四化分析大白话</h3>';
-  html += '<p>四化就是化禄（带来好运）、化忌（带来挑战）。看四化如何影响对方，就能知道你们在一起后运势会如何变化。</p>';
+  let html = '<h3>💬 四化互动具体解读</h3>';
   
-  if (mutagenHits.length === 0) {
-    html += '<p>你们的四化互动比较平和，在一起后<span class="highlight">运势不会有太大波动</span>。这不是坏事，平稳也是一种福气。</p>';
+  if (allChain.length === 0 && matchedHits.length === 0) {
+    html += '<p>双方命盘之间没有明显的四化引动，在一起后运势不会因为对方而发生大的变化。平稳也是一种福气。</p>';
+    return html;
+  }
+  
+  // 使用完整的四化链数据
+  const displayChain = allChain.length > 0 ? allChain : matchedHits.map(h => ({
+    direction: h.evidence.direction === 'A->B' ? 'A→B' : 'B→A',
+    type: h.evidence.type === 'lu' ? '化禄' : h.evidence.type === 'ji' ? '化忌' : h.evidence.type === 'quan' ? '化权' : '化科',
+    star: h.evidence.star || '',
+    palace: h.evidence.target_palace || '',
+    meaning: ''
+  }));
+  
+  const dirGroups = { 'A→B': [], 'B→A': [] };
+  displayChain.forEach(c => { if (dirGroups[c.direction]) dirGroups[c.direction].push(c); });
+  
+  html += '<div style="background:#f0f4fd; border-radius:10px; padding:12px 16px; margin-bottom:10px;">';
+  Object.keys(dirGroups).forEach(dir => {
+    const items = dirGroups[dir];
+    if (items.length === 0) return;
+    const dirLabel = dir === 'A→B' ? '第一人对第二人' : '第二人对第一人';
+    html += `<p style="font-weight:bold; color:#1a5276; margin-top:6px;">📌 ${dirLabel}的影响：</p>`;
+    items.forEach(c => {
+      const emoji = c.type === '化禄' ? '🟢' : c.type === '化权' ? '🔵' : c.type === '化科' ? '🟣' : '🔴';
+      html += `<p style="margin:4px 0; padding-left:12px;">${emoji} <strong>${c.star}${c.type}</strong> → 落入 <strong>${c.palace}</strong>`;
+      if (c.meaning) html += ` — ${c.meaning}`;
+      html += '</p>';
+    });
+  });
+  html += '</div>';
+  
+  // 总结
+  const luItems = displayChain.filter(c => c.type === '化禄');
+  const jiItems = displayChain.filter(c => c.type === '化忌');
+  
+  if (luItems.length > jiItems.length) {
+    html += `<p>你们的四化以化禄为主（${luItems.length}条 vs ${jiItems.length}条），在一起后运势整体向好，尤其在${[...new Set(luItems.map(c=>c.palace))].join('、')}等方面有明显助力。</p>`;
+  } else if (jiItems.length > luItems.length) {
+    html += `<p>你们的四化中化忌较多（${jiItems.length}条），在一起可能会面临一些挑战，尤其在${[...new Set(jiItems.map(c=>c.palace))].join('、')}等方面需要特别用心经营。</p>`;
   } else {
-    const luHits = mutagenHits.filter(h => h.evidence.type === 'lu');
-    const jiHits = mutagenHits.filter(h => h.evidence.type === 'ji');
-    
-    if (luHits.length > 0) {
-      html += '<p>好消息！你们的化禄能量会<span class="highlight">给彼此带来好运</span>，比如财运变好、事业顺利、心情愉快等。在一起后会越来越旺！</p>';
-    }
-    if (jiHits.length > 0) {
-      html += '<p>你们在一起后可能会面临一些<span class="highlight">挑战</span>（比如压力增大、需要更多付出等）。但化忌也代表成长，一起面对困难，感情会更牢固。</p>';
-    }
+    html += '<p>化禄与化忌大致平衡，在一起有得有失。这是大多数关系的常态——有甜蜜的时候，也有需要磨合的地方。</p>';
   }
   
   return html;
@@ -839,39 +962,99 @@ function renderChart(which, d) {
 }
 
 // 显示合盘结果
+function generateConclusion(data) {
+  const score = Math.round(data.score || 0);
+  const lovePct = (data.love_score && data.love_score.pct) || 0;
+  const lifePct = (data.life_score && data.life_score.pct) || 0;
+  const zodiacDim = data.dimensions.find(d => d.id === 'zodiac');
+  const aInB = zodiacDim && zodiacDim.a_zodiac_b_palace || {};
+  const bInA = zodiacDim && zodiacDim.b_zodiac_a_palace || {};
+  const zodiacOk = (aInB.is_inner && bInA.is_inner);
+  const zodiacBad = (!aInB.is_inner && !bInA.is_inner);
+
+  let lines = [];
+
+  // 1. 缘分深浅（生肖入宫主导）
+  if (zodiacBad) {
+    lines.push('你们的生肖互入对方六外宫，缘分基础较弱。即使在一起，也容易因为根本性的性格差异而疲惫。');
+    if (score >= 60) lines.push('⚠️ 总分虽不低，但缘分根基不足——你们的吸引力可能来自表面条件，不适合长期发展。');
+  } else if (zodiacOk) {
+    lines.push('你们的生肖互入对方六内宫，缘分根基扎实。这是很难得的先天好感，在一起容易有"似曾相识"的感觉。');
+  } else if (aInB.is_inner || bInA.is_inner) {
+    const whoIn = aInB.is_inner ? '你' : '对方';
+    lines.push(`${whoIn}的生肖落入了对方六内宫，缘分基础尚可，有一方会更主动。建议多观察被动方的真实感受。`);
+  } else {
+    lines.push('你们的生肖未形成明显的缘分共振，缘分基础一般。需要更多后天的努力来维系。');
+  }
+
+  // 2. 喜欢程度（称心分主导）
+  const whoLikes = lovePct >= 60 ? '你们内心彼此吸引，精神层面有共鸣' :
+    lovePct >= 40 ? '你们在精神层面有一定共鸣，但缺乏强烈的吸引力' :
+    '你们的性格和精神追求差异较大，不太容易产生心动的感觉';
+  lines.push(whoLikes + '。');
+
+  // 3. 适合程度（如意分主导）
+  if (lifePct >= 60) {
+    lines.push('你们相处起来很顺，现实中能互相扶持，很适合一起过日子。');
+  } else if (lifePct >= 40) {
+    lines.push('你们在现实中需要磨合，互相的生活方式有差异，需要更多沟通。');
+  } else {
+    lines.push('你们在现实中容易有摩擦，建议放慢节奏，多观察日常相处是否合拍。');
+  }
+
+  // 4. 综合结论
+  if (lovePct >= 60 && lifePct >= 60 && zodiacOk) {
+    lines.push('💖 天作之合——你喜欢她，她适合你，缘分也深。');
+  } else if (lovePct >= 60 && lifePct < 40) {
+    lines.push('💡 你喜欢她，但相处起来会有很多实际冲突。建议先做朋友，深入了解后再决定。');
+  } else if (lovePct < 40 && lifePct >= 60) {
+    lines.push('💡 你对她没有明显心动，但你们很合适过日子。如果你不追求激情，可以继续。');
+  } else if (zodiacBad && score >= 60) {
+    lines.push('⚠️ 缘分不足，建议谨慎。表面上的吸引力可能无法支撑长期的相处。');
+  } else {
+    lines.push('🤝 你们适合做朋友或合作伙伴，感情上需要更多的火候。');
+  }
+
+  return lines.join('\n');
+}
+
 function displayResult(data) {
-  // 显示总分
   const score = Math.round(data.score || 0);
   document.getElementById('scoreCircle').textContent = score;
-  
-  let scoreText = '';
-  if (score >= 80) scoreText = '🌟🌟🌟🌟🌟 天作之合，缘分深厚！';
-  else if (score >= 60) scoreText = '🌟🌟🌟🌟 很有潜力，多沟通会更幸福！';
-  else if (score >= 40) scoreText = '🌟🌟🌟 需要磨合，互相理解很重要';
-  else scoreText = '🌟🌟 挑战较大，但真心可以克服一切';
-  
-  document.getElementById('scoreText').textContent = scoreText;
-  
-  // 大白话点评
-  document.getElementById('overallPlainTalk').innerHTML = generateOverallPlainTalk(score);
-  
-  // 显示各维度评分
+
+  const conclusion = generateConclusion(data);
+  document.getElementById('scoreText').textContent = '';
+  document.getElementById('overallPlainTalk').innerHTML = '<h3>💬 详细结论</h3>' + conclusion.split('\n').map(l => '<p>' + l + '</p>').join('');
+
   displayDimensions(data);
-  
-  // 显示宫位对齐分析
   displayPalaceAnalysis(data);
-  
-  // 显示星曜互动分析
   displayStarAnalysis(data);
-  
-  // 显示四化互动分析
   displayMutagenAnalysis(data);
+  displayZodiacAnalysis(data);
 }
 
 function displayDimensions(data) {
   const dimensionsDiv = document.getElementById('dimensions');
   dimensionsDiv.innerHTML = '';
-  
+
+  // 称心分 & 如意分 双进度条
+  if (data.love_score && data.life_score) {
+    const lovePct = Math.round(data.love_score.pct);
+    const lifePct = Math.round(data.life_score.pct);
+    const item = document.createElement('div');
+    item.className = 'dimension';
+    item.innerHTML = `
+      <h3>💚 你喜欢她（称心分）: ${data.love_score.score.toFixed(1)}/${data.love_score.max}</h3>
+      <div class="progress-bar"><div class="progress-fill" style="width:${lovePct}%;background:linear-gradient(90deg,#e91e63,#ff6f9f)"></div></div>
+      <p style="font-size:0.85em;color:#666;margin:4px 0">星曜匹配 → 精神层面的喜欢程度，越高代表内心越容易来电</p>
+      <h3 style="margin-top:12px;">💛 你们适合过日子（如意分）: ${data.life_score.score.toFixed(1)}/${data.life_score.max}</h3>
+      <div class="progress-bar"><div class="progress-fill" style="width:${lifePct}%;background:linear-gradient(90deg,#ff9800,#ffc107)"></div></div>
+      <p style="font-size:0.85em;color:#666;margin:4px 0">四化引动 → 现实中的相处顺畅度，越高代表越适合一起生活</p>
+    `;
+    dimensionsDiv.appendChild(item);
+  }
+
+  // 各维度
   data.dimensions.forEach(dim => {
     const pct = Math.round((dim.score / dim.max) * 100);
     const item = document.createElement('div');
@@ -888,164 +1071,197 @@ function displayDimensions(data) {
   });
 }
 
+// 星曜性格字典（主星+部分辅星）
+const STAR_TRAITS = {
+  '紫微':{nature:'王者气质',pos:'领导力强、自尊心高、有担当',neg:'控制欲强、好面子、听不进劝',vibe:'稳重权威型'},
+  '天机':{nature:'智谋机变',pos:'聪明灵活、善谋略、心思细腻',neg:'想太多、善变、容易犹豫',vibe:'智慧灵动型'},
+  '太阳':{nature:'热情阳光',pos:'热情主动、光明磊落、有正义感',neg:'好面子、太直白伤人、付出过度',vibe:'温暖开朗型'},
+  '武曲':{nature:'刚毅果决',pos:'果断坚毅、务实重利、执行力强',neg:'固执、重钱轻情、不够浪漫',vibe:'硬汉实干型'},
+  '天同':{nature:'温和随性',pos:'温和好相处、知足常乐、有福气',neg:'懒散、缺乏主见、容易安于现状',vibe:'佛系享受型'},
+  '廉贞':{nature:'倔强执着',pos:'专注执着、敢爱敢恨、原则性强',neg:'情绪化、固执己见、容易钻牛角尖',vibe:'烈性深情型'},
+  '天府':{nature:'稳重包容',pos:'稳重可靠、包容大度、重家庭安全感',neg:'保守固执、占有欲强、控制欲',vibe:'沉稳贤惠型'},
+  '太阴':{nature:'温柔细腻',pos:'温柔体贴、感性细腻、审美好',neg:'情绪化、多愁善感、容易被动',vibe:'柔情文艺型'},
+  '贪狼':{nature:'多才多艺',pos:'多才多艺、善交际、桃花旺',neg:'欲望强、喜新厌旧、容易放纵',vibe:'风流才子型'},
+  '巨门':{nature:'口才好辩',pos:'口才好、分析力强、重逻辑',neg:'多疑、说话太直伤感情、容易较真',vibe:'辩才犀利型'},
+  '天相':{nature:'公正圆融',pos:'公平正直、善协调、重和谐',neg:'老好人没立场、太在乎别人看法',vibe:'稳重协调型'},
+  '天梁':{nature:'成熟稳重',pos:'成熟稳重大气、爱照顾人、有长者风范',neg:'爱说教、唠叨、喜欢管束别人',vibe:'家长大哥型'},
+  '七杀':{nature:'敢闯敢拼',pos:'果断刚毅、敢冒险、目标明确',neg:'冲动、脾气暴躁、不顾他人感受',vibe:'霸道总裁型'},
+  '破军':{nature:'突破创新',pos:'敢破敢立、创新力强、不拘一格',neg:'不安定、善变、容易破坏现有关系',vibe:'颠覆叛逆型'},
+  '文昌':{nature:'文采风流',pos:'聪明好学、有才华、思维清晰',neg:'书生气、理想化、不切实际',vibe:'才子书生型'},
+  '文曲':{nature:'才艺灵动',pos:'多才多艺、口才好、善表达',neg:'话多、爱表现、容易轻浮',vibe:'才华横溢型'},
+  '左辅':{nature:'稳重助力',pos:'稳重辅佐、善配合、人缘好',neg:'缺乏主见、太依赖、不够独立',vibe:'辅助守护型'},
+  '右弼':{nature:'灵动助力',pos:'灵活助人、善协调、有智慧',neg:'多变、不够专注、左右逢源',vibe:'智囊辅助型'},
+  '天魁':{nature:'贵人气质',pos:'有贵人运、正直大方、有格局',neg:'依赖贵人、不够自强',vibe:'贵人加持型'},
+  '天钺':{nature:'贵人温雅',pos:'温文尔雅、有贵人帮、善借力',neg:'依赖心重、缺乏冲劲',vibe:'温和贵人型'},
+  '禄存':{nature:'福禄安稳',pos:'财运稳定、安定知足、不贪心',neg:'过于保守、缺乏冒险精神',vibe:'守财安稳型'},
+  '擎羊':{nature:'冲动刚猛',pos:'行动力强、敢冲敢干',neg:'冲动易怒、伤人伤己、脾气大',vibe:'火爆冲动型'},
+  '陀罗':{nature:'纠结拖延',pos:'谨慎细心、不冒进',neg:'拖延犹豫、容易纠结、磨人',vibe:'磨叽慢热型'},
+  '火星':{nature:'急火爆裂',pos:'热情奔放、行动快',neg:'急躁、易发火、来得快去得快',vibe:'火爆急先锋'},
+  '铃星':{nature:'暗火忍耐',pos:'能忍辱负重、持久',neg:'憋在心里、一旦爆发不可收拾',vibe:'闷烧暗火型'},
+  '地空':{nature:'空灵出尘',pos:'思维独特、不世俗、有创意',neg:'空想不落地、不切实际、容易放弃',vibe:'天马行空型'},
+  '地劫':{nature:'波折动荡',pos:'经历丰富、看透世事',neg:'起伏大、不稳定、缺乏安全感',vibe:'跌宕起伏型'},
+  '天马':{nature:'奔波活跃',pos:'行动力强、不拖沓、喜欢变化',neg:'不稳定、难安定、容易跑路',vibe:'永动奔波型'},
+};
+
+// 宫位维度解读导向
+const PALACE_DIMENSION = {
+  '命宫':'性格底色', '夫妻':'感情模式', '福德':'精神世界', '财帛':'金钱观',
+  '子女':'子女缘', '迁移':'社交形象', '交友':'朋友圈', '官禄':'事业心',
+  '田宅':'家庭观', '疾厄':'身心状态', '兄弟':'手足情', '父母':'长辈缘'
+};
+
+function describeStars(stars, gender) {
+  if (!stars || stars.length === 0) return '无主星（该宫力量较弱，更受对宫影响）';
+  const ta = gender === '女' ? '她' : '他';
+  const list = [];
+  stars.forEach(s => {
+    const name = s.name || s;
+    const t = STAR_TRAITS[name];
+    if (t) {
+      // 按宫位不同选取不同侧重点
+      list.push({name, ...t});
+    } else {
+      list.push({name, nature:'', pos:`${name}特质`, neg:'', vibe:''});
+    }
+  });
+  if (list.length === 0) return '无主星（该宫力量较弱，更受对宫影响）';
+  // 综合描述
+  const primary = list[0];
+  const restNames = list.slice(1).map(s => s.name).join('、');
+  let desc = `主星${primary.name}（${primary.nature}）：${ta}${primary.pos}`;
+  if (restNames) desc += `，兼${restNames}的影响`;
+  if (primary.neg && list.length === 1) desc += `。⚠️ ${primary.neg}`;
+  return desc;
+}
+
+function generatePalaceStarAnalysis(palaceName, leftStars, rightStars, relation, leftChart, rightChart) {
+  const dim = PALACE_DIMENSION[palaceName] || palaceName + '领域';
+  const relMap = { he: '和谐', chong: '冲突', xing: '刑克', hai: '相害', ke: '相克', same: '同宫', sanhe: '三合', liuhe: '六合', neutral: '中性' };
+  const relLabel = relMap[relation] || relation || '中性';
+
+  // 提取双方的主要星曜姓名
+  const leftMajor = (leftStars && leftStars.major_stars || []).map(s => typeof s === 'string' ? s : s.name).filter(Boolean);
+  const leftMinor = (leftStars && leftStars.minor_stars || []).map(s => typeof s === 'string' ? s : s.name).filter(Boolean);
+  const leftAll = [...leftMajor, ...leftMinor];
+  const rightMajor = (rightStars && rightStars.major_stars || []).map(s => typeof s === 'string' ? s : s.name).filter(Boolean);
+  const rightMinor = (rightStars && rightStars.minor_stars || []).map(s => typeof s === 'string' ? s : s.name).filter(Boolean);
+  const rightAll = [...rightMajor, ...rightMinor];
+
+  const leftGender = leftChart === 'A' ? '男' : '女'; // 粗略（合盘默认A男B女，可以优化）
+  const rightGender = leftChart === 'A' ? '女' : '男';
+  const leftLabel = leftChart === 'A' ? '你' : 'TA';
+  const rightLabel = leftChart === 'A' ? 'TA' : '你';
+
+  let lines = [];
+  lines.push(`<strong>${dim} — ${leftLabel}和${rightLabel}在这个维度的具体分析：</strong>`);
+
+  // left person's stars in this palace
+  if (leftMajor.length > 0) {
+    const desc = describeStars(leftMajor.map(n => ({name:n})), leftGender);
+    lines.push(`<span style="color:#e91e63">${leftLabel}的${palaceName}：</span>${desc}`);
+  } else {
+    lines.push(`<span style="color:#e91e63">${leftLabel}的${palaceName}：</span>无主星，该领域受对宫牵引，表现不太稳定。`);
+  }
+
+  // right person's stars in this palace
+  if (rightMajor.length > 0) {
+    const desc = describeStars(rightMajor.map(n => ({name:n})), rightGender);
+    lines.push(`<span style="color:#2196f3">${rightLabel}的${palaceName}：</span>${desc}`);
+  } else {
+    lines.push(`<span style="color:#2196f3">${rightLabel}的${palaceName}：</span>无主星，该领域受对宫牵引，表现不太稳定。`);
+  }
+
+  // 综合解读
+  if (palaceName === '福德') {
+    lines.push(`<em>你们的精神世界和内在追求——${leftLabel}偏${leftMajor[0] ? STAR_TRAITS[leftMajor[0]]?.vibe || leftMajor[0]+'型' : '不确定'}，${rightLabel}偏${rightMajor[0] ? STAR_TRAITS[rightMajor[0]]?.vibe || rightMajor[0]+'型' : '不确定'}。${relLabel==='和谐'||relLabel==='三合'||relLabel==='六合'?'两种气质相融，精神上容易共鸣。':'两种气质不同，需要互相理解对方的内在需要。'}</em>`);
+  } else if (palaceName === '命宫') {
+    lines.push(`<em>核心性格——${relLabel==='和谐'||relLabel==='三合'||relLabel==='六合'?'你们性格底色互补，一个主一个辅，相处自然。':'性格底色有差异，一个偏积极一个偏保守（或相反），磨合需要耐心。'}</em>`);
+  } else if (palaceName === '夫妻') {
+    lines.push(`<em>感情需求——${relLabel==='冲突'||relLabel==='刑克'?'你们对感情的表达方式容易错位：一方要的多一方给的少。建议明确沟通需求。':'你们的感情需求有交集，可以在关系中各自找到位置。'}</em>`);
+  } else if (palaceName === '财帛') {
+    lines.push(`<em>金钱观念——${leftLabel}偏${leftMajor[0] ? STAR_TRAITS[leftMajor[0]]?.nature || '务实' : '随性'}，${rightLabel}偏${rightMajor[0] ? STAR_TRAITS[rightMajor[0]]?.nature || '随性' : '务实'}。${relLabel==='冲突'?'消费观容易产生摩擦，建议财务分开管理。':'财务观念可以互补，适合一起规划未来。'}</em>`);
+  } else {
+    // 通用
+    const bothStarNames = [...new Set([...leftAll, ...rightAll])];
+    const known = bothStarNames.filter(n => STAR_TRAITS[n]);
+    if (known.length > 0) {
+      lines.push(`<em>${dim}的主角星曜：${known.join('、')}——这些星决定了你们在这个领域的相处模式。</em>`);
+    }
+  }
+
+  return lines.join('<br>');
+}
+
 function displayPalaceAnalysis(data) {
   const palaceHits = data.hits.filter(h => h.dimension === 'palace_alignment');
   const summary = data.dimensions.find(d => d.id === 'palace_alignment');
-  
+
   const summaryDiv = document.getElementById('palaceSummary');
   if (summary && summary.reason_summary) {
     summaryDiv.innerHTML = `<p>${summary.reason_summary.display_text}</p>`;
   }
-  
+
   const hitsDiv = document.getElementById('palaceHits');
   hitsDiv.innerHTML = '';
-  
+
   if (palaceHits.length === 0) {
-    hitsDiv.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">双方重要宫位没有明显冲突，也没有特别加分。平淡中见真情，踏实过日子也很重要。</p>';
+    hitsDiv.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">双方重要宫位没有明显冲突，也没有特别加分。<span class="highlight">中性关系</span>代表吸引力较弱，平淡中见真情，踏实过日子也很重要。</p>';
     return;
   }
-  
-  // 1. 去重：只保留唯一对比（A→B 和 B→A 只保留一个）
+
+  // 去重 & 排序
   const uniqueHits = [];
   const seenPairs = new Set();
-  
   palaceHits.forEach(h => {
     const palaceA = h.evidence.left_palace;
     const palaceB = h.evidence.right_palace;
-    const pairKey = [palaceA, palaceB].sort().join('-');  // 排序后生成唯一key
-    
+    const pairKey = [palaceA, palaceB].sort().join('-');
     if (!seenPairs.has(pairKey)) {
       seenPairs.add(pairKey);
       uniqueHits.push(h);
     }
   });
-  
-  // 2. 排序：按对感情影响排序
-  const palacePriority = {
-    '夫妻': 1,  // 最重要：感情婚姻
-    '福德': 2,  // 第二：精神契合
-    '命宫': 3,  // 第三：性格本性
-    '财帛': 4,  // 第四：物质价值观
-    '田宅': 5,  // 第五：家庭观念
-    '子女': 6,  // 第六：子女观念
-    '迁移': 7,  // 第七：社交形象
-    '交友': 8,  // 第八：朋友圈
-    '事业': 9,  // 第九：事业心
-    '疾厄': 10, // 第十：健康习惯
-    '兄弟': 11,
-    '父母': 12
-  };
-  
+
+  const palacePriority = { '夫妻':1,'福德':2,'命宫':3,'财帛':4,'田宅':5,'子女':6,'迁移':7,'交友':8,'官禄':9,'疾厄':10,'兄弟':11,'父母':12 };
   uniqueHits.sort((a, b) => {
-    const priorityA = palacePriority[a.evidence.left_palace] || 99;
-    const priorityB = palacePriority[b.evidence.left_palace] || 99;
-    return priorityA - priorityB;
+    const pa = palacePriority[a.evidence.left_palace] || 99;
+    const pb = palacePriority[b.evidence.left_palace] || 99;
+    return pa - pb;
   });
-  
-  // 3. 显示去重+排序后的宫位对比（针对性大白话）
+
+  // 显示宫位对比
   uniqueHits.forEach(h => {
     const ev = h.evidence;
     const palaceAName = ev.left_palace || '未知';
     const palaceBName = ev.right_palace || '未知';
-    
-    let relationText = '';
-    let relationColor = '';
-    let relationIcon = '';
-    let plainTalk = '';
-    
-    // 针对性解释（根据模板）
-    if (palaceAName === '夫妻' || palaceBName === '夫妻') {
-      // 夫妻宫相关：分析感情模式
-      switch(ev.relation) {
-        case 'he':
-          relationText = '感情和谐';
-          relationColor = '#4caf50';
-          relationIcon = '✅';
-          plainTalk = '你们的夫妻宫和谐，代表你们对感情的需求很匹配，在一起会很甜蜜。';
-          break;
-        case 'chong':
-          relationText = '感情冲突';
-          relationColor = '#f44336';
-          relationIcon = '❌';
-          plainTalk = '你们的夫妻宫相冲，说明在感情表达上容易有冲突，需要多沟通。';
-          break;
-        default:
-          relationText = '感情平和';
-          relationColor = '#2196f3';
-          relationIcon = '➕';
-          plainTalk = '你们的夫妻宫关系平和，没有特别强烈的吸引力，但也没有明显冲突。';
-      }
-    } else if (palaceAName === '福德' || palaceBName === '福德') {
-      // 福德宫相关：分析精神契合度
-      switch(ev.relation) {
-        case 'he':
-          relationText = '精神契合';
-          relationColor = '#4caf50';
-          relationIcon = '✅';
-          plainTalk = '你们的福德宫和谐，代表精神世界很契合，价值观、兴趣爱好都很像。';
-          break;
-        case 'chong':
-          relationText = '精神冲突';
-          relationColor = '#f44336';
-          relationIcon = '❌';
-          plainTalk = '你们的福德宫相冲，说明精神追求不太一样，需要互相包容。';
-          break;
-        default:
-          relationText = '精神平和';
-          relationColor = '#2196f3';
-          relationIcon = '➕';
-          plainTalk = '你们的福德宫关系平和，精神世界各有特色，可以互相学习。';
-      }
-    } else if (palaceAName === '命宫' || palaceBName === '命宫') {
-      // 命宫相关：分析性格兼容性
-      switch(ev.relation) {
-        case 'he':
-          relationText = '性格合拍';
-          relationColor = '#4caf50';
-          relationIcon = '✅';
-          plainTalk = '你们的命宫和谐，代表性格很合拍，相处起来很自然，互相欣赏对方的优点。';
-          break;
-        case 'chong':
-          relationText = '性格冲突';
-          relationColor = '#f44336';
-          relationIcon = '❌';
-          plainTalk = '你们的命宫相冲，说明性格差异较大，容易有摩擦。但差异也能互补。';
-          break;
-        default:
-          relationText = '性格平和';
-          relationColor = '#2196f3';
-          relationIcon = '➕';
-          plainTalk = '你们的命宫关系平和，性格各有特点，需要时间培养默契。';
-      }
-    } else {
-      // 其他宫位：通用解释
-      switch(ev.relation) {
-        case 'he':
-          relationText = '和谐互助';
-          relationColor = '#4caf50';
-          relationIcon = '✅';
-          plainTalk = `你们在${palaceAName}和${palaceBName}方面很合拍，互相帮助。`;
-          break;
-        case 'chong':
-          relationText = '相冲对立';
-          relationColor = '#f44336';
-          relationIcon = '❌';
-          plainTalk = `你们在${palaceAName}和${palaceBName}方面容易有冲突。`;
-          break;
-        default:
-          relationText = '中性偏和谐';
-          relationColor = '#2196f3';
-          relationIcon = '➕';
-          plainTalk = `你们在${palaceAName}和${palaceBName}方面关系平平。`;
-      }
-    }
-    
+
+    const relMap = { he:'和谐', chong:'冲突', xing:'刑克', hai:'相害', ke:'相克', same:'同宫', sanhe:'三合', liuhe:'六合', neutral:'中性' };
+    const relationText = relMap[ev.relation] || ev.relation || '中性';
+    const relationColor = ev.relation === 'he' || ev.relation === 'liuhe' ? '#4caf50'
+      : ev.relation === 'chong' || ev.relation === 'xing' ? '#f44336'
+      : ev.relation === 'hai' || ev.relation === 'ke' ? '#ff9800'
+      : '#2196f3';
+    const relationIcon = ev.relation === 'he' || ev.relation === 'liuhe' ? '✅'
+      : ev.relation === 'chong' || ev.relation === 'xing' ? '❌'
+      : ev.relation === 'hai' || ev.relation === 'ke' ? '⚠️'
+      : '➕';
+
+    // ⭐ 关键改变：基于星曜的实际分析，替代原来的模板化 plainTalk
+    const starAnalysis = generatePalaceStarAnalysis(
+      palaceAName,
+      ev.left_stars,
+      ev.right_stars,
+      ev.relation,
+      ev.left_chart,
+      ev.right_chart
+    );
+
     const item = document.createElement('div');
     item.className = 'palace-item';
     item.style.borderLeft = `4px solid ${relationColor}`;
-    
+
     item.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <div style="font-size: 16px; font-weight: bold; color: #333;">
           ${palaceAName} ↔ ${palaceBName}
         </div>
@@ -1053,8 +1269,8 @@ function displayPalaceAnalysis(data) {
           ${relationIcon} ${relationText}
         </div>
       </div>
-      <div style="margin-top: 8px; color: #666; font-size: 14px;">
-        💬 ${plainTalk}
+      <div style="margin-top: 6px; color: #444; font-size: 13px; line-height: 1.7; background: #f8f9fa; border-radius: 8px; padding: 10px 12px;">
+        ${starAnalysis}
       </div>
       <div style="margin-top: 8px; text-align: right; color: ${h.effect > 0 ? '#4caf50' : '#f44336'}; font-weight: bold;">
         ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)} 分
@@ -1062,8 +1278,8 @@ function displayPalaceAnalysis(data) {
     `;
     hitsDiv.appendChild(item);
   });
-  
-  // 添加大白话点评（使用已存在的palacePlainTalk div）
+
+  // 大白话点评
   const plainTalkHtml = generatePalacePlainTalk(data);
   const plainTalkDiv = document.getElementById('palacePlainTalk');
   if (plainTalkDiv) {
@@ -1101,47 +1317,124 @@ function displayStarAnalysis(data) {
   
   // 添加大白话点评
   const starSection = hitsDiv.closest('.section');
-  const existingPlainTalk = starSection.querySelector('.plain-talk');
-  if (existingPlainTalk) existingPlainTalk.remove();
-  starSection.insertAdjacentHTML('beforeend', generateStarPlainTalk(data));
+  const starPlainTalkDiv = document.getElementById('starPlainTalk');
+  if (starPlainTalkDiv) starPlainTalkDiv.innerHTML = generateStarPlainTalk(data);
 }
 
 function displayMutagenAnalysis(data) {
   const mutagenHits = data.hits.filter(h => h.dimension === 'mutagen_interaction');
   const summary = data.dimensions.find(d => d.id === 'mutagen_interaction');
-  
+
   const summaryDiv = document.getElementById('mutagenSummary');
   if (summary && summary.reason_summary) {
     summaryDiv.innerHTML = `<h3>四化互动得分: ${summary.score}/${summary.max}</h3><p>${summary.reason_summary.display_text}</p>`;
   }
-  
+
   const hitsDiv = document.getElementById('mutagenHits');
   hitsDiv.innerHTML = '';
-  mutagenHits.forEach(h => {
-    if (!h.evidence.matched) return;
-    const ev = h.evidence;
-    const directionText = ev.direction === 'A->B' ? '第一人 → 第二人' : '第二人 → 第一人';
-    const typeText = ev.type === 'lu' ? '化禄' : '化忌';
-    
+
+  // 显示完整四化链（禄权科忌全部展示）
+  const allChain = summary && summary.all_mutagen_chain || [];
+  if (allChain.length > 0) {
+    const dirGroups = { 'A→B': [], 'B→A': [] };
+    allChain.forEach(c => { if (dirGroups[c.direction]) dirGroups[c.direction].push(c); });
+    Object.keys(dirGroups).forEach(dir => {
+      const items = dirGroups[dir];
+      if (items.length === 0) return;
+      const dirLabel = dir === 'A→B' ? '第一人 → 第二人' : '第二人 → 第一人';
+      items.forEach(c => {
+        const emoji = c.type === '化禄' ? '🟢' : c.type === '化权' ? '🔵' : c.type === '化科' ? '🟣' : '🔴';
+        const item = document.createElement('div');
+        item.className = 'palace-item';
+        item.style.borderLeft = `4px solid ${c.type==='化禄'?'#4caf50':c.type==='化权'?'#2196f3':c.type==='化科'?'#9c27b0':'#f44336'}`;
+        item.innerHTML = `
+          <div><strong>${emoji} ${c.type}</strong>（${dirLabel}）</div>
+          <div style="margin:6px 0">⭐ ${c.star} · 落入 <strong>${c.palace}</strong></div>
+          <div style="color:#666;font-size:0.9em">${c.meaning || ''}</div>
+        `;
+        hitsDiv.appendChild(item);
+      });
+    });
+  } else {
+    // fallback: show old hits
+    mutagenHits.forEach(h => {
+      if (!h.evidence.matched) return;
+      const ev = h.evidence;
+      const directionText = ev.direction === 'A->B' ? '第一人 → 第二人' : '第二人 → 第一人';
+      const typeLabel = { 'lu': '化禄', 'quan': '化权', 'ke': '化科', 'ji': '化忌' };
+      const typeText = typeLabel[ev.mutagen_type] || (ev.type === 'positive' ? '化禄' : '化忌');
+      const item = document.createElement('div');
+      item.className = `palace-item ${h.effect < 0 ? 'negative' : 'positive'}`;
+      item.innerHTML = `
+        <div><strong>${directionText}</strong>: ${typeText}</div>
+        <div style="margin-top: 8px;">落入 <strong>${ev.target_palace}</strong> 宫 (${ev.target_branch})</div>
+        <div style="margin-top: 8px; color: #666;">影响分值: ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)}</div>
+      `;
+      hitsDiv.appendChild(item);
+    });
+  }
+
+  // 添加大白话点评
+  const mutagenSection = hitsDiv.closest('.section');
+  const mutagenPlainTalkDiv = document.getElementById('mutagenPlainTalk');
+  if (mutagenPlainTalkDiv) mutagenPlainTalkDiv.innerHTML = generateMutagenPlainTalk(data);
+}
+
+function displayZodiacAnalysis(data) {
+  const zodiacDim = data.dimensions.find(d => d.id === 'zodiac');
+  if (!zodiacDim) return;
+
+  const summaryDiv = document.getElementById('zodiacSummary');
+  summaryDiv.innerHTML = `<h3>生肖入宫得分: ${zodiacDim.score.toFixed(1)}/${zodiacDim.max}</h3><p>${zodiacDim.reason_summary.display_text}</p>`;
+
+  const hitsDiv = document.getElementById('zodiacHits');
+  hitsDiv.innerHTML = '';
+
+  // 显示双方生肖入宫详情
+  const aInB = zodiacDim.a_zodiac_b_palace || {};
+  const bInA = zodiacDim.b_zodiac_a_palace || {};
+
+  const innerNames = { '命宫':1,'夫妻':1,'子女':1,'财帛':1,'疾厄':1,'迁移':1 };
+  const entryPairs = [
+    { label: '第一人生肖', data: aInB, targetLabel: '第二人命盘' },
+    { label: '第二人生肖', data: bInA, targetLabel: '第一人命盘' }
+  ];
+
+  entryPairs.forEach(ep => {
+    const d = ep.data;
+    if (!d || !d.branch) return;
+    const isInner = innerNames[d.palace];
+    const bg = isInner ? '#e8f5e9' : '#fce4ec';
+    const badge = isInner ? '✅ 六内宫' : '❌ 六外宫';
     const item = document.createElement('div');
-    item.className = `palace-item ${h.effect < 0 ? 'negative' : 'positive'}`;
+    item.className = 'palace-item';
+    item.style.background = bg;
+    item.style.borderLeft = `4px solid ${isInner?'#4caf50':'#f44336'}`;
     item.innerHTML = `
-      <div><strong>${directionText}</strong>: ${typeText}</div>
-      <div style="margin-top: 8px;">
-        落入 <strong>${ev.target_palace}</strong> 宫 (${ev.target_branch})
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>${ep.label}（${d.zodiac || d.branch}）→ ${ep.targetLabel}的 <span style="color:${isInner?'#2e7d32':'#c62828'}">${d.palace || '未知'}宫</span></strong>
+        <span style="background:${isInner?'#4caf50':'#f44336'};color:#fff;padding:2px 10px;border-radius:12px;font-size:0.8em">${badge}</span>
       </div>
-      <div style="margin-top: 8px; color: #666;">
-        影响分值: ${h.effect > 0 ? '+' : ''}${h.effect.toFixed(2)}
+      <div style="margin-top:6px;color:#666;font-size:0.9em">
+        ${isInner
+          ? d.palace==='夫妻' || d.palace==='命宫'
+            ? '生肖落入核心感情宫位，缘分很深，先天吸引力强。'
+            : '生肖落入六内宫，有较好的缘分基础，相处会比较自然。'
+          : '生肖落入六外宫，缘分根基较弱，需要后天更多的努力来维系。'}
       </div>
     `;
     hitsDiv.appendChild(item);
   });
-  
-  // 添加大白话点评
-  const mutagenSection = hitsDiv.closest('.section');
-  const existingPlainTalk = mutagenSection.querySelector('.plain-talk');
-  if (existingPlainTalk) existingPlainTalk.remove();
-  mutagenSection.insertAdjacentHTML('beforeend', generateMutagenPlainTalk(data));
+
+  // 总评
+  const plainDiv = document.getElementById('zodiacPlainTalk');
+  if (aInB.is_inner && bInA.is_inner) {
+    plainDiv.innerHTML = '<h3>💬 缘分总结</h3><p>双方生肖互入对方六内宫，<span class="highlight">缘分扎实</span>，先天基础好。这是很难得的命盘配置，在一起容易有天然的亲近感。</p>';
+  } else if (aInB.is_inner || bInA.is_inner) {
+    plainDiv.innerHTML = '<h3>💬 缘分总结</h3><p>一方生肖入对方六内宫，缘分基础尚可，但略显不对等。<span class="highlight">进入六内宫的一方会更有好感</span>，需要注意另一方是否也有同样的感受。</p>';
+  } else {
+    plainDiv.innerHTML = '<h3>💬 缘分总结</h3><p>双方生肖均入对方六外宫，<span class="highlight">缘分根基不足</span>。建议不要仅凭第一印象或表面条件做决定，多花时间观察真实相处的感觉。</p>';
+  }
 }
 
 // 开始合盘分析
@@ -1178,8 +1471,7 @@ async function startHepan() {
     const a_res = await fetch(`/chart?${a_query}&_t=${Date.now()}`);
     const a_data = await a_res.json();
     if (a_data.error) throw new Error('第一人排盘失败: ' + a_data.error);
-    if (!a_data.success) throw new Error('第一人排盘失败');
-    const a_chart = a_data.data;  // 后端返回 { success: true, data: chartData }
+    const a_chart = a_data.data || a_data;
     
     // 排第二人命盘
     st.textContent = '正在排第二人命盘...';
@@ -1187,12 +1479,11 @@ async function startHepan() {
     const b_res = await fetch(`/chart?${b_query}&_t=${Date.now()}`);
     const b_data = await b_res.json();
     if (b_data.error) throw new Error('第二人排盘失败: ' + b_data.error);
-    if (!b_data.success) throw new Error('第二人排盘失败');
-    const b_chart = b_data.data;
+    const b_chart = b_data.data || b_data;
     
-    // 显示两个命盘
-    renderChart('A', a_chart);
-    renderChart('B', b_chart);
+    // 标准化数据格式后显示命盘
+    renderChart('A', normalizeChartData(a_chart));
+    renderChart('B', normalizeChartData(b_chart));
     
     // 合盘分析
     st.textContent = '正在合盘分析...';
