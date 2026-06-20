@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <title>紫微斗数 · Metis</title>
 <style>
-/* ===== METIS DESIGN SYSTEM (用于 Header + Tabs + 合盘) ===== */
+/* ===== METIS DESIGN SYSTEM (Tab 2 only) ===== */
 
 /* ===== CSS Reset & Base ===== */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -689,12 +689,12 @@ body{
 }
 
 
-/* ===== TAB BAR ===== */
-.tab-bar{display:flex;justify-content:center;gap:0;margin-bottom:0;border-bottom:2px solid var(--border);position:relative;z-index:10}
-.tab-btn{padding:14px 48px;font-size:16px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--text-muted);position:relative;transition:color .2s;letter-spacing:0.05em;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif}
-.tab-btn:hover{color:var(--text)}
-.tab-btn.active{color:var(--accent)}
-.tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--accent);border-radius:1px}
+/* ===== TAB BAR (both tabs, neutral) ===== */
+.tab-bar{display:flex;justify-content:center;gap:0;margin:0;border-bottom:2px solid #333;background:#1a1a2e;position:relative;z-index:10}
+.tab-btn{padding:14px 48px;font-size:16px;font-weight:600;background:none;border:none;cursor:pointer;color:#888;position:relative;transition:color .2s;letter-spacing:0.05em;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif}
+.tab-btn:hover{color:#c8a96e}
+.tab-btn.active{color:#c8a96e}
+.tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:#c8a96e;border-radius:1px}
 .tab-panel{display:none}.tab-panel.active{display:block}
 
 /* ===== TAB 1: APP DARK THEME (scoped) ===== */
@@ -704,11 +704,6 @@ body{
 
 @media(max-width:768px){.palace-grid{grid-template-columns:repeat(2,1fr)}.header h1{font-size:28px}.palace{min-height:75px}}
 
-/* ===== App container reset for tab integration ===== */
-.app-dark { min-height: 100vh; }
-
-/* ===== TAB 2: HEPAN = already styled by METIS CSS ===== */
-
 @media(max-width:680px){
   .tab-btn{padding:12px 28px;font-size:14px}
 }
@@ -716,26 +711,13 @@ body{
 </head>
 <body>
 
-<!-- ===== METIS HEADER (shown on both tabs) ===== -->
-<div class="metis-header-wrap"><header class="metis-header">
-  <a href="#" class="metis-logo">METIS</a>
-  <nav class="metis-nav-desktop">
-    <a href="#">起盘</a>
-    <a href="#" class="active">合盘</a>
-    <a href="#" class="version-btn">普通版</a>
-  </nav>
-  <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单">
-    <span></span><span></span><span></span>
-  </button>
-</header></div>
-
-<!-- ===== TAB BAR ===== -->
+<!-- ===== TAB BAR (shared, dark style to match app) ===== -->
 <div class="tab-bar">
-  <button class="tab-btn active" id="tab-single" onclick="switchTab('single')">&#x1F52E; 单人起盘</button>
-  <button class="tab-btn" id="tab-hepan" onclick="switchTab('hepan')">&#x2764; 双人合盘</button>
+  <button class="tab-btn active" id="tab-single" onclick="switchTab('single')">单人起盘</button>
+  <button class="tab-btn" id="tab-hepan" onclick="switchTab('hepan')">双人合盘</button>
 </div>
 
-<!-- ===== TAB 1: COMPLETE ziwei-app.html (dark theme, scoped) ===== -->
+<!-- ===== TAB 1: COMPLETE DARK THEME APP ===== -->
 <div class="tab-panel active" id="panel-single">
   <div class="app-dark">
     
@@ -774,12 +756,22 @@ body{
 </div>
 
 
-    <!-- Result area rendered by JS -->
   </div>
 </div>
 
-<!-- ===== TAB 2: HEPAN (Metis white theme) ===== -->
+<!-- ===== TAB 2: METIS HEPAN ===== -->
 <div class="tab-panel" id="panel-hepan">
+<header class="metis-header">
+  <a href="#" class="metis-logo">METIS</a>
+  <nav class="metis-nav-desktop">
+    <a href="#">起盘</a>
+    <a href="#" class="active">合盘</a>
+    <a href="#" class="version-btn">普通版</a>
+  </nav>
+  <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
+</header>
 
 
 <!-- Mobile menu -->
@@ -1740,10 +1732,8 @@ console.log('城市数据库已加载 ' + cityIndex.length + ' 个城市');
 <script src="ziwei-full-engine.js"></script>
 
 <script>
-// ===== TAB 1: COMPLETE ziwei-app.js (adapted) =====
-(function(){
-  'use strict';
-  
+// ===== TAB 1: APP DARK-THEME JS (exposed to window for onclick/oninput) =====
+
 const API='http://localhost:3211';
 const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
@@ -1992,24 +1982,35 @@ function calcTrueSolar(year,month,day,hour,minute,lng){
   };
 }
 
-async function getChart() {
-  var y = parseInt(document.getElementById('year').value);
-  var m = parseInt(document.getElementById('month').value);
-  var d = parseInt(document.getElementById('day').value);
-  var h = parseInt(document.getElementById('hour').value);
-  var mi = parseInt(document.getElementById('minute').value) || 0;
-  var g = document.getElementById('gender').value;
-  var lng = parseFloat(document.getElementById('lng').value) || 120;
-  if (!window.Ziwei || !window.Ziwei.computeChart) {
-    // Fallback to server API for localhost
-    var res = await fetch('/api/chart', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({year:y, month:m, day:d, hour:h, minute:mi, gender:g, lng:lng})
-    });
-    return await res.json();
+async function getChart(){
+  var y=parseInt(document.getElementById('year').value);
+  var m=parseInt(document.getElementById('month').value);
+  var d=parseInt(document.getElementById('day').value);
+  var h=parseInt(document.getElementById('hour').value);
+  var mi=parseInt(document.getElementById('minute').value)||0;
+  var g=document.getElementById('gender').value;
+  var lng=parseFloat(document.getElementById('longitude').value)||120;
+  if(window.Ziwei&&window.Ziwei.computeChart){
+    try{
+      var result=window.Ziwei.computeChart(y,m,d,h,mi,g,lng);
+      if(!result||result.error){throw new Error(result.error||'排盘失败')}
+      renderAnalysis(result);
+      return;
+    }catch(e){
+      console.warn('Client engine failed, fallback to server:',e.message);
+    }
   }
-  return window.Ziwei.computeChart(y, m, d, h, mi, g, lng);
+  // Fallback to server API;
+        document.getElementById('result').classList.add('show');
+        document.getElementById('result').scrollIntoView({behavior:'smooth'});
+        // auto-print when ?print=1
+        if(new URLSearchParams(location.search).get('print')==='1'){
+          setTimeout(()=>window.print(),1500);
+        }
+    }catch(e){
+        st.textContent='排盘失败: '+e.message+' (请确认服务已启动: node chart-server.js)';
+        st.className='status show error';btn.disabled=false;btn.textContent='重试';
+    }
 }
 
 function render(d){
@@ -3346,33 +3347,34 @@ function renderFooter(d,ming,cai,fuqi,tian){
 }
 // auto-load on page open when default values are set
 // support URL params: ?year=1993&month=8&day=31&hour=12&gender=female
-window.addEventListener('DOMContentLoaded',()=>{
+// DOMContentLoaded replaced by manual init in build-v5
+window.initAppDark = function(){
   const params=new URLSearchParams(location.search);
   if(params.has('year'))document.getElementById('year').value=params.get('year');
   if(params.has('month'))document.getElementById('month').value=params.get('month');
   if(params.has('day'))document.getElementById('day').value=params.get('day');
   if(params.has('hour'))document.getElementById('hour').value=params.get('hour');
   if(params.has('gender'))document.getElementById('gender').value=params.get('gender');
-  getChart();
-});
+};
 
+window.getChart=getChart;
+if(typeof onLocationInput==="function")window.onLocationInput=onLocationInput;
+if(typeof geocodeLocation==="function")window.geocodeLocation=geocodeLocation;
 
-  // Initialize when tab is shown
-  window.appInitCalled = false;
-  window.initAppTab = function() {
-    if (window.appInitCalled) return;
-    window.appInitCalled = true;
-    if (typeof appInit === 'function') appInit();
-    if (typeof loadCityDB === 'function') loadCityDB();
-  };
-})();
+// Init on tab switch
+window._appDarkInited = false;
+window.initAppDarkTab = function(){
+  if(window._appDarkInited) return;
+  window._appDarkInited = true;
+  if(typeof initAppDark === 'function') initAppDark();
+};
 </script>
 
 <script>
-// ===== TAB 2: HEPAN JS (unchanged) =====
+// ===== TAB 2: HEPAN JS =====
 (function(){
-  'use strict';
-  
+'use strict';
+
 // 引擎加载 - 主路径 + 兜底
 (function(){
   var LOADED = false;
@@ -3405,23 +3407,16 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 <script>
 // ===== TAB SWITCHER =====
-(function(){
-  'use strict';
-  window.switchTab = function(tab){
-    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
-    document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
-    document.getElementById('panel-'+tab).classList.add('active');
-    document.getElementById('tab-'+tab).classList.add('active');
-    // Init app tab on first visit
-    if (tab === 'single' && typeof initAppTab === 'function') {
-      setTimeout(initAppTab, 100);
-    }
-  };
-  // Init on load
-  if (typeof initAppTab === 'function') {
-    setTimeout(initAppTab, 200);
-  }
-})();
+window.switchTab = function(tab){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  // Init tab content on first visit
+  if(tab==='single'&&typeof initAppDarkTab==='function')setTimeout(initAppDarkTab,50);
+};
+// Init dark tab on page load if active
+setTimeout(function(){if(typeof initAppDarkTab==='function')initAppDarkTab();},100);
 </script>
 
 </body>
