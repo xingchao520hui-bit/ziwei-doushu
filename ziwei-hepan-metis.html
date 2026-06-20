@@ -1395,6 +1395,7 @@ function hepanToRenderFormat(mhp){
 }
 
 function fetchChart(person){
+  if(!window.Ziwei||!window.Ziwei.computeChart){ throw new Error('引擎未加载完成，请刷新后重试'); }
   const year = parseInt($('year'+person).value);
   const month = parseInt($('month'+person).value);
   const day = parseInt($('day'+person).value);
@@ -1409,6 +1410,7 @@ function fetchChart(person){
 }
 
 function fetchHepan(){
+  if(!window.Ziwei||!window.Ziwei.computeHepan){ throw new Error('引擎未加载完成，请刷新后重试'); }
   const ya = parseInt($('yearA').value), ma = parseInt($('monthA').value), da = parseInt($('dayA').value);
   const ha = parseInt($('hourA').value), mia = parseInt($('minuteA').value) || 0;
   const ga = getGender('A');
@@ -1551,8 +1553,8 @@ function renderAnalysis(result){
 }
 
 async function doHepan(){
-  if(typeof window.Ziwei===\"undefined\"||!window.Ziwei.computeHepan){
-    showStatus(\"引擎未加载，请刷新页面重试（Ctrl+Shift+R）\",\"error\");
+  if(typeof window.Ziwei==="undefined"||!window.Ziwei.computeHepan){
+    showStatus('引擎未加载，请刷新页面重试（Ctrl+Shift+R）','error');
     return;
   }
   const submitBtn = $('hepanSubmit');
