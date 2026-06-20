@@ -235,7 +235,7 @@ function matchLocation(text){
 }
 
 // 渲染建议列表
-function renderSuggestions(suggestions){
+function showLocationSuggestions(suggestions){
   let el = document.getElementById('locationSuggestions');
   if(!el){
     el = document.createElement('div');
@@ -273,7 +273,7 @@ function onLocationInput(){
   if(suggestions.length>0 && suggestions[0].score===1){
     document.getElementById('longitude').value = suggestions[0].lng;
   }
-  renderSuggestions(suggestions.length>1||suggestions.length===1? suggestions:[]);
+  showLocationSuggestions(suggestions.length>1||suggestions.length===1? suggestions:[]);
 }
 
 // 点击空白处关闭建议
@@ -399,19 +399,6 @@ async function getChart(){
         if(d.error)throw new Error(d.error);
         render(d);
         
-        // 异步加载逐年数据进行关键年份分析
-        st.textContent='正在加载流年数据...';
-        try{
-            const pyResp=await fetch(API+'/past-years?'+params);
-            if(pyResp.ok){
-                const pyData=await pyResp.json();
-                d.pastYears=pyData.years.map(y=>({...y,decadalPalace:y.daXianPalaceName,decadalPalaceBranch:y.daXianPalaceBranch}));
-                document.getElementById('key-years-container').innerHTML=renderKeyYears(d);
-            }
-        }catch(pye){
-            document.getElementById('key-years-container').innerHTML='<p style="color:#999">流年数据加载失败，请刷新重试</p>';
-        }
-        
         st.className='status';btn.disabled=false;btn.textContent='开始排盘';
         document.getElementById('result').classList.add('show');
         document.getElementById('result').scrollIntoView({behavior:'smooth'});
@@ -513,6 +500,55 @@ function renderPalaceGrid(d,ming,shen){
     }).join('');
 }
 
+// ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
+function computePastYears(d){
+  const DZ_ORDER=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const GAN='甲乙丙丁戊己庚辛壬癸';
+  const daxianOrder=['命宫','兄弟宫','夫妻宫','子女宫','财帛宫','疾厄宫','迁移宫','交友宫','官禄宫','田宅宫','福德宫','父母宫'];
+  const birthYear=d.birth.year, birthMonth=d.birth.month, birthDay=d.birth.day;
+  const age=parseInt(d.currentAge),curYear=new Date().getFullYear();
+  
+  // 计算每个大限的起止年份
+  const dxYears=[];
+  const dir=d.gender==='male'?1:-1; // simplified
+  let startAge=0;
+  d.daXians.forEach((dx,i)=>{
+    dxYears.push({name:dx.palaceName,branch:dx.palaceBranch,start:startAge,end:dx.endAge,startYear:birthYear+startAge,endYear:birthYear+dx.endAge-1});
+  });
+  
+  const pastYears=[];
+  const startYr=Math.max(curYear-15,birthYear);
+  for(let yr=startYr;yr<=curYear+10;yr++){
+    const vAge=yr-birthYear+1;
+    if(vAge<1)continue;
+    const yrGan=GAN[(yr-4)%10];
+    const yrZhi=DZ_ORDER[(yr-4)%12];
+    
+    // 流年命宫地支
+    const yearlyPalaceBranch=DZ_ORDER[(yr-4)%12];
+    
+    // 找到该年份所处的大限
+    let decadalPalace='命宫',decadalBranch='';
+    for(let di=d.daXians.length-1;di>=0;di--){
+      if(vAge>=d.daXians[di].startAge){
+        decadalPalace=d.daXians[di].palaceName;
+        decadalBranch=d.daXians[di].palaceBranch;
+        break;
+      }
+    }
+    
+    const yearlyPalace=d.palaces.find(p=>p.branch===yearlyPalaceBranch);
+    pastYears.push({
+      year:yr, age:vAge,
+      yearlyStem:yrGan, yearlyBranch:yrZhi,
+      yearlyPalaceName:yearlyPalace?yearlyPalace.name:'',
+      yearlyPalaceBranch,
+      decadalPalace, decadalBranch
+    });
+  }
+  return pastYears;
+}
+
 function renderAnalysis(d,ming,shen,cai,guan,qian,tian,fuqi,funv,fude,jie,fumu,xiongdi,puyi){
     let h='';
 
@@ -521,12 +557,12 @@ function renderAnalysis(d,ming,shen,cai,guan,qian,tian,fuqi,funv,fude,jie,fumu,x
 
     // 命宫
     h+=`<h4>1. 命宫分析（${ming.stem}${ming.branch}宫）</h4>`;
-    h+=renderMingGongAnalysis(ming);
+    h+=renderMingGongAnalysis(ming,d);
 
     // 身宫
     if(shen){
         h+=`<h4>2. 身宫分析（${shen.stem}${shen.branch}宫，${shen.name}）</h4>`;
-        h+=renderShenGongAnalysis(shen);
+        h+=renderShenGongAnalysis(shen,d);
     }
 
     // 格局判断
@@ -540,43 +576,45 @@ function renderAnalysis(d,ming,shen,cai,guan,qian,tian,fuqi,funv,fude,jie,fumu,x
     h+=renderTianZhaiAnalysis(tian,d);
 
     h+=`<h4>财帛宫（${cai.stem}${cai.branch}宫）</h4>`;
-    h+=renderCaiBoAnalysis(cai);
+    h+=renderCaiBoAnalysis(cai,d);
 
     h+=`<h4>官禄宫（${guan.stem}${guan.branch}宫）</h4>`;
-    h+=renderGuanLuAnalysis(guan);
+    h+=renderGuanLuAnalysis(guan,d);
 
     h+=`<h4>福德宫（${fude.stem}${fude.branch}宫）${globalLaiYin.name==='福德宫'?'·来因宫':''}</h4>`;
-    h+=renderFuDeAnalysis(fude);
+    h+=renderFuDeAnalysis(fude,d);
 
     h+=`<h4>迁移宫（${qian.stem}${qian.branch}宫）</h4>`;
-    h+=renderQianYiAnalysis(qian);
+    h+=renderQianYiAnalysis(qian,d);
 
     h+=`<h4>疾厄宫（${jie.stem}${jie.branch}宫）</h4>`;
-    h+=renderJiEAnalysis(jie);
+    h+=renderJiEAnalysis(jie,d);
 
     h+=`<h4>父母宫（${fumu.stem}${fumu.branch}宫）</h4>`;
-    h+=renderFuMuAnalysis(fumu);
+    h+=renderFuMuAnalysis(fumu,d);
 
     h+=`<h4>兄弟宫（${xiongdi.stem}${xiongdi.branch}宫）</h4>`;
-    h+=renderXiongDiAnalysis(xiongdi);
+    h+=renderXiongDiAnalysis(xiongdi,d);
 
     h+=`<h4>子女宫（${funv.stem}${funv.branch}宫）</h4>`;
-    h+=renderZiNvAnalysis(funv);
+    h+=renderZiNvAnalysis(funv,d);
 
     h+=`<h4>交友宫（${puyi.stem}${puyi.branch}宫）</h4>`;
-    h+=renderPuYiAnalysis(puyi);
+    h+=renderPuYiAnalysis(puyi,d);
 
     // === 三、三方四正 ===
     h+=`<h3>三、三方四正分析</h3>`;
-    h+=renderTriSquare(ming,cai,guan,qian);
+    h+=renderTriSquare(ming,cai,guan,qian,d);
 
     // === 四、大限流年关键期 ===
     h+=`<h3>四、大限流年关键期</h3>`;
     h+=renderDaXian(d);
 
-    // === 五、断前事·关键年份回溯 ===
+    // === 五、断前事·关键年份回溯（实时计算）===
     h+=`<h3>五、断前事·关键年份回溯（过去10年）</h3>`;
-    h+=`<div id="key-years-container"><p style="color:#999;text-indent:0">正在加载逐年数据进行关键年份分析...</p></div>`;
+    const computedPastYears=computePastYears(d);
+    d.pastYears=computedPastYears;
+    h+=renderKeyYears(d);
     
     // === 六、前世因果推断 ===
     h+=`<h3>六、前世因果推断</h3>`;
@@ -824,7 +862,7 @@ function calculateLaiYinPalace(d) {
 }
 
 // Helper: analyze one palace using actual star data
-function analyzeOnePalace(p,dummy){
+function analyzeOnePalace(p,d){
   let txt='';
   const allStars=[...p.stars];
   const majorStars=allStars.filter(s=>['紫微','天机','太阳','武曲','天同','廉贞','天府','太阴','贪狼','巨门','天相','天梁','七杀','破军'].includes(s.name));
@@ -873,6 +911,51 @@ function analyzeOnePalace(p,dummy){
     }</p>`;
   }
   
+  // ── 夹宫分析（需传入完整命盘 d）──
+  if(d){
+    const DZ_ORDER=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    const idx=DZ_ORDER.indexOf(p.branch);
+    if(idx>=0){
+      const prev=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+11)%12]);
+      const next=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+1)%12]);
+      if(prev&&next){
+        const prevEvil=prev.stars.filter(s=>['地空','地劫','擎羊','陀罗'].includes(s.name));
+        const nextEvil=next.stars.filter(s=>['地空','地劫','擎羊','陀罗'].includes(s.name));
+        
+        // 检测1: 地空/地劫夹宫
+        const kongjieClip=(
+          (prev.stars.some(s=>s.name==='地空')&&next.stars.some(s=>s.name==='地劫'))||
+          (prev.stars.some(s=>s.name==='地劫')&&next.stars.some(s=>s.name==='地空'))
+        );
+        if(kongjieClip){
+          txt+=`<p><span class="star-evil">⚠ 【空劫夹宫】</span>地空在${prev.name}（${prev.branch}）+ 地劫在${next.name}（${next.branch}），<strong>两煞左右夹持${p.name}</strong>——此宫凡事易有空亡之象，付出与回报不成正比。${p.name==='命宫'?'命主一生需警惕「理想丰满、现实骨感」的困境。':''}${p.name==='夫妻宫'?'感情易有「有缘无分」之叹，需格外用心经营。':''}${p.name==='财帛宫'?'财来财去留不住，理财需保守稳健。':''}${p.name==='官禄宫'?'事业易有「半空折翅」之象，冲高后遇阻，需保持务实心态。':''}${p.name==='疾厄宫'?'健康需防隐疾突然发作，定期体检不可省。':''}</p>`;
+        }
+        
+        // 检测2: 擎羊/陀罗夹宫
+        const qingtuoClip=(
+          (prev.stars.some(s=>s.name==='擎羊')&&next.stars.some(s=>s.name==='陀罗'))||
+          (prev.stars.some(s=>s.name==='陀罗')&&next.stars.some(s=>s.name==='擎羊'))
+        );
+        if(qingtuoClip){
+          txt+=`<p><span class="star-evil">⚠ 【羊陀夹宫】</span>擎羊+陀罗一前一后夹持${p.name}——此宫之事多反复纠缠、进退两难。${p.name==='命宫'?'性格易有「进退维谷」之感，重大决定需有外力推一把。':''}${p.name==='夫妻宫'?'感情易拖泥带水，须防三角关系或藕断丝连。':''}${p.name==='财帛宫'?'钱难进也难出，财运胶着需打开局面。':''}</p>`;
+        }
+        
+        // 检测3: 两邻宫均见煞星（任意煞）
+        if(prevEvil.length>0&&nextEvil.length>0){
+          const clipNames=[...new Set([...prevEvil.map(s=>s.name),...nextEvil.map(s=>s.name)])].join('、');
+          txt+=`<p style="font-size:12px;color:#d9534f">[夹宫煞] ${prev.name}有${prevEvil.map(s=>s.name).join('/')} + ${next.name}有${nextEvil.map(s=>s.name).join('/')}，夹持此宫，${p.name}之事难度加倍。</p>`;
+        }
+        
+        // 检测4: 廉贞落陷 + 贪狼落陷（任意位置）
+        const lzXL=allStars.some(s=>s.name==='廉贞'&&s.brightness==='陷');
+        const tlXL=allStars.some(s=>s.name==='贪狼'&&s.brightness==='陷');
+        if(lzXL&&tlXL&&p.name==='命宫'){
+          txt+=`<p><span class="star-evil">⚠ 【廉贪落陷】</span>廉贞陷+贪狼陷同在命宫——此为"泛水桃花"格局，命主一生情欲与物质诱惑交织，若不自持极易迷失本心。需借文昌文曲来救、借职业道德来守。</p>`;
+        }
+      }
+    }
+  }
+  
   // 杂曜
   if(otherStars.length>0){
     const oNames=otherStars.slice(0,4).map(s=>s.name).join('、');
@@ -884,34 +967,98 @@ function analyzeOnePalace(p,dummy){
 
 // ── 重写的分析函数（数据驱动）──
 
-function renderMingGongAnalysis(p){return analyzeOnePalace(p);}
-function renderShenGongAnalysis(p){
-  let txt=analyzeOnePalace(p);
+function renderMingGongAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderShenGongAnalysis(p,d){
+  let txt=analyzeOnePalace(p,d);
   txt+=`<p><strong class="highlight">※ 身宫在此（${p.name}）</strong>——这是命主一生最重视的领域，不仅影响性格更主导人生后半段的走向。身宫所在即是"人生修行场"。</p>`;
   return txt;
 }
 
 function renderPatternAnalysis(d){
   let txt='', patterns=[];
-  const M=pn(d,'命宫'),T=pn(d,'田宅'),FQ=pn(d,'夫妻'),FV=pn(d,'子女'),XD=pn(d,'兄弟'),FD=pn(d,'福德');
+  const M=pn(d,'命宫'),T=pn(d,'田宅'),FQ=pn(d,'夫妻'),FV=pn(d,'子女'),XD=pn(d,'兄弟'),FD=pn(d,'福德'),GL=pn(d,'官禄'),CB=pn(d,'财帛');
   
-  // Check all pattern combinations dynamically
-  const cmb=[[M],'阳梁昌禄',(p)=>hs(p,'太阳')&&hs(p,'天梁')&&(hs(p,'文曲')||hs(p,'文昌'))];
-  const cmb2=[[T],'紫微守库',(p)=>hs(p,'紫微')&&hs(p,'禄存')];
-  const cmb3=[[FQ],'巨日同宫',(p)=>hs(p,'巨门')&&hs(p,'太阳')];
-  const cmb4=[[FQ],'同巨陷落',(p)=>hs(p,'天同')&&hs(p,'巨门')];
-  const cmb5=[[M],'紫府同宫',(p)=>hs(p,'紫微')&&hs(p,'天府')];
-  const cmb6=[[M],'日月并明',(p)=>hs(p,'太阳')&&hs(p,'太阴')];
-  const cmb7=[[M],'武贪同行',(p)=>hs(p,'武曲')&&hs(p,'贪狼')];
-  const cmb8=[[M],'廉贞清白',(p)=>hs(p,'廉贞')&&!hs(p,'贪狼')];
-  const cmb9=[[XD],'武曲化禄在兄弟',(p)=>hs(p,'武曲')&&gs(p,'武曲')&&gs(p,'武曲').siHua==='lu'];
-  const cmb10=[[FV],'贪狼在子午',(p)=>hs(p,'贪狼')&&['子','午'].includes(p.branch)];
-  
-  const allPatterns=[cmb,cmb2,cmb3,cmb4,cmb5,cmb6,cmb7,cmb8,cmb9,cmb10];
+  // 原有10种经典格局
+  const allPatterns=[
+    [[M],'阳梁昌禄',(p)=>hs(p,'太阳')&&hs(p,'天梁')&&(hs(p,'文曲')||hs(p,'文昌'))],
+    [[T],'紫微守库',(p)=>hs(p,'紫微')&&hs(p,'禄存')],
+    [[FQ],'巨日同宫',(p)=>hs(p,'巨门')&&hs(p,'太阳')],
+    [[FQ],'同巨陷落',(p)=>hs(p,'天同')&&hs(p,'巨门')],
+    [[M],'紫府同宫',(p)=>hs(p,'紫微')&&hs(p,'天府')],
+    [[M],'日月并明',(p)=>hs(p,'太阳')&&hs(p,'太阴')],
+    [[M],'武贪同行',(p)=>hs(p,'武曲')&&hs(p,'贪狼')],
+    [[M],'廉贞清白',(p)=>hs(p,'廉贞')&&!hs(p,'贪狼')],
+    [[XD],'武曲化禄在兄弟',(p)=>hs(p,'武曲')&&gs(p,'武曲')&&gs(p,'武曲').siHua==='lu'],
+    [[FV],'贪狼在子午',(p)=>hs(p,'贪狼')&&['子','午'].includes(p.branch)]
+  ];
   allPatterns.forEach(([palaces,name,check])=>{
     if(palaces.some(p=>check(p))) patterns.push(name);
   });
   
+  // ── 新增：夹宫格局检测 ──
+  const DZ_ORDER=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const shaPatterns=[];
+  d.palaces.forEach(p=>{
+    const idx=DZ_ORDER.indexOf(p.branch);
+    if(idx<0)return;
+    const prev=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+11)%12]);
+    const next=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+1)%12]);
+    if(!prev||!next)return;
+    
+    // 空劫夹宫
+    const kj1=prev.stars.some(s=>s.name==='地空')&&next.stars.some(s=>s.name==='地劫');
+    const kj2=prev.stars.some(s=>s.name==='地劫')&&next.stars.some(s=>s.name==='地空');
+    if(kj1||kj2){
+      shaPatterns.push({name:'空劫夹宫',palace:p.name,branch:p.branch,desc:`地空/地劫左右夹持<span class="highlight">${p.name}（${p.branch}）</span>——此宫之事易有「半空折翅」：起步迅猛、中途落空，极需务实稳健来对冲。${p.name==='命宫'?'命主一生须警惕眼高手低。':''}${p.name==='官禄宫'?'事业冲高后易遇瓶颈。':''}${p.name==='财帛宫'?'财富守住比赚到更重要。':''}${p.name==='夫妻宫'?'感情有落差感，需降低幻想、磨合现实。':''}`});
+    }
+    
+    // 羊陀夹宫
+    const yt1=prev.stars.some(s=>s.name==='擎羊')&&next.stars.some(s=>s.name==='陀罗');
+    const yt2=prev.stars.some(s=>s.name==='陀罗')&&next.stars.some(s=>s.name==='擎羊');
+    if(yt1||yt2){
+      shaPatterns.push({name:'羊陀夹宫',palace:p.name,branch:p.branch,desc:`擎羊/陀罗左右夹持<span class="highlight">${p.name}（${p.branch}）</span>——此宫之事多点进退两难、反复周折，犹如陷入泥沼难以脱身。${p.name==='命宫'?'关键抉择时需外力推动。':''}${p.name==='夫妻宫'?'感情需防剪不断理还乱。':''}${p.name==='财帛宫'?'钱途胶着需另辟蹊径。':''}`});
+    }
+  });
+  
+  // ── 新增：廉贞贪狼落陷检测 ──
+  const lzStar=d.palaces.flatMap(p=>p.stars.filter(s=>s.name==='廉贞').map(s=>({...s,palace:p})));
+  const tlStar=d.palaces.flatMap(p=>p.stars.filter(s=>s.name==='贪狼').map(s=>({...s,palace:p})));
+  
+  // 廉贞陷+贪狼陷 = 泛水桃花
+  const lzXL=lzStar.filter(s=>s.brightness==='陷');
+  const tlXL=tlStar.filter(s=>s.brightness==='陷');
+  if(lzXL.length>0&&tlXL.length>0){
+    shaPatterns.push({name:'廉贪落陷（泛水桃花）',palace:'全局',branch:'',desc:`<span class="highlight">廉贞落陷</span>（在${lzXL.map(s=>s.palace.name).join('、')}）+ <span class="highlight">贪狼落陷</span>（在${tlXL.map(s=>s.palace.name).join('、')}）——此为"泛水桃花"格局，一生情欲与物质诱惑交织如潮。若不以文昌文曲来救、不以职业道德自守，极易在感情与金钱中迷失。`});
+  }
+  
+  // 廉贞在命陷+空劫在迁或对冲宫 = 刑囚夹印
+  if(lzXL.some(s=>s.palace.name==='命宫')){
+    const qian=pn(d,'迁移');
+    if(qian.stars.some(s=>['地空','地劫'].includes(s.name))){
+      shaPatterns.push({name:'刑囚夹印',palace:'命迁',branch:'',desc:`<span class="highlight">廉贞陷在命宫</span> + <span class="highlight">空劫在迁移宫</span>——此即"刑囚夹印"格局变体，命运起伏大、容易卷入是非，外出发展处处碰壁，一生需靠稳守和自省来化解。`});
+    }
+  }
+  
+  // ── 检测：冲宫分析（命迁对冲、夫官对冲等）──
+  const oppMap={子:'午',丑:'未',寅:'申',卯:'酉',辰:'戌',巳:'亥',午:'子',未:'丑',申:'寅',酉:'卯',戌:'辰',亥:'巳'};
+  const keyPairs=[{a:'命宫',b:'迁移宫',label:'命迁对冲'},{a:'夫妻宫',b:'官禄宫',label:'夫官对冲'},{a:'财帛宫',b:'福德宫',label:'财福对冲'},{a:'疾厄宫',b:'父母宫',label:'疾父对冲'}];
+  keyPairs.forEach(kp=>{
+    const pa=pn(d,kp.a),pb=pn(d,kp.b);
+    if(!pa||!pb)return;
+    const paSha=pa.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+    const pbSha=pb.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+    if(paSha.length>0&&pbSha.length>0){
+      shaPatterns.push({name:kp.label,palace:kp.a+'/'+kp.b,branch:'',desc:`<span class="highlight">${kp.a}</span>（${pa.branch}）与<span class="highlight">${kp.b}</span>（${pb.branch}）对冲，且两宫均见煞星（${[...paSha.map(s=>s.name),...pbSha.map(s=>s.name)].join('、')}），此为"${kp.label}"的紧张格局——该领域内外交困，容易两头都落空。`});
+    }
+    // 一宫见空劫另一宫见羊陀
+    const paKJ=pa.stars.some(s=>['地空','地劫'].includes(s.name));
+    const pbYT=pb.stars.some(s=>['擎羊','陀罗'].includes(s.name));
+    if(paKJ&&pbYT){
+      shaPatterns.push({name:kp.label+'（折翅）',palace:kp.a+'/'+kp.b,branch:'',desc:`<span class="highlight">${kp.a}见空劫</span> + <span class="highlight">${kp.b}见羊陀</span>——此对冲格局有"半空折翅"之象：${kp.a}端理想落空 + ${kp.b}端现实受阻，双重打击下该领域极易高开低走。`});
+    }
+  });
+  
+  // 输出经典格局
   if(patterns.length>0){
     patterns.forEach(pn=>{
       const desc={
@@ -929,34 +1076,43 @@ function renderPatternAnalysis(d){
       txt+=`<p><strong class="highlight">「${pn}」格：</strong>${desc[pn]||''}</p>`;
     });
   }else{
-    txt+=`<p>此命盘无明显特殊格局组合，十二宫配置各自独立，需结合大限运转详参各宫消长之势。</p>`;
+    txt+=`<p>此命盘无明显传统格局组合，十二宫配置各自独立，需结合大限运转详参。</p>`;
   }
+  
+  // 输出煞格/夹宫/对冲分析
+  if(shaPatterns.length>0){
+    txt+=`<h4 style="color:#d9534f;margin-top:18px">⚠ 煞格与夹宫分析</h4>`;
+    shaPatterns.forEach(sp=>{
+      txt+=`<div class="warning" style="margin-bottom:8px"><strong>「${sp.name}」</strong>：${sp.desc}</div>`;
+    });
+  }
+  
   return txt;
 }
 
 function renderTianZhaiAnalysis(p,d){
-  let txt=analyzeOnePalace(p);
+  let txt=analyzeOnePalace(p,d);
   txt+=`<p><strong>※ 倪海厦《天纪》强调：田宅宫看一生福禄。</strong>田宅是人的"仓库"，仓库多大福禄多厚。星曜表征不动产运、居家环境、晚年生活质量——这些是人生最终成绩单。</p>`;
   return txt;
 }
 
-function renderCaiBoAnalysis(p){return analyzeOnePalace(p);}
-function renderGuanLuAnalysis(p){return analyzeOnePalace(p);}
+function renderCaiBoAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderGuanLuAnalysis(p,d){return analyzeOnePalace(p,d);}
 
-function renderFuDeAnalysis(p){
-  let txt=analyzeOnePalace(p);
+function renderFuDeAnalysis(p,d){
+  let txt=analyzeOnePalace(p,d);
   txt+=`<p><strong class="highlight">※ 来因宫在${globalLaiYin.name}（${globalLaiYin.stem}${globalLaiYin.branch}）</strong>——今生因果的起点在此。命主内心深处真正追求的东西、前世的业力种子、今生的精神课题，都由${globalLaiYin.name}的星曜揭示。此宫是命主一辈子"和自己内心相处"的答卷。</p>`;
   return txt;
 }
 
-function renderQianYiAnalysis(p){return analyzeOnePalace(p);}
-function renderJiEAnalysis(p){return analyzeOnePalace(p);}
-function renderFuMuAnalysis(p){return analyzeOnePalace(p);}
-function renderXiongDiAnalysis(p){return analyzeOnePalace(p);}
-function renderZiNvAnalysis(p){return analyzeOnePalace(p);}
-function renderPuYiAnalysis(p){return analyzeOnePalace(p);}
+function renderQianYiAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderJiEAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderFuMuAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderXiongDiAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderZiNvAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderPuYiAnalysis(p,d){return analyzeOnePalace(p,d);}
 
-function renderTriSquare(ming,cai,guan,qian){
+function renderTriSquare(ming,cai,guan,qian,d){
   let txt='';
   const ms2=ms(ming).map(s=>starName(s)).join('、')||'空宫（借对宫）';
   const cs=ms(cai).map(s=>starName(s)).join('、')||'空宫';
@@ -967,6 +1123,33 @@ function renderTriSquare(ming,cai,guan,qian){
   txt+=`<p><strong>对宫·迁移宫（${qian.stem}${qian.branch}）：</strong>${qs} —— 外出发展的外部环境</p>`;
   txt+=`<p><strong>财帛宫（${cai.stem}${cai.branch}）：</strong>${cs} —— 赚钱能力和理财方式</p>`;
   txt+=`<p><strong>官禄宫（${guan.stem}${guan.branch}）：</strong>${gs2} —— 事业发展方向</p>`;
+  
+  // ── 三方四正：煞星对冲分析 ──
+  if(d){
+    const mingSha=ming.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    const qianSha=qian.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    const caiSha=cai.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    const guanSha=guan.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    
+    // 命迁对冲有煞
+    if(mingSha.length>0&&qianSha.length>0){
+      const msh=mingSha.map(s=>s.name).join('、'),qsh=qianSha.map(s=>s.name).join('、');
+      txt+=`<div class="warning"><strong>⚠ 命迁对冲见煞</strong>：命宫（${msh}）⟷ 迁移宫（${qsh}）——两宫对冲且均见煞星，命主在「安守现状」与「外出闯荡」之间承受拉扯之痛，容易两头落空。建议择一端深耕，避免频繁切换。（此即"冲半空折翅"之象）</div>`;
+    }
+    
+    // 命宫/官禄宫见空劫 + 对宫见羊陀
+    const mkongJie=ming.stars.some(s=>['地空','地劫'].includes(s.name));
+    const gkongJie=guan.stars.some(s=>['地空','地劫'].includes(s.name));
+    const qyangTuo=qian.stars.some(s=>['擎羊','陀罗'].includes(s.name));
+    if((mkongJie||gkongJie)&&qyangTuo){
+      txt+=`<div class="warning"><strong>⚠ 半空折翅</strong>：${mkongJie?'命宫':'官禄宫'}见空劫 + 迁移宫见羊陀——事业或人生在即将冲高之际突遇现实阻碍（羊陀），加上理想落空（空劫），犹如飞鸟折翅。命主需牢记：务实比理想更重要，稳扎稳打比激进更安全。</div>`;
+    }
+    
+    // 命宫空劫 + 财帛宫空劫 = 财命同空
+    if(mkongJie&&cai.stars.some(s=>['地空','地劫'].includes(s.name))){
+      txt+=`<div class="warning"><strong>⚠ 财命同空</strong>：命宫与财帛宫同时见空劫——财运与人生根基都有不稳定性，赚钱靠灵感而非持续产出，不适合稳定工薪，适合靠创意/信息差变现。</div>`;
+    }
+  }
   
   // Dynamic analysis of tri-square
   const allMajors=[...new Set([...ms(ming),...ms(cai),...ms(guan)].map(s=>s.name))];
@@ -1375,7 +1558,7 @@ function renderMarriageYears(d){
   
   // 本命夫妻宫分析
   txt+=`<h4>本命夫妻宫基础</h4>`;
-  txt+=analyzeOnePalace(fuqi);
+  txt+=analyzeOnePalace(fuqi,d);
   
   const now=new Date();
   const curYear=now.getFullYear();
@@ -1425,11 +1608,11 @@ function renderWealthYears(d){
   
   // 本命财帛宫分析
   txt+=`<h4>本命财帛宫基础</h4>`;
-  txt+=analyzeOnePalace(cai);
+  txt+=analyzeOnePalace(cai,d);
   
   // 官禄宫配置（事业影响收入渠道）
   txt+=`<h4>官禄宫配置</h4>`;
-  txt+=analyzeOnePalace(guan);
+  txt+=analyzeOnePalace(guan,d);
   
   // 流年财运分析
   const tianMaMap={子:'寅',丑:'卯',寅:'午',卯:'子',辰:'丑',巳:'卯',午:'亥',未:'酉',申:'午',酉:'子',戌:'丑',亥:'卯'};
