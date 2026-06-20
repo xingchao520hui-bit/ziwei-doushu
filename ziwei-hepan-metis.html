@@ -920,14 +920,14 @@ body{
 <!-- ============================================= -->
 <!-- ============== JavaScript =================== -->
 <!-- ============================================= -->
+<script src="ziwei-full-engine.js"></script>
 <script>
 (function(){
 'use strict';
 
 // ============================================================
-// CONFIG
+// ENGINE (client-side, no API needed)
 // ============================================================
-const API_BASE = 'http://localhost:3211';
 
 // ============================================================
 // CITY DATABASE (300+ cities with longitude)
@@ -1309,69 +1309,94 @@ function validatePerson(person){
 }
 
 // ============================================================
-// API CALLS
 // ============================================================
-async function fetchChart(person){
+// CLIENT-SIDE ENGINE CALLS (no API needed)
+// ============================================================
+
+/** Wrap engine chart output into format renderChartCard expects */
+function chartToRenderFormat(raw){
+  return {
+    palaces: raw.palaces,
+    info: {
+      mingZhu: raw.mingPalace ? raw.mingPalace.name : '',
+      shenZhu: raw.bodyPalace ? raw.bodyPalace.name : '',
+      wuxingJu: raw.fiveElementsClass || ''
+    },
+    birth: { gender: raw.gender }
+  };
+}
+
+/** Build renderAnalysis-friendly hepan result from engine output */
+function hepanToRenderFormat(mhp){
+  const c = mhp.compat;
+  const breakdown = {};
+  const overviewParts = [];
+  const strengths = [];
+  const challenges = [];
+
+  const dimNames = {
+    palace_alignment: '宫位对齐',
+    star_harmony: '星曜和谐',
+    mutagen_interaction: '四化感应',
+    zodiac: '生肖入宫',
+    life_rhythm: '人生节奏'
+  };
+
+  for(const d of c.dimensions){
+    const label = dimNames[d.id] || d.id;
+    const pct = d.max > 0 ? Math.round((d.score / d.max) * 100) : 0;
+    breakdown[label] = { score: pct, label: label, raw: d.score.toFixed(1), max: d.max };
+
+    if(d.reason_summary && d.reason_summary.display_text){
+      overviewParts.push('【'+label+'】'+d.reason_summary.display_text);
+    }
+    if(d.score >= d.max * 0.7){ strengths.push(label + '非常契合（'+pct+'分）'); }
+    else if(d.score < 0){ challenges.push(label + '存在较大冲突'); }
+  }
+
+  const overview = overviewParts.join('\n\n');
+  return {
+    data: {
+      total_score: c.score,
+      breakdown: breakdown,
+      overview: overview,
+      strengths: strengths.length ? strengths : ['各方面表现均衡'],
+      challenges: challenges.length ? challenges : ['需日常磨合，互相理解包容']
+    }
+  };
+}
+
+function fetchChart(person){
   const year = parseInt($('year'+person).value);
   const month = parseInt($('month'+person).value);
   const day = parseInt($('day'+person).value);
   const hour = parseInt($('hour'+person).value);
-  const minute = parseInt($('minute'+person).value);
+  const minute = parseInt($('minute'+person).value) || 0;
   const gender = getGender(person);
   const state = locState[person];
+  const lng = state && state.lng ? state.lng : 120;
 
-  let trueSolarHour = hour;
-  if(state.lng){
-    trueSolarHour = calcTrueSolarTime(hour, minute, state.lng);
-  }
-
-  const params = new URLSearchParams({
-    year, month, day,
-    hour: trueSolarHour,
-    minute,
-    gender,
-    location: state.city || '未知'
-  });
-
-  const resp = await fetch(API_BASE + '/chart?' + params.toString());
-  if(!resp.ok){
-    const err = await resp.json().catch(()=>({error:'请求失败'}));
-    throw new Error(err.error || '排盘失败');
-  }
-  return resp.json();
+  const raw = window.Ziwei.computeChart(year, month, day, hour, minute, gender, lng);
+  return chartToRenderFormat(raw);
 }
 
-async function fetchHepan(){
-  // Create person data objects
-  function getPersonData(p){
-    const year = parseInt($('year'+p).value);
-    const month = parseInt($('month'+p).value);
-    const day = parseInt($('day'+p).value);
-    const hour = parseInt($('hour'+p).value);
-    const minute = parseInt($('minute'+p).value);
-    const gender = getGender(p);
-    const state = locState[p];
-    let trueSolarHour = hour;
-    if(state.lng){
-      trueSolarHour = calcTrueSolarTime(hour, minute, state.lng);
-    }
-    return { year, month, day, hour: trueSolarHour, minute, gender };
-  }
+function fetchHepan(){
+  const ya = parseInt($('yearA').value), ma = parseInt($('monthA').value), da = parseInt($('dayA').value);
+  const ha = parseInt($('hourA').value), mia = parseInt($('minuteA').value) || 0;
+  const ga = getGender('A');
+  const lna = (locState['A'] && locState['A'].lng) ? locState['A'].lng : 120;
 
-  const a = getPersonData('A');
-  const b = getPersonData('B');
+  const yb = parseInt($('yearB').value), mb = parseInt($('monthB').value), db = parseInt($('dayB').value);
+  const hb = parseInt($('hourB').value), mib = parseInt($('minuteB').value) || 0;
+  const gb = getGender('B');
+  const lnb = (locState['B'] && locState['B'].lng) ? locState['B'].lng : 120;
 
-  const params = new URLSearchParams({
-    a_year: a.year, a_month: a.month, a_day: a.day, a_hour: a.hour, a_gender: a.gender,
-    b_year: b.year, b_month: b.month, b_day: b.day, b_hour: b.hour, b_gender: b.gender
-  });
-
-  const resp = await fetch(API_BASE + '/hepan?' + params.toString());
-  if(!resp.ok){
-    const err = await resp.json().catch(()=>({error:'合盘失败'}));
-    throw new Error(err.error || '合盘失败');
-  }
-  return resp.json();
+  const hepan = window.Ziwei.computeHepan(ya, ma, da, ha, mia, ga, lna, yb, mb, db, hb, mib, gb, lnb);
+  return {
+    hepanResult: hepanToRenderFormat(hepan),
+    chartA: chartToRenderFormat(hepan.chartA),
+    chartB: chartToRenderFormat(hepan.chartB)
+  };
 }
 
 // ============================================================
@@ -1518,14 +1543,11 @@ async function doHepan(){
   $('resultsSection').classList.remove('visible');
 
   try {
-    // Fetch both charts in parallel
-    const [chartA, chartB] = await Promise.all([
-      fetchChart('A'),
-      fetchChart('B')
-    ]);
-
-    // Fetch hepan result
-    const hepanResult = await fetchHepan();
+    // Compute everything client-side (charts + hepan in one shot)
+    const result = fetchHepan();
+    const chartA = result.chartA;
+    const chartB = result.chartB;
+    const hepanResult = result.hepanResult;
 
     // Render results
     const nameA = $('nameA').value.trim() || '甲方';
@@ -1590,7 +1612,7 @@ setTimeout(()=>{
 }, 100);
 
 console.log('Metis 紫微合盘 · HEMING 已就绪');
-console.log('API: ' + API_BASE);
+console.log('Engine: client-side Ziwei engine (no server needed)');
 console.log('城市数据库已加载 ' + cityIndex.length + ' 个城市');
 
 })();
