@@ -920,6 +920,34 @@ body{
 <!-- ============================================= -->
 <!-- ============== JavaScript =================== -->
 <!-- ============================================= -->
+<script>
+// 引擎加载 - 主路径 + 兜底
+(function(){
+  var LOADED = false;
+  function checkEngine(){
+    if (typeof window.Ziwei === 'object' && window.Ziwei.computeChart) {
+      LOADED = true;
+      console.log('[Ziwei] 引擎加载成功');
+      return true;
+    }
+    return false;
+  }
+  function loadFallback(){
+    if (LOADED) return;
+    console.warn('[Ziwei] 主路径加载失败，尝试从 raw.githubusercontent.com 加载...');
+    var s = document.createElement('script');
+    s.src = 'https://raw.githubusercontent.com/xingchao520hui-bit/ziwei-doushu/master/ziwei-full-engine.js';
+    s.onload = function(){ checkEngine(); };
+    s.onerror = function(){
+      console.error('[Ziwei] 兜底也加载失败，请检查网络');
+    };
+    document.head.appendChild(s);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if (!checkEngine()) loadFallback();
+  });
+})();
+</script>
 <script src="ziwei-full-engine.js"></script>
 <script>
 (function(){
@@ -1523,6 +1551,10 @@ function renderAnalysis(result){
 }
 
 async function doHepan(){
+  if(typeof window.Ziwei===\"undefined\"||!window.Ziwei.computeHepan){
+    showStatus(\"引擎未加载，请刷新页面重试（Ctrl+Shift+R）\",\"error\");
+    return;
+  }
   const submitBtn = $('hepanSubmit');
   const statusEl = $('hepanStatus');
 
