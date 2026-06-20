@@ -1,0 +1,3318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>紫微斗数 · Metis</title>
+<style>
+/* ===== METIS DESIGN ===== */
+
+/* ===== CSS Reset & Base ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fafafa;
+  --text:#1a1a1a;
+  --text-muted:#6b6b6b;
+  --text-light:#999;
+  --accent:#2563eb;
+  --accent-light:#3b82f6;
+  --border:#e5e5e5;
+  --card-bg:linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.8) 100%);
+  --card-shadow:0 4px 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(255,255,255,0.1);
+  --card-border:0.5px solid rgba(0,0,0,0.2);
+  --input-bg:#fafafa;
+  --input-border:1px solid #ddd;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ===== Fixed Header ===== */
+.metis-header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  pointer-events:none;
+  background:#fff;
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  padding:0 32px;
+  height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.metis-header > *{pointer-events:auto}
+.metis-logo{
+  font-size:clamp(26px,3vw,42px);
+  font-weight:900;
+  letter-spacing:-0.02em;
+  color:#000;
+  text-decoration:none;
+  user-select:none;
+}
+.metis-nav-desktop{
+  display:flex;align-items:center;gap:28px;
+}
+.metis-nav-desktop a{
+  text-decoration:none;color:var(--text);
+  font-size:15px;font-weight:500;
+  transition:color .2s;
+}
+.metis-nav-desktop a:hover,.metis-nav-desktop a.active{color:var(--accent)}
+.metis-nav-desktop .version-btn{
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:6px 18px;
+  font-size:13px;
+  color:var(--text-muted);
+  text-decoration:none;
+  transition:all .2s;
+}
+.metis-nav-desktop .version-btn:hover{
+  border-color:var(--text);
+  color:var(--text);
+}
+
+/* Hamburger (mobile) */
+.hamburger-btn{
+  display:none;
+  width:36px;height:36px;
+  flex-direction:column;
+  justify-content:center;align-items:center;
+  gap:5px;
+  background:none;border:none;cursor:pointer;
+}
+.hamburger-btn span{
+  display:block;width:22px;height:2px;
+  background:#000;border-radius:1px;
+  transition:all .3s;
+}
+.hamburger-btn.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger-btn.open span:nth-child(2){opacity:0}
+.hamburger-btn.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* Mobile menu overlay */
+.mobile-menu{
+  display:none;
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  z-index:99;
+  background:rgba(255,255,255,0.98);
+  backdrop-filter:blur(40px);
+  flex-direction:column;justify-content:center;align-items:center;
+  gap:32px;
+  opacity:0;transition:opacity .4s;
+}
+.mobile-menu.open{
+  display:flex;opacity:1;
+}
+.mobile-menu a{
+  font-size:clamp(28px,5vw,48px);
+  font-weight:700;
+  letter-spacing:-0.02em;
+  color:#000;
+  text-decoration:none;
+  transition:color .2s;
+}
+.mobile-menu a:hover{color:var(--accent)}
+.mobile-menu .menu-label{
+  font-size:11px;
+  letter-spacing:0.3em;
+  color:var(--text-muted);
+  margin-bottom:4px;
+}
+
+/* ===== Main Content ===== */
+.main-content{padding-top:64px}
+
+/* ===== Title Section ===== */
+.title-section{
+  text-align:center;
+  padding:80px 24px 60px;
+}
+.title-tag{
+  font-size:12px;
+  letter-spacing:0.3em;
+  color:var(--text-muted);
+  margin-bottom:16px;
+  text-transform:uppercase;
+}
+.title-main{
+  font-size:clamp(36px,6vw,64px);
+  font-weight:600;
+  letter-spacing:-0.022em;
+  margin-bottom:12px;
+}
+.title-sub{
+  font-size:clamp(15px,2vw,18px);
+  color:var(--text-muted);
+  font-weight:400;
+}
+.title-divider{
+  width:60px;height:2px;
+  background:#000;
+  margin:32px auto 0;
+  border-radius:1px;
+}
+
+/* ===== Page Container ===== */
+.page-container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 24px 80px;
+}
+
+/* ===== Dual Column Form ===== */
+.heming-dual-form{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+  margin-bottom:32px;
+}
+
+/* Glass card */
+.heming-person-card{
+  background:var(--card-bg);
+  border:var(--card-border);
+  border-radius:16px;
+  padding:24px;
+  backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  -webkit-backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  box-shadow:var(--card-shadow);
+}
+.person-label{
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0.15em;
+  color:var(--text-muted);
+  margin-bottom:20px;
+  text-align:center;
+}
+
+/* Birth form */
+.birthform-card{
+  display:flex;flex-direction:column;gap:14px;
+}
+
+.form-row{
+  display:flex;flex-direction:column;gap:4px;
+}
+.form-row-label{
+  font-size:11px;
+  color:var(--text-muted);
+  letter-spacing:0.05em;
+  font-weight:500;
+}
+
+/* Name input */
+.input-name{
+  background:var(--input-bg);
+  border:var(--input-border);
+  border-radius:14px;
+  padding:12px 14px;
+  font-size:14px;
+  font-family:inherit;
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s;
+}
+.input-name:focus{border-color:var(--accent)}
+.input-name::placeholder{color:#ccc}
+
+/* Date selects row */
+.select-row{
+  display:flex;gap:8px;
+}
+.select-row select{
+  flex:1;
+  background:var(--input-bg);
+  border:var(--input-border);
+  border-radius:14px;
+  padding:12px 10px;
+  font-size:14px;
+  font-family:inherit;
+  color:var(--text);
+  outline:none;
+  cursor:pointer;
+  transition:border-color .2s;
+  -webkit-appearance:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23999' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+  padding-right:28px;
+}
+.select-row select:focus{border-color:var(--accent)}
+
+/* Calendar toggle */
+.calendar-toggle{
+  display:flex;gap:4px;
+  background:#f5f5f5;
+  border-radius:999px;
+  padding:3px;
+}
+.calendar-toggle button{
+  flex:1;
+  border:none;background:none;
+  padding:8px 16px;
+  border-radius:999px;
+  font-size:13px;
+  font-family:inherit;
+  cursor:pointer;
+  color:var(--text-muted);
+  transition:all .2s;
+}
+.calendar-toggle button.active{
+  background:#fff;
+  color:var(--text);
+  box-shadow:0 1px 4px rgba(0,0,0,0.08);
+  font-weight:600;
+}
+
+/* Location picker */
+.location-wrapper{position:relative}
+.location-btn{
+  width:100%;
+  background:var(--input-bg);
+  border:var(--input-border);
+  border-radius:14px;
+  padding:12px 14px;
+  font-size:14px;
+  font-family:inherit;
+  color:var(--text);
+  text-align:left;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:border-color .2s;
+}
+.location-btn:hover{border-color:var(--accent)}
+.location-btn .arrow{color:#ccc;font-size:10px;transition:transform .2s}
+.location-btn .arrow.open{transform:rotate(180deg)}
+.location-search-input{
+  width:100%;
+  background:var(--input-bg);
+  border:var(--input-border);
+  border-radius:14px;
+  padding:10px 14px;
+  font-size:14px;
+  font-family:inherit;
+  color:var(--text);
+  outline:none;
+  margin-top:6px;
+  display:none;
+}
+.location-search-input.visible{display:block}
+.location-dropdown{
+  position:absolute;top:100%;left:0;right:0;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.12);
+  max-height:200px;
+  overflow-y:auto;
+  z-index:20;
+  display:none;
+  margin-top:4px;
+}
+.location-dropdown.visible{display:block}
+.location-dropdown-item{
+  padding:10px 14px;
+  font-size:13px;
+  cursor:pointer;
+  display:flex;justify-content:space-between;
+  transition:background .15s;
+}
+.location-dropdown-item:hover{background:#f5f5f5}
+.location-dropdown-item .city-name{font-weight:500}
+.location-dropdown-item .city-lng{color:var(--text-muted);font-size:11px}
+
+/* Time selects */
+.time-select-row{
+  display:flex;gap:8px;
+}
+.time-select-row select{
+  flex:1;
+  background:var(--input-bg);
+  border:var(--input-border);
+  border-radius:14px;
+  padding:12px 10px;
+  font-size:14px;
+  font-family:inherit;
+  color:var(--text);
+  outline:none;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23999' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+  padding-right:28px;
+}
+.time-select-row select:focus{border-color:var(--accent)}
+
+/* True solar time display */
+.true-solar-display{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;
+  background:rgba(37,99,235,0.04);
+  border-radius:12px;
+  font-size:13px;
+  color:var(--accent);
+  border:1px solid rgba(37,99,235,0.15);
+}
+.true-solar-display .solar-icon{font-size:16px}
+.true-solar-display .solar-time{font-weight:600}
+
+/* Unknown birth time checkbox */
+.checkbox-row{
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;
+}
+.checkbox-row input[type=checkbox]{
+  width:18px;height:18px;
+  accent-color:var(--accent);
+  cursor:pointer;
+}
+.checkbox-row label{
+  font-size:13px;
+  color:var(--text-muted);
+  cursor:pointer;
+}
+
+/* Gender toggle */
+.gender-toggle{
+  display:flex;gap:8px;
+}
+.gender-toggle button{
+  flex:1;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:999px;
+  padding:12px;
+  font-size:14px;
+  font-family:inherit;
+  cursor:pointer;
+  color:var(--text-muted);
+  transition:all .2s;
+}
+.gender-toggle button.active{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+}
+
+/* ===== Hepan Button Section ===== */
+.hepan-action-card{
+  background:var(--card-bg);
+  border:var(--card-border);
+  border-radius:16px;
+  padding:32px 24px;
+  backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  -webkit-backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  box-shadow:var(--card-shadow);
+  text-align:center;
+  margin-bottom:32px;
+}
+.hepan-action-title{
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:-0.01em;
+  margin-bottom:6px;
+}
+.hepan-action-hint{
+  font-size:14px;
+  color:var(--text-muted);
+  margin-bottom:24px;
+  max-width:500px;
+  margin-left:auto;margin-right:auto;
+  line-height:1.6;
+}
+.hepan-submit-btn{
+  display:inline-block;
+  background:#000;
+  color:#fff;
+  border:none;
+  border-radius:999px;
+  padding:16px 48px;
+  font-size:17px;
+  font-weight:600;
+  font-family:inherit;
+  letter-spacing:-0.01em;
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;
+}
+.hepan-submit-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 60px rgba(0,0,0,0.1);
+}
+.hepan-submit-btn:active{transform:translateY(0)}
+.hepan-submit-btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:none;
+}
+.hepan-submit-btn .spinner{
+  display:none;
+  width:20px;height:20px;
+  border:2px solid rgba(255,255,255,0.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+  vertical-align:middle;
+  margin-right:8px;
+}
+.hepan-submit-btn.loading .spinner{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Status messages */
+.hepan-status{
+  text-align:center;
+  padding:12px;
+  margin-bottom:16px;
+  border-radius:12px;
+  font-size:14px;
+  display:none;
+}
+.hepan-status.visible{display:block}
+.hepan-status.error{
+  background:rgba(220,38,38,0.06);
+  color:#dc2626;
+  border:1px solid rgba(220,38,38,0.2);
+}
+.hepan-status.loading{
+  background:rgba(37,99,235,0.06);
+  color:var(--accent);
+  border:1px solid rgba(37,99,235,0.2);
+}
+
+/* ===== Results Section ===== */
+.results-section{
+  display:none;
+  margin-bottom:40px;
+}
+.results-section.visible{display:block}
+
+/* Score card */
+.score-card{
+  background:var(--card-bg);
+  border:var(--card-border);
+  border-radius:16px;
+  padding:32px 24px;
+  backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  -webkit-backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  box-shadow:var(--card-shadow);
+  text-align:center;
+  margin-bottom:28px;
+}
+.score-number{
+  font-size:clamp(64px,10vw,96px);
+  font-weight:900;
+  letter-spacing:-0.04em;
+  line-height:1;
+}
+.score-label{
+  font-size:14px;
+  color:var(--text-muted);
+  margin-top:8px;
+}
+.score-grade{
+  font-size:24px;
+  font-weight:700;
+  margin-top:4px;
+}
+
+/* Chart cards */
+.chart-dual-section{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+  margin-bottom:28px;
+}
+@media(max-width:800px){
+  .chart-dual-section{grid-template-columns:1fr}
+}
+
+.chart-card{
+  background:var(--card-bg);
+  border:var(--card-border);
+  border-radius:16px;
+  padding:20px;
+  backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  -webkit-backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  box-shadow:var(--card-shadow);
+}
+.chart-card-header{
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:-0.01em;
+  margin-bottom:16px;
+  text-align:center;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.chart-card-header .chart-name{
+  font-size:12px;
+  color:var(--text-muted);
+  font-weight:400;
+}
+
+/* Palace grid */
+.palace-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--border);
+  border-radius:8px;
+  overflow:hidden;
+}
+.palace-cell{
+  background:#fff;
+  padding:8px 6px;
+  min-height:70px;
+  font-size:10px;
+  position:relative;
+}
+.palace-cell.ming{background:rgba(37,99,235,0.04)}
+.palace-cell.shen{background:rgba(139,92,246,0.04)}
+.palace-name{font-weight:700;font-size:10px;margin-bottom:2px;color:var(--text)}
+.palace-badge{
+  position:absolute;top:2px;right:2px;
+  font-size:8px;padding:1px 4px;border-radius:3px;
+  font-weight:700;
+}
+.badge-ming{background:var(--accent);color:#fff}
+.badge-shen{background:#8b5cf6;color:#fff}
+.star-entry{
+  font-size:9px;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.star-major{color:var(--accent);font-weight:600}
+.star-minor{color:var(--text-muted)}
+.star-lucky{color:#059669}
+.star-evil{color:#dc2626}
+.star-flower{color:#d946ef}
+
+/* Analysis section */
+.analysis-card{
+  background:var(--card-bg);
+  border:var(--card-border);
+  border-radius:16px;
+  padding:28px 24px;
+  backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  -webkit-backdrop-filter:blur(28px) saturate(190%) brightness(1.08);
+  box-shadow:var(--card-shadow);
+}
+.analysis-title{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:20px;
+  letter-spacing:-0.01em;
+}
+.analysis-section{
+  margin-bottom:20px;
+}
+.analysis-section h4{
+  font-size:13px;
+  font-weight:700;
+  color:var(--text-muted);
+  letter-spacing:0.05em;
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+.analysis-section p{
+  font-size:14px;
+  line-height:1.8;
+  color:var(--text);
+}
+.analysis-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 14px;
+  background:#f8f8f8;
+  border-radius:10px;
+  margin-bottom:6px;
+  font-size:13px;
+}
+.analysis-item .score-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+/* ===== Footer ===== */
+.metis-footer{
+  text-align:center;
+  padding:40px 24px 60px;
+  border-top:1px solid var(--border);
+  margin-top:60px;
+}
+.footer-links{
+  display:flex;justify-content:center;gap:20px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.footer-links a{
+  font-size:13px;
+  color:var(--text-muted);
+  text-decoration:none;
+  transition:color .2s;
+}
+.footer-links a:hover{color:var(--text)}
+.footer-separator{color:#ddd}
+.footer-icp{
+  font-size:12px;
+  color:var(--text-light);
+  margin-bottom:4px;
+}
+.footer-copy{
+  font-size:12px;
+  color:var(--text-light);
+}
+
+/* ===== Responsive ===== */
+@media(max-width:680px){
+  .heming-dual-form{grid-template-columns:1fr}
+  .metis-nav-desktop{display:none}
+  .hamburger-btn{display:flex}
+  .title-section{padding:50px 20px 40px}
+  .page-container{padding:0 16px 60px}
+  .palace-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:681px){
+  .mobile-menu{display:none!important}
+}
+
+
+/* ===== TAB BAR ===== */
+.tab-bar{display:flex;justify-content:center;gap:0;margin-bottom:32px;border-bottom:2px solid var(--border)}
+.tab-btn{padding:14px 48px;font-size:16px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--text-muted);position:relative;transition:color .2s;letter-spacing:0.05em;font-family:inherit}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent)}
+.tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--accent);border-radius:1px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* ===== SINGLE CHART AREA (app dark theme) ===== */
+.single-chart-area{font-family:'Microsoft YaHei','SimSun',serif}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','SimSun',serif;background:linear-gradient(to bottom,#1a0a0a,#0a0a1a);color:#e8dcc8;line-height:1.8;padding:20px}
+.container{max-width:1200px;margin:0 auto}
+.header{text-align:center;padding:40px 20px;border-bottom:3px double #c8a96e;margin-bottom:40px;background:rgba(0,0,0,.3)}
+.header h1{color:#c8a96e;font-size:42px;margin-bottom:10px;text-shadow:2px 2px 4px rgba(0,0,0,.5)}
+.header .subtitle{color:#8a7a5a;font-size:16px;font-style:italic}
+
+/* input */
+.input-card{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
+.input-card h2{color:#c8a96e;margin-bottom:18px;font-size:20px;text-align:center}
+.form-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:flex-end}
+.form-group{display:flex;flex-direction:column;min-width:100px}
+.form-group label{color:#8a7a5a;font-size:12px;margin-bottom:4px}
+.form-group input,.form-group select{padding:10px 12px;background:rgba(0,0,0,.5);border:1px solid #2a2a4a;color:#e8dcc8;border-radius:5px;font-size:14px;font-family:inherit}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#c8a96e}
+.btn-submit{padding:10px 30px;background:linear-gradient(135deg,#c8a96e,#b8963e);color:#1a0a0a;border:none;border-radius:5px;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;transition:.3s;white-space:nowrap}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(200,169,110,.3)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-geocode{padding:10px 12px;background:rgba(200,169,110,.15);border:1px solid #c8a96e;color:#c8a96e;border-radius:5px;font-size:14px;cursor:pointer;transition:.3s;white-space:nowrap}
+.btn-geocode:hover{background:rgba(200,169,110,.3)}
+.geocode-msg{text-align:center;color:#8a7a5a;font-size:11px;margin-top:6px;display:none}
+.geocode-msg.show{display:block}
+.status{text-align:center;margin-bottom:20px;display:none;padding:10px}
+.status.show{display:block}.status.error{color:#dc3545}.status.loading{color:#c8a96e}
+
+/* result */
+.result-area{display:none}.result-area.show{display:block}
+
+.intro-section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px;border-left:4px solid #c8a96e}
+.intro-section h2{color:#c8a96e;margin-bottom:15px;font-size:24px}
+.intro-section p{color:#e8dcc8;margin-bottom:10px;text-indent:2em}
+.intro-section .info-row{display:flex;flex-wrap:wrap;gap:8px 24px}
+.intro-section .info-row span{font-size:14px}
+.intro-section .info-row strong{color:#c8a96e}
+
+.chart-section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
+.chart-title{color:#c8a96e;font-size:20px;margin-bottom:20px;text-align:center;border-bottom:1px solid #2a2a4a;padding-bottom:10px}
+.palace-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#2a2a4a;border:2px solid #c8a96e;margin-bottom:20px}
+.palace{background:rgba(26,26,58,.9);padding:10px;min-height:100px;border:1px solid #3a3a5a;position:relative}
+.palace.ming{background:rgba(42,26,42,.9);border-color:#c8a96e}
+.palace.shen{background:rgba(42,26,42,.9);border-color:#9b2335}
+.palace-name{font-size:11px;color:#8a7a5a;margin-bottom:5px}
+.palace-badge{position:absolute;top:5px;right:5px;font-size:10px;padding:1px 5px;border-radius:3px}
+.badge-ming{background:#c8a96e;color:#1a0a0a}.badge-shen{background:#9b2335;color:#fff}
+.star-list{font-size:10px;line-height:1.4}.star-main{color:#c8a96e;font-weight:bold}
+.star-lucky{color:#5cb85c}.star-evil{color:#d9534f}.star-minor{color:#888}
+
+.analysis-section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
+.analysis-title{color:#c8a96e;font-size:18px;margin-bottom:15px;border-bottom:1px solid #2a2a4a;padding-bottom:10px}
+.analysis-content{color:#e8dcc8}
+.analysis-content h3{color:#c8a96e;margin-top:20px;margin-bottom:10px;font-size:16px}
+.analysis-content h4{color:#a0522d;margin-top:15px;margin-bottom:8px;font-size:14px}
+.analysis-content p{margin-bottom:10px;text-indent:2em}
+.analysis-content ul{margin-left:20px;margin-bottom:10px}
+.analysis-content li{margin-bottom:5px}
+.highlight{color:#c8a96e;font-weight:bold}
+.warning{background:rgba(220,53,69,.1);border:1px solid #dc3545;padding:15px;margin:15px 0;border-radius:5px}
+.warning h4{color:#dc3545}.warning p{text-indent:0}
+.suggestion{background:rgba(40,167,69,.1);border:1px solid #28a745;padding:15px;margin:15px 0;border-radius:5px}
+.suggestion h4{color:#28a745}.suggestion p{text-indent:0}
+
+.daxian-table{width:100%;border-collapse:collapse;margin:15px 0;font-size:13px}
+.daxian-table th{background:rgba(200,169,110,.15);color:#c8a96e;padding:8px 10px;text-align:left;border:1px solid #2a2a4a}
+.daxian-table td{padding:8px 10px;border:1px solid #2a2a4a;color:#e8dcc8}
+.daxian-table tr.now{background:rgba(155,35,53,.15)}.daxian-table tr.now td{color:#f88}
+
+.footer{text-align:center;padding:30px;border-top:2px solid #c8a96e;color:#8a7a5a;font-size:14px}
+
+@media(max-width:768px){.palace-grid{grid-template-columns:repeat(2,1fr)}.header h1{font-size:28px}.palace{min-height:75px}}
+
+
+/* ===== HEPAN LIGHT THEME ===== */
+.hepan-area .heming-dual-form{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+@media(max-width:680px){.hepan-area .heming-dual-form{grid-template-columns:1fr}}
+.hepan-area .heming-person-card{background:var(--card-bg);border:var(--card-border);border-radius:16px;padding:24px;backdrop-filter:blur(28px) saturate(190%);-webkit-backdrop-filter:blur(28px) saturate(190%);box-shadow:var(--card-shadow)}
+.hepan-area .person-label{font-size:13px;font-weight:700;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:20px;text-align:center}
+.hepan-area .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.hepan-area .form-field{display:flex;flex-direction:column;gap:4px}
+.hepan-area .form-field label{font-size:12px;font-weight:600;letter-spacing:0.05em;color:var(--text-muted)}
+.hepan-area .form-field input,.hepan-area .form-field select{padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;color:var(--text);transition:border-color .2s}
+.hepan-area .form-field input:focus,.hepan-area .form-field select:focus{outline:none;border-color:var(--accent)}
+.hepan-area .inline-row{display:flex;gap:6px}
+.hepan-area .inline-row input{flex:1}
+.hepan-area .inline-row button{padding:10px;border:1px solid #ddd;border-radius:8px;background:var(--input-bg);cursor:pointer;font-size:14px;white-space:nowrap;transition:all .2s}
+.hepan-area .inline-row button:hover{border-color:var(--accent);color:var(--accent)}
+.hepan-area .btn-hepan-action{display:block;width:100%;max-width:300px;margin:28px auto 0;padding:16px;background:#000;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:0.15em;transition:all .3s}
+.hepan-area .btn-hepan-action:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,0,0,.25)}
+.hepan-area .btn-hepan-action:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.hepan-area .ts-info{text-align:center;font-size:12px;color:var(--text-light);margin-top:8px}
+.hepan-area .result-card{background:var(--card-bg);border:var(--card-border);border-radius:16px;padding:24px;backdrop-filter:blur(28px);box-shadow:var(--card-shadow);margin-bottom:24px}
+.hepan-area .result-card h3{font-size:20px;font-weight:700;margin-bottom:16px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:12px}
+.hepan-area .palace-grid-hepan{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#ddd;border:2px solid var(--accent);border-radius:8px;overflow:hidden}
+.hepan-area .palace-cell{background:#fff;padding:10px 8px;min-height:85px;border:1px solid var(--border);font-size:11px;line-height:1.5}
+.hepan-area .palace-cell .pname{font-size:10px;color:var(--text-light);margin-bottom:3px}
+.hepan-area .palace-cell .star{line-height:1.6}
+.hepan-area .palace-cell .star.main-star{color:var(--accent);font-weight:600}
+.hepan-area .palace-cell .star.aux-star{color:var(--text-muted)}
+.hepan-area .score-hero{text-align:center;padding:20px}
+.hepan-area .score-hero .big{font-size:48px;font-weight:700;color:var(--accent)}
+.hepan-area .score-hero .label{font-size:14px;color:var(--text-muted);margin-top:4px}
+.hepan-area .dim-row{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;margin:4px 0;background:var(--input-bg);border-radius:8px}
+.hepan-area .dim-row .name{font-weight:600}
+.hepan-area .dim-row .val{font-weight:700;color:var(--accent)}
+.hepan-area .dim-desc{font-size:12px;color:var(--text-light);padding:0 16px 8px}
+@media(max-width:680px){
+  .tab-btn{padding:12px 28px;font-size:14px}
+  .hepan-area .palace-grid-hepan{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="metis-header">
+  <a href="#" class="metis-logo">METIS</a>
+  <nav class="metis-nav-desktop">
+    <a href="#">起盘</a>
+    <a href="#" class="active">合盘</a>
+    <a href="#" class="version-btn">普通版</a>
+  </nav>
+  <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main class="main-content">
+
+<section class="title-section">
+  <div class="title-tag">ZIWEI DOUSHU</div>
+  <h1 class="title-main">紫微斗数命盘分析</h1>
+  <p class="title-sub">三合派技法 · 真太阳时 · 单人起盘 + 双人合盘</p>
+  <div class="title-divider"></div>
+</section>
+
+<div class="page-container">
+
+<div class="tab-bar">
+  <button class="tab-btn active" id="tab-single" onclick="switchTab('single')">&#x1F52E; 单人起盘</button>
+  <button class="tab-btn" id="tab-hepan" onclick="switchTab('hepan')">&#x2764; 双人合盘</button>
+</div>
+
+<!-- ===== TAB 1: SINGLE CHART ===== -->
+<div class="tab-panel active" id="panel-single">
+  <div class="single-chart-area">
+
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+    <h1>古风命理咨询</h1>
+    <p class="subtitle">紫微斗数专业分析 · iztro 开源引擎排盘 · 三合派技法</p>
+</div>
+
+<!-- INPUT -->
+<div class="input-card">
+    <h2>请输入出生信息</h2>
+    <div class="form-row">
+        <div class="form-group"><label>出生年份</label><input type="number" id="year" min="1900" max="2100" value="1999"></div>
+        <div class="form-group"><label>出生月份</label><input type="number" id="month" min="1" max="12" value="2"></div>
+        <div class="form-group"><label>出生日期</label><input type="number" id="day" min="1" max="31" value="17"></div>
+        <div class="form-group"><label>出生时间(时)</label><input type="number" id="hour" min="0" max="23" value="22"></div>
+        <div class="form-group"><label>分钟</label><input type="number" id="minute" min="0" max="59" value="0"></div>
+        <div class="form-group"><label>性别</label><select id="gender"><option value="male">男</option><option value="female">女</option></select></div>
+        <div class="form-group"><label>出生地点</label><input type="text" id="location" placeholder="如：成都 / 北京朝阳" style="width:150px" oninput="onLocationInput()"></div>
+        <button type="button" class="btn-geocode" onclick="geocodeLocation()" title="查询该地点的经纬度">🔍</button>
+        <div class="form-group"><label>经度(°E)</label><input type="number" id="longitude" value="120" min="73" max="135" step="0.01" style="width:90px"></div>
+        <div class="form-group" style="justify-content:flex-end"><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;white-space:nowrap"><input type="checkbox" id="useTrueSolar" style="width:auto;margin:0;accent-color:#c8a96e">真太阳时</label></div>
+        <button class="btn-submit" onclick="getChart()">开 始 排 盘</button>
+    </div>
+    <div class="geocode-msg" id="geocodeMsg"></div>
+    <p style="text-align:center;color:#8a7a5a;font-size:11px;margin-top:10px">输入阳历出生年月日时，填写出生地点并点击🔍查询经度，勾选真太阳时后自动换算。支持任意年份。</p>
+</div>
+
+<div class="status" id="status"></div>
+
+<!-- RESULT -->
+<div class="result-area" id="result"></div>
+
+</div>
+
+
+  </div>
+</div>
+
+<!-- ===== TAB 2: HEPAN ===== -->
+<div class="tab-panel" id="panel-hepan">
+  <div class="hepan-area">
+
+    <div class="heming-dual-form">
+      <div class="heming-person-card">
+        <div class="person-label">&#x1F9D1; 甲方 A</div>
+        <div class="form-grid">
+          <div class="form-field"><label>出生年份</label><input type="number" id="a-year" value="1999" min="1900" max="2100"></div>
+          <div class="form-field"><label>月份</label><input type="number" id="a-month" value="2" min="1" max="12"></div>
+          <div class="form-field"><label>日期</label><input type="number" id="a-day" value="17" min="1" max="31"></div>
+          <div class="form-field"><label>时 (0-23)</label><input type="number" id="a-hour" value="22" min="0" max="23"></div>
+          <div class="form-field"><label>分</label><input type="number" id="a-minute" value="0" min="0" max="59"></div>
+          <div class="form-field"><label>性别</label><select id="a-gender"><option value="male">男</option><option value="female" selected>女</option></select></div>
+          <div class="form-field"><label>出生地</label>
+            <div class="inline-row"><input type="text" id="a-location" placeholder="城市名"><button type="button" onclick="lookupCity('a')">&#x1F50D;</button></div>
+          </div>
+          <div class="form-field"><label>经度</label><input type="number" id="a-lng" value="120" min="73" max="135" step="0.01"></div>
+          <div class="form-field"><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px">
+            <input type="checkbox" id="a-ts" onchange="showTSInfo('a')"> 真太阳时</label>
+          </div>
+        </div>
+        <div class="ts-info" id="a-tsinfo"></div>
+      </div>
+      <div class="heming-person-card">
+        <div class="person-label">&#x1F9D1; 乙方 B</div>
+        <div class="form-grid">
+          <div class="form-field"><label>出生年份</label><input type="number" id="b-year" value="1999" min="1900" max="2100"></div>
+          <div class="form-field"><label>月份</label><input type="number" id="b-month" value="6" min="1" max="12"></div>
+          <div class="form-field"><label>日期</label><input type="number" id="b-day" value="18" min="1" max="31"></div>
+          <div class="form-field"><label>时 (0-23)</label><input type="number" id="b-hour" value="8" min="0" max="23"></div>
+          <div class="form-field"><label>分</label><input type="number" id="b-minute" value="0" min="0" max="59"></div>
+          <div class="form-field"><label>性别</label><select id="b-gender"><option value="male" selected>男</option><option value="female">女</option></select></div>
+          <div class="form-field"><label>出生地</label>
+            <div class="inline-row"><input type="text" id="b-location" placeholder="城市名"><button type="button" onclick="lookupCity('b')">&#x1F50D;</button></div>
+          </div>
+          <div class="form-field"><label>经度</label><input type="number" id="b-lng" value="120" min="73" max="135" step="0.01"></div>
+          <div class="form-field"><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px">
+            <input type="checkbox" id="b-ts" onchange="showTSInfo('b')"> 真太阳时</label>
+          </div>
+        </div>
+        <div class="ts-info" id="b-tsinfo"></div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-hepan-action" id="btn-hepan" onclick="doHepan()">&#x2764; 开 始 合 盘</button>
+    </div>
+    <div class="status-msg" id="h-status"></div>
+    <div id="h-result"></div>
+  </div>
+</div>
+
+</div><!-- page-container -->
+<div class="metis-footer" style="text-align:center;padding:40px;color:var(--text-light);font-size:13px;border-top:1px solid var(--border)">Metis · 紫微斗数 · 仅供娱乐参考</div>
+</main>
+
+<script src="ziwei-full-engine.js"></script>
+
+<script>
+(function(){
+'use strict';
+
+
+const API='http://localhost:3211';
+const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
+let globalLaiYin = null; // 来因宫全局变量
+
+function pn(d,n){return d.palaces.find(p=>p.name===n)}
+function sn(p){return p.stars.map(s=>s.name)}
+function hs(p,n){return p.stars.some(s=>s.name===n)}
+function gs(p,n){return p.stars.find(s=>s.name===n)}
+function ms(p){return p.stars.filter(s=>s.type==='major')}
+function hn(v){const m={lu:'禄',quan:'权',ke:'科',ji:'忌'};return m[v]||v}
+function bri(s){const b=s.brightness;if(!b||b==='平')return b;return '['+b+']'}
+function starName(s){return s.name+(s.siHua?'['+hn(s.siHua)+']':'')+bri(s)}
+function allStarName(s){return s.name+(s.siHua?'['+hn(s.siHua)+']':'')}
+
+// ===== 真太阳时 & 地理编码 =====
+// 中国城市经纬度库（地级市+部分区县，300+条）
+window._CITY_LNG = CITY_LNG; const CITY_LNG = {
+// 直辖市
+'北京':116.4,'上海':121.5,'天津':117.2,'重庆':106.5,
+// 省会
+'石家庄':114.5,'太原':112.5,'呼和浩特':111.7,'沈阳':123.4,'长春':125.3,'哈尔滨':126.5,
+'南京':118.8,'杭州':120.2,'合肥':117.3,'福州':119.3,'南昌':115.9,'济南':117.0,
+'郑州':113.7,'武汉':114.3,'长沙':113.0,'广州':113.3,'南宁':108.3,'海口':110.3,
+'成都':104.1,'贵阳':106.7,'昆明':102.7,'拉萨':91.1,'西安':108.9,'兰州':103.7,
+'西宁':101.8,'银川':106.3,'乌鲁木齐':87.6,
+// 计划单列市+重要城市
+'深圳':114.1,'厦门':118.1,'宁波':121.5,'青岛':120.4,'大连':121.6,
+// 河北省
+'唐山':118.2,'秦皇岛':119.6,'邯郸':114.5,'邢台':114.5,'保定':115.5,'张家口':114.9,'承德':117.9,'沧州':116.8,'廊坊':116.7,'衡水':115.7,'燕郊':116.8,'雄县':116.1,
+// 山西省
+'大同':113.3,'阳泉':113.6,'长治':113.1,'晋城':112.9,'朔州':112.4,'晋中':112.7,'运城':111.0,'忻州':112.7,'临汾':111.5,'吕梁':111.1,
+// 内蒙古
+'包头':109.8,'乌海':106.8,'赤峰':118.9,'通辽':122.3,'鄂尔多斯':109.8,'呼伦贝尔':119.8,'巴彦淖尔':107.4,'乌兰察布':113.1,'兴安盟':122.0,'锡林浩特':116.1,'阿拉善':105.7,
+// 辽宁省
+'鞍山':123.0,'抚顺':124.0,'本溪':123.8,'丹东':124.4,'锦州':121.1,'营口':122.2,'阜新':121.7,'辽阳':123.2,'盘锦':122.1,'铁岭':123.8,'朝阳':120.5,'葫芦岛':120.8,
+// 吉林省
+'吉林':126.5,'四平':124.4,'辽源':125.1,'通化':125.9,'白山':126.4,'松原':124.8,'白城':122.8,'延吉':129.5,'图们':129.8,'珲春':130.4,
+// 黑龙江省
+'齐齐哈尔':123.9,'鸡西':130.9,'鹤岗':130.3,'双鸭山':131.2,'大庆':125.0,'伊春':128.9,'佳木斯':130.3,'七台河':131.0,'牡丹江':129.6,'黑河':127.5,'绥化':127.0,'大兴安岭':124.1,
+// 江苏省
+'无锡':120.3,'徐州':117.2,'常州':119.9,'苏州':120.6,'南通':120.9,'连云港':119.2,'淮安':119.0,'盐城':120.2,'扬州':119.4,'镇江':119.4,'泰州':119.9,'宿迁':118.3,'昆山':121.0,'江阴':120.3,'宜兴':119.8,
+// 浙江省
+'温州':120.7,'嘉兴':120.8,'湖州':120.1,'绍兴':120.6,'金华':119.6,'衢州':118.9,'舟山':122.2,'台州':121.4,'丽水':119.9,'义乌':120.1,'慈溪':121.2,
+// 安徽省
+'芜湖':118.4,'蚌埠':117.4,'淮南':117.0,'马鞍山':118.5,'淮北':116.8,'铜陵':117.8,'安庆':117.1,'黄山':118.3,'滁州':118.3,'阜阳':115.8,'宿州':117.0,'六安':116.5,'亳州':115.8,'池州':117.5,'宣城':118.8,
+// 福建省
+'莆田':119.0,'三明':117.6,'泉州':118.6,'漳州':117.6,'南平':118.2,'龙岩':117.0,'宁德':119.5,'石狮':118.6,'晋江':118.6,
+// 江西省
+'景德镇':117.2,'萍乡':113.8,'九江':116.0,'新余':114.9,'鹰潭':117.0,'赣州':114.9,'吉安':115.0,'宜春':114.4,'抚州':116.4,'上饶':118.0,'井冈山':114.1,'瑞金':116.0,
+// 山东省
+'淄博':118.0,'枣庄':117.3,'东营':118.7,'烟台':121.4,'潍坊':119.1,'济宁':116.6,'泰安':117.1,'威海':122.1,'日照':119.5,'莱芜':117.7,'临沂':118.3,'德州':116.3,'聊城':116.0,'滨州':118.0,'菏泽':115.5,'曲阜':117.0,'蓬莱':120.8,
+// 河南省
+'开封':114.3,'洛阳':112.4,'平顶山':113.3,'安阳':114.4,'鹤壁':114.3,'新乡':113.9,'焦作':113.2,'濮阳':115.0,'许昌':113.8,'漯河':114.0,'三门峡':111.2,'南阳':112.5,'商丘':115.7,'信阳':114.1,'周口':114.6,'驻马店':114.0,'济源':112.6,
+// 湖北省
+'黄石':115.1,'十堰':110.8,'宜昌':111.3,'襄阳':112.1,'鄂州':114.9,'荆门':112.2,'孝感':113.9,'荆州':112.2,'黄冈':114.9,'咸宁':114.3,'随州':113.4,'恩施':109.5,'仙桃':113.4,'潜江':112.9,'天门':113.2,'神农架':110.7,
+// 湖南省
+'株洲':113.1,'湘潭':112.9,'衡阳':112.6,'邵阳':111.5,'岳阳':113.1,'常德':111.7,'张家界':110.5,'益阳':112.4,'郴州':113.0,'永州':111.6,'怀化':110.0,'娄底':112.0,'湘西':109.7,'浏阳':113.6,'韶山':112.5,'凤凰':109.6,
+// 广东省
+'韶关':113.6,'珠海':113.6,'汕头':116.7,'佛山':113.1,'江门':113.1,'湛江':110.4,'茂名':110.9,'肇庆':112.5,'惠州':114.4,'梅州':116.1,'汕尾':115.4,'河源':114.7,'阳江':111.9,'清远':113.1,'东莞':113.8,'中山':113.4,'潮州':116.6,'揭阳':116.4,'云浮':112.0,
+// 广西
+'柳州':109.4,'桂林':110.3,'梧州':111.3,'北海':109.1,'防城港':108.3,'钦州':108.6,'贵港':109.6,'玉林':110.2,'百色':106.6,'贺州':111.6,'河池':108.1,'来宾':109.2,'崇左':107.4,'阳朔':110.5,
+// 海南省
+'三亚':109.5,'三沙':112.3,'儋州':109.6,'琼海':110.5,'文昌':110.8,'万宁':110.4,'东方':108.7,'五指山':109.5,'陵水':110.0,'博鳌':110.6,
+// 四川省
+'自贡':104.8,'攀枝花':101.7,'泸州':105.4,'德阳':104.4,'绵阳':104.7,'广元':105.8,'遂宁':105.6,'内江':105.1,'乐山':103.8,'南充':106.1,'眉山':103.9,'宜宾':104.6,'广安':106.6,'达州':107.5,'雅安':103.0,'巴中':106.8,'资阳':104.6,'阿坝':102.2,'甘孜':101.9,'凉山':102.3,'西昌':102.3,'峨眉山':103.5,'都江堰':103.6,'九寨沟':104.2,
+// 贵州省
+'六盘水':104.8,'遵义':106.9,'安顺':105.9,'毕节':105.3,'铜仁':109.2,'黔西南':104.9,'黔东南':107.9,'黔南':107.5,'仁怀':106.4,'凯里':107.9,
+// 云南省
+'曲靖':103.8,'玉溪':102.5,'保山':99.2,'昭通':103.7,'丽江':100.2,'普洱':100.9,'临沧':100.1,'楚雄':101.5,'红河':103.3,'文山':104.2,'西双版纳':100.8,'大理':100.2,'德宏':98.6,'怒江':98.9,'迪庆':99.7,'香格里拉':99.7,'瑞丽':97.8,'腾冲':98.5,
+// 西藏
+'昌都':97.2,'山南':91.8,'日喀则':88.9,'那曲':92.1,'阿里':80.1,'林芝':94.3,
+// 陕西省
+'铜川':109.1,'宝鸡':107.2,'咸阳':108.7,'渭南':109.5,'延安':109.5,'汉中':107.0,'榆林':109.7,'安康':109.0,'商洛':109.9,'杨凌':108.1,
+// 甘肃省
+'嘉峪关':98.3,'金昌':102.2,'白银':104.1,'天水':105.7,'武威':102.6,'张掖':100.4,'平凉':106.7,'酒泉':98.5,'庆阳':107.6,'定西':104.6,'陇南':104.9,'临夏':103.2,'甘南':102.9,'敦煌':94.7,
+// 青海省
+'海东':102.1,'海北':100.9,'黄南':102.0,'海南州':100.6,'果洛':100.2,'玉树':97.0,'海西':97.4,'格尔木':94.9,'德令哈':97.4,
+// 宁夏
+'石嘴山':106.4,'吴忠':106.2,'固原':106.3,'中卫':105.2,
+// 新疆
+'克拉玛依':84.9,'吐鲁番':89.2,'哈密':93.5,'昌吉':87.3,'博尔塔拉':82.1,'巴音郭楞':86.1,'阿克苏':80.3,'克孜勒苏':76.1,'喀什':75.9,'和田':79.9,'伊犁':81.3,'塔城':82.9,'阿勒泰':88.1,'石河子':86.0,
+// 港澳台
+'香港':114.2,'九龙':114.2,'新界':114.1,'离岛':113.9,'澳门':113.5,'氹仔':113.6,'台北':121.5,'新北':121.5,'桃园':121.3,'台中':120.7,'台南':120.2,'高雄':120.3,'基隆':121.7,'新竹':121.0,'嘉义':120.4,'宜兰':121.8,'花莲':121.6,'台东':121.1,'澎湖':119.6,'金门':118.3,'马祖':119.9
+};
+
+// 构建前缀索引（加速模糊搜索）
+let cityIndex = null;
+function buildCityIndex(){
+  cityIndex = [];
+  for(const [name,lng] of Object.entries(CITY_LNG)){
+    cityIndex.push({name, lng, pinyin: name.split('').map(c=>c).join('')});
+  }
+}
+buildCityIndex();
+
+let globalTrueSolar = null;
+
+// 智能匹配：输入文本中查找城市名
+function matchLocation(text){
+  if(!text) return [];
+  const t = text.trim();
+  const results = [];
+  // 精确包含匹配（优先）
+  for(const entry of cityIndex){
+    if(t.includes(entry.name)){
+      results.push({...entry, score: 1, matchType: 'contains'});
+    }
+  }
+  // 模糊匹配（输入是某个城市名的前缀）
+  if(results.length === 0){
+    for(const entry of cityIndex){
+      if(entry.name.includes(t)){
+        results.push({...entry, score: 0.5, matchType: 'prefix'});
+      }
+    }
+  }
+  // 按分数排序，短的优先（更精确）
+  results.sort((a,b)=>b.score-a.score || a.name.length-b.name.length);
+  return results.slice(0,12);
+}
+
+// 渲染建议列表
+function showLocationSuggestions(suggestions){
+  let el = document.getElementById('locationSuggestions');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'locationSuggestions';
+    el.style.cssText = 'position:absolute;top:100%;left:0;right:0;background:rgba(18,18,42,.95);border:1px solid #c8a96e;border-radius:0 0 5px 5px;max-height:240px;overflow-y:auto;z-index:10;display:none;font-size:13px';
+    document.getElementById('s-location').parentElement.style.position = 'relative';
+    document.getElementById('s-location').parentElement.appendChild(el);
+  }
+  if(!suggestions||suggestions.length===0){ el.style.display='none'; return; }
+  el.innerHTML = suggestions.map(s=>
+    '<div class="sug-item" data-name="'+s.name+'" data-lng="'+s.lng+'" style="padding:6px 10px;cursor:pointer;color:#e8dcc8;border-bottom:1px solid rgba(42,42,74,.5)">'+
+    '<span style="color:#c8a96e">'+s.name+'</span> '+
+    '<span style="color:#8a7a5a;font-size:11px">'+s.lng+'°E</span></div>'
+  ).join('');
+  el.querySelectorAll('.sug-item').forEach(item=>{
+    item.addEventListener('click',function(){
+      const name = this.getAttribute('data-name');
+      const lng = this.getAttribute('data-lng');
+      document.getElementById('s-location').value = name;
+      document.getElementById('s-lng').value = lng;
+      document.getElementById('s-status').textContent = '';
+      document.getElementById('s-status').className = 'geocode-msg';
+      el.style.display = 'none';
+    });
+    item.addEventListener('mouseenter',function(){this.style.background='rgba(200,169,110,.15)';});
+    item.addEventListener('mouseleave',function(){this.style.background='';});
+  });
+  el.style.display = 'block';
+}
+
+function onLocationInput(){
+  const val = document.getElementById('s-location').value;
+  const suggestions = matchLocation(val);
+  // 自动填入第一个精确匹配
+  if(suggestions.length>0 && suggestions[0].score===1){
+    document.getElementById('s-lng').value = suggestions[0].lng;
+  }
+  showLocationSuggestions(suggestions.length>1||suggestions.length===1? suggestions:[]);
+}
+
+// 点击空白处关闭建议
+document.addEventListener('click',function(e){
+  const inp = document.getElementById('s-location');
+  const sug = document.getElementById('locationSuggestions');
+  if(sug && e.target!==inp && !sug.contains(e.target)){
+    sug.style.display='none';
+  }
+});
+
+async function geocodeLocation(){
+  const q = document.getElementById('s-location').value.trim();
+  if(!q){ showGeocodeMsg('请先输入出生地点','err'); return; }
+  
+  // 先在本地库中匹配
+  const matches = matchLocation(q);
+  if(matches.length > 0 && matches[0].score === 1){
+    document.getElementById('s-location').value = matches[0].name;
+    document.getElementById('s-lng').value = matches[0].lng;
+    showGeocodeMsg('已匹配「'+matches[0].name+'」经度 '+matches[0].lng+'°E','ok');
+    return;
+  }
+  
+  // 尝试服务端Nominatim（可能较慢）
+  const btn = document.querySelector('.btn-geocode');
+  btn.disabled = true; btn.textContent = '⏳';
+  showGeocodeMsg('未在本地库查到，正在联网查询...','loading');
+  
+  const timeout = new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),8000));
+  try {
+    const resp = await Promise.race([
+      fetch(API+'/geocode?q='+encodeURIComponent(q)),
+      timeout
+    ]);
+    if(resp instanceof Error) throw resp;
+    const results = await resp.json();
+    btn.disabled = false; btn.textContent = '🔍';
+    if(results.error){
+      showGeocodeMsg(results.error + '，请在本地库中选择或手动输入经度','err');
+    } else {
+      let best = results.find(r => r.type === 'city') || results.find(r => r.type === 'administrative') || results[0];
+      document.getElementById('s-lng').value = best.lon.toFixed(2);
+      showGeocodeMsg('📍 '+best.name.split(',')[0]+' → 经度 '+best.lon.toFixed(2)+'°E','ok');
+    }
+  } catch(e) {
+    btn.disabled = false; btn.textContent = '🔍';
+    showGeocodeMsg('联网查询超时，请在本地库中选择或手动输入经度','err');
+  }
+}
+
+function showGeocodeMsg(msg, type){
+  const el = document.getElementById('s-status');
+  el.textContent = msg;
+  el.className = 'geocode-msg show';
+  el.style.color = type==='ok'?'#5cb85c':type==='err'?'#dc3545':'#c8a96e';
+}
+function hourToBranchIdx(h){
+  if(h===23||h===0) return 0;
+  return Math.ceil(h/2);
+}
+function calcTrueSolar(year,month,day,hour,minute,lng){
+  const offsetMin = Math.round((lng - 120) * 4);
+  let totalMin = hour * 60 + (minute||0) + offsetMin;
+  let adjDay = day, adjMonth = month, adjYear = year;
+  if(totalMin < 0){ totalMin += 1440; adjDay--; }
+  if(totalMin >= 1440){ totalMin -= 1440; adjDay++; }
+  // 处理跨月
+  if(adjDay < 1){ adjMonth--; if(adjMonth<1){adjMonth=12;adjYear--;}
+    adjDay = new Date(adjYear,adjMonth,0).getDate(); }
+  if(adjDay > new Date(adjYear,adjMonth,0).getDate()){ adjDay=1; adjMonth++;
+    if(adjMonth>12){adjMonth=1;adjYear++;} }
+  const adjHour = Math.floor(totalMin / 60);
+  const adjMinute = totalMin % 60;
+  const origIdx = hourToBranchIdx(hour);
+  const adjIdx = hourToBranchIdx(adjHour);
+  const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  return {
+    origHour:hour, origMinute:minute, adjHour, adjMinute,
+    origDay:day, adjDay, origMonth:month, adjMonth, origYear:year, adjYear,
+    offsetMin, longitude:lng,
+    origBranch:DZ[origIdx], adjBranch:DZ[adjIdx],
+    branchChanged: origIdx !== adjIdx
+  };
+}
+
+async function getChart(){
+    const btn=document.querySelector('.btn-submit');
+    const st=document.getElementById('status');
+    btn.disabled=true;btn.textContent='排盘中...';
+    st.className='status show loading';st.textContent='正在计算命盘...';
+
+    // 真太阳时计算
+    let useYear = parseInt(document.getElementById('s-year').value);
+    let useMonth = parseInt(document.getElementById('s-month').value);
+    let useDay = parseInt(document.getElementById('s-day').value);
+    let useHour = parseInt(document.getElementById('s-hour').value);
+    let useMinute = parseInt(document.getElementById('s-minute').value) || 0;
+    globalTrueSolar = null;
+
+    if(document.getElementById('useTrueSolar').checked){
+        const lng = parseFloat(document.getElementById('s-lng').value) || 120;
+        globalTrueSolar = calcTrueSolar(useYear, useMonth, useDay, useHour, useMinute, lng);
+        useYear = globalTrueSolar.adjYear;
+        useMonth = globalTrueSolar.adjMonth;
+        useDay = globalTrueSolar.adjDay;
+        useHour = globalTrueSolar.adjHour;
+        useMinute = globalTrueSolar.adjMinute;
+    }
+
+    const params=new URLSearchParams({
+        year:useYear,
+        month:useMonth,
+        day:useDay,
+        hour:useHour,
+        minute:useMinute,
+        gender:document.getElementById('s-gender').value
+    });
+    try{
+        const resp=await fetch(API+'/chart?'+params);
+        if(!resp.ok)throw new Error('排盘失败');
+        const d=await resp.json();
+        if(d.error)throw new Error(d.error);
+        render(d);
+        
+        st.className='status';btn.disabled=false;btn.textContent='开始排盘';
+        document.getElementById('s-result').classList.add('show');
+        document.getElementById('s-result').scrollIntoView({behavior:'smooth'});
+        // auto-print when ?print=1
+        if(new URLSearchParams(location.search).get('print')==='1'){
+          setTimeout(()=>window.print(),1500);
+        }
+    }catch(e){
+        st.textContent='排盘失败: '+e.message+' (请确认服务已启动: node chart-server.js)';
+        st.className='status show error';btn.disabled=false;btn.textContent='重试';
+    }
+}
+
+function render(d){
+    const origH = globalTrueSolar ? globalTrueSolar.origHour : d.birth.hour;
+    const origM = globalTrueSolar ? globalTrueSolar.origMinute : (d.birth.minute ?? 0);
+    const hStr=HOUR_LABELS[Math.floor(origH/2)*2===22?22:Math.floor((origH+1)/2)*2];
+    const ymd = (globalTrueSolar
+      ? globalTrueSolar.origYear+'年'+globalTrueSolar.origMonth+'月'+globalTrueSolar.origDay+'日'
+      : d.birth.year+'年'+d.birth.month+'月'+d.birth.day+'日');
+    const genderTitle=d.birth.gender==='male'?'乾造':'坤造';
+
+    const ming=pn(d,'命宫');
+    const shen=d.palaces.find(p=>p.isBodyPalace);
+    const cai=pn(d,'财帛');const guan=pn(d,'官禄');
+    const qian=pn(d,'迁移');const tian=pn(d,'田宅');
+    const fuqi=pn(d,'夫妻');const funv=pn(d,'子女');
+    const fude=pn(d,'福德');const jie=pn(d,'疾厄');
+    const fumu=pn(d,'父母');const xiongdi=pn(d,'兄弟');
+    const puyi=pn(d,'仆役');
+    
+    // 计算来因宫
+    globalLaiYin = calculateLaiYinPalace(d);
+
+    const html=`
+<div class="intro-section">
+    <h2>命主基本信息</h2>
+    <div class="info-row">
+        <span><strong>性别：</strong>${d.birth.gender==='male'?'男':'女'}</span>
+        <span><strong>阳历：</strong>${ymd} ${origH}:${String(origM).padStart(2,'0')}时</span>
+        <span><strong>农历：</strong>${d.lunar.yearName}年${d.lunar.monthName}月${d.lunar.dayName}日${d.info.hourBranch}时</span>
+        ${globalTrueSolar ? '<span style="color:#c8a96e"><strong>⏱ 真太阳时：</strong>'+globalTrueSolar.adjYear+'年'+globalTrueSolar.adjMonth+'月'+globalTrueSolar.adjDay+'日 '+globalTrueSolar.adjHour+':'+String(globalTrueSolar.adjMinute).padStart(2,'0')+'（'+globalTrueSolar.adjBranch+'时） 经度'+globalTrueSolar.longitude.toFixed(2)+'°E 偏移'+(globalTrueSolar.offsetMin>0?'+':'')+globalTrueSolar.offsetMin+'分钟'+(globalTrueSolar.branchChanged?' <span style="color:#dc3545;font-weight:bold">时辰已变!</span>':'')+'</span>' : ''}
+    </div>
+    <div class="info-row" style="margin-top:6px">
+        <span><strong>五行局：</strong>${d.info.wuxingJu}</span>
+        <span><strong>命主：</strong>${d.info.mingZhu}</span>
+        <span><strong>身主：</strong>${d.info.shenZhu}</span>
+        <span><strong>身宫：</strong>${shen.branch}（${shen.name}）</span>
+        <span><strong>来因宫：</strong>${globalLaiYin.branch}（${globalLaiYin.name}）</span>
+        <span><strong>当前年龄：</strong>${d.currentAge}虚岁</span>
+    </div>
+</div>
+
+<div class="chart-section">
+    <h3 class="chart-title">命盘十二宫</h3>
+    <div class="palace-grid">
+        ${renderPalaceGrid(d,ming,shen)}
+    </div>
+</div>
+
+<div class="analysis-section">
+    <h3 class="analysis-title">专业命理分析</h3>
+    <div class="analysis-content">
+        ${renderAnalysis(d,ming,shen,cai,guan,qian,tian,fuqi,funv,fude,jie,fumu,xiongdi,puyi)}
+    </div>
+</div>
+
+<div class="footer">
+    ${renderFooter(d,ming,cai,fuqi,tian)}
+</div>`;
+
+    document.getElementById('s-result').innerHTML=html;
+}
+
+function renderPalaceGrid(d,ming,shen){
+    // render in fixed DZ order matching the original template layout
+    const dzOrder=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    return dzOrder.map(dz=>{
+        const p=d.palaces.find(p=>p.branch===dz);
+        if(!p)return'';
+        let cls='palace';
+        if(p.name==='命宫')cls+=' ming';
+        if(p.isBodyPalace)cls+=' shen';
+        let badges='';
+        if(p.name==='命宫')badges+='<span class="palace-badge badge-ming">命</span>';
+        if(p.isBodyPalace&&p.name!=='命宫')badges+='<span class="palace-badge badge-shen">身</span>';
+        let stars='';
+        p.stars.forEach(s=>{
+            let cn='';const nm=s.name;
+            if(s.type==='major')cn='star-main';
+            else if(['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(nm))cn='star-lucky';
+            else if(['擎羊','陀罗','火星','铃星','地空','地劫','天空'].includes(nm))cn='star-evil';
+            else cn='star-minor';
+            stars+=`<div class="${cn}">${allStarName(s)}${s.brightness&&s.brightness!=='平'?'['+s.brightness+']':''}</div>`;
+        });
+        let lbl=p.name;
+        if(p.isBodyPalace)lbl+='(身宫)';
+        return `<div class="${cls}">${badges}<div class="palace-name">${dz}宫 · ${lbl}</div><div class="star-list">${stars}</div></div>`;
+    }).join('');
+}
+
+// ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
+function computePastYears(d){
+  const DZ_ORDER=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const GAN='甲乙丙丁戊己庚辛壬癸';
+  const daxianOrder=['命宫','兄弟宫','夫妻宫','子女宫','财帛宫','疾厄宫','迁移宫','交友宫','官禄宫','田宅宫','福德宫','父母宫'];
+  const birthYear=d.birth.year, birthMonth=d.birth.month, birthDay=d.birth.day;
+  const age=parseInt(d.currentAge),curYear=new Date().getFullYear();
+  
+  // 计算每个大限的起止年份
+  const dxYears=[];
+  const dir=d.gender==='male'?1:-1; // simplified
+  let startAge=0;
+  d.daXians.forEach((dx,i)=>{
+    dxYears.push({name:dx.palaceName,branch:dx.palaceBranch,start:startAge,end:dx.endAge,startYear:birthYear+startAge,endYear:birthYear+dx.endAge-1});
+  });
+  
+  const pastYears=[];
+  const startYr=Math.max(curYear-15,birthYear);
+  for(let yr=startYr;yr<=curYear+10;yr++){
+    const vAge=yr-birthYear+1;
+    if(vAge<1)continue;
+    const yrGan=GAN[(yr-4)%10];
+    const yrZhi=DZ_ORDER[(yr-4)%12];
+    
+    // 流年命宫地支
+    const yearlyPalaceBranch=DZ_ORDER[(yr-4)%12];
+    
+    // 找到该年份所处的大限
+    let decadalPalace='命宫',decadalBranch='';
+    for(let di=d.daXians.length-1;di>=0;di--){
+      if(vAge>=d.daXians[di].startAge){
+        decadalPalace=d.daXians[di].palaceName;
+        decadalBranch=d.daXians[di].palaceBranch;
+        break;
+      }
+    }
+    
+    const yearlyPalace=d.palaces.find(p=>p.branch===yearlyPalaceBranch);
+    pastYears.push({
+      year:yr, age:vAge,
+      yearlyStem:yrGan, yearlyBranch:yrZhi,
+      yearlyPalaceName:yearlyPalace?yearlyPalace.name:'',
+      yearlyPalaceBranch,
+      decadalPalace, decadalBranch
+    });
+  }
+  return pastYears;
+}
+
+function renderAnalysis(d,ming,shen,cai,guan,qian,tian,fuqi,funv,fude,jie,fumu,xiongdi,puyi){
+    let h='';
+
+    // === 一、命盘基本格局 ===
+    h+=`<h3>一、命盘基本格局</h3>`;
+
+    // 命宫
+    h+=`<h4>1. 命宫分析（${ming.stem}${ming.branch}宫）</h4>`;
+    h+=renderMingGongAnalysis(ming,d);
+
+    // 身宫
+    if(shen){
+        h+=`<h4>2. 身宫分析（${shen.stem}${shen.branch}宫，${shen.name}）</h4>`;
+        h+=renderShenGongAnalysis(shen,d);
+    }
+
+    // 格局判断
+    h+=`<h4>3. 特殊格局</h4>`;
+    h+=renderPatternAnalysis(d);
+
+    // === 二、十二宫详细解读 ===
+    h+=`<h3>二、十二宫详细解读</h3>`;
+
+    h+=`<h4>田宅宫（${tian.stem}${tian.branch}宫）★ 一生福禄</h4>`;
+    h+=renderTianZhaiAnalysis(tian,d);
+
+    h+=`<h4>财帛宫（${cai.stem}${cai.branch}宫）</h4>`;
+    h+=renderCaiBoAnalysis(cai,d);
+
+    h+=`<h4>官禄宫（${guan.stem}${guan.branch}宫）</h4>`;
+    h+=renderGuanLuAnalysis(guan,d);
+
+    h+=`<h4>福德宫（${fude.stem}${fude.branch}宫）${globalLaiYin.name==='福德宫'?'·来因宫':''}</h4>`;
+    h+=renderFuDeAnalysis(fude,d);
+
+    h+=`<h4>迁移宫（${qian.stem}${qian.branch}宫）</h4>`;
+    h+=renderQianYiAnalysis(qian,d);
+
+    h+=`<h4>疾厄宫（${jie.stem}${jie.branch}宫）</h4>`;
+    h+=renderJiEAnalysis(jie,d);
+
+    h+=`<h4>父母宫（${fumu.stem}${fumu.branch}宫）</h4>`;
+    h+=renderFuMuAnalysis(fumu,d);
+
+    h+=`<h4>兄弟宫（${xiongdi.stem}${xiongdi.branch}宫）</h4>`;
+    h+=renderXiongDiAnalysis(xiongdi,d);
+
+    h+=`<h4>子女宫（${funv.stem}${funv.branch}宫）</h4>`;
+    h+=renderZiNvAnalysis(funv,d);
+
+    h+=`<h4>交友宫（${puyi.stem}${puyi.branch}宫）</h4>`;
+    h+=renderPuYiAnalysis(puyi,d);
+
+    // === 三、三方四正 ===
+    h+=`<h3>三、三方四正分析</h3>`;
+    h+=renderTriSquare(ming,cai,guan,qian,d);
+
+    // === 四、大限流年关键期 ===
+    h+=`<h3>四、大限流年关键期</h3>`;
+    h+=renderDaXian(d);
+
+    // === 五、断前事·关键年份回溯（实时计算）===
+    h+=`<h3>五、断前事·关键年份回溯（过去10年）</h3>`;
+    const computedPastYears=computePastYears(d);
+    d.pastYears=computedPastYears;
+    h+=renderKeyYears(d);
+    
+    // === 六、前世因果推断 ===
+    h+=`<h3>六、前世因果推断</h3>`;
+    h+=renderPastLife(d);
+
+    // === 七、姻缘流年预测 / 财运流年预测 ===
+    const vAge=new Date().getFullYear()-d.birth.year+1;
+    if(vAge>35){
+      h+=`<h3>七、财运流年预测</h3>`;
+      h+=renderWealthYears(d);
+    }else{
+      h+=`<h3>七、姻缘流年预测</h3>`;
+      h+=renderMarriageYears(d);
+    }
+
+    // === 八、健康风险预警 ===
+    h+=`<h3>八、健康风险预警</h3>`;
+    h+=renderHealthRisks(d);
+
+    // === 九、综合建议 ===
+    h+=`<h3>九、综合建议</h3>`;
+    h+=renderSuggestions(d);
+
+    return h;
+}
+
+// ──────────────────────────────────────────────
+// 星曜解读数据库（完整覆盖14主星 × 12宫位）
+// ──────────────────────────────────────────────
+function starNature(nm){
+  const n={'紫微':'帝王星·主尊贵/领导力/创造力','天机':'智慧星·主谋略/变通/善机变','太阳':'光明星·主热情/公益/社交/发散','武曲':'财星·主刚毅/执行力/金融','天同':'福星·主安逸/享福/温和善良','廉贞':'囚星·主拘束/血光/是非/精密','天府':'库星·主包容/稳重/富足积累','太阴':'富星·主细腻/温柔/洁净/暗财','贪狼':'桃花星·主欲望/人缘/才艺/交际','巨门':'暗星·主是非/口舌/深究/隐密','天相':'印星·主辅佐/协调/公正/服务','天梁':'荫星·主长寿/庇护/学术/清贵','七杀':'将星·主果断/竞争/开拓/威权','破军':'耗星·主改革/破坏重建/敢作敢为'};
+  return n[nm]||'';
+}
+function brightMod(bw){if(bw==='旺'||bw==='庙')return '庙旺有力，能量正向发挥';if(bw==='陷')return '落陷无力，能量受阻或需转向内在';return '平位，表现中规中矩';}
+function siHuaMod(sh){if(!sh)return'';const m={lu:'福禄加持，此宫非常有利',quan:'掌控力增强，自主权提升',ke:'学识才华展现，名声提升',ji:'能量阻塞，此宫需格外费力经营'};return '；<strong>化'+hn(sh)+'</strong>——'+m[sh];}
+
+function getPalaceStarMeaning(star,palace){
+  const k=star+'_'+palace;
+  const m={
+    '紫微_命宫':'天生领袖气质，自尊心强，有管理才能，适合独立创业或担任领导',
+    '紫微_夫妻':'配偶有才干有地位，但紫微为帝，夫妻关系中谁主沉浮是核心课题',
+    '紫微_财帛':'帝王掌财，财路宽广，花钱也有帝王气——大方不吝啬',
+    '紫微_官禄':'事业发展有帝王之气，适合做老板或高管，独立掌管一方',
+    '紫微_田宅':'家宅贵气，住所体面环境好，房产运旺，晚年可安居',
+    '紫微_福德':'内心自尊极高，精神享受是最大追求，晚年安康体面',
+    '紫微_父母':'父母有社会地位，对命主期望高，管教偏严格，但也提供好资源',
+    '紫微_兄弟':'兄弟姐妹中有成就者，能提供实质帮助',
+    '紫微_子女':'子女有出息、性格独立，不服管教但能成器',
+    '紫微_交友':'朋友圈中地位高，被众人仰望而非深交',
+    '紫微_迁移':'外出有贵人提携，容易在外地获得尊重和机遇',
+    '紫微_疾厄':'身体底子不错，但紫微为火，需注意心脏、头部',
+    '天机_命宫':'思维敏捷善谋划，学习能力强，适合咨询/策划/IT等行业',
+    '天机_兄弟':'兄弟中有聪明灵活之人，交流频繁但关系多变',
+    '天机_夫妻':'配偶聪明机敏，但天机善变，感情需要稳定经营',
+    '天机_子女':'子女聪明伶俐，个性活泼好动，入学后表现良好',
+    '天机_财帛':'财运多变动，收入来源多元化，不宜单一收入模式',
+    '天机_疾厄':'神经敏感，思虑过重影响睡眠，注意神经系统保养',
+    '天机_迁移':'异地发展靠智慧谋生，信息差是核心竞争力',
+    '天机_交友':'朋友圈中聪明人多，但关系多为功能性而非深交',
+    '天机_官禄':'事业靠智谋策划，适合做参谋/分析师/科技行业',
+    '天机_田宅':'住所多变，可能多次搬家，不适合过早锁定房产',
+    '天机_福德':'精神世界丰富但思虑过重——这是命主一生需修的课题',
+    '天机_父母':'父母中一方聪明善谋，对教育重视，或从事知识行业',
+    '太阳_命宫':'为人光明磊落热情外向，适合面向人群的工作如教育/传媒',
+    '太阳_兄弟':'兄弟中有热情开朗者，带动命主的社交和氛围',
+    '太阳_夫妻':'配偶性格外向开朗善于社交，但太阳易急躁需包容',
+    '太阳_子女':'子女性格外向活泼，阳光健康，带得出去',
+    '太阳_财帛':'赚钱走明路不喜暗箱，收入与付出成正比，坦坦荡荡',
+    '太阳_疾厄':'注意眼睛、心血管，中年后尤其需关注血压',
+    '太阳_迁移':'外地发展顺利人气旺，适合销售/外交/旅游行业',
+    '太阳_交友':'交友广阔，朋友多为光明磊落正派之人',
+    '太阳_官禄':'适合公职/教育/公益等公开事业，仕途平顺',
+    '太阳_田宅':'住宅采光好环境开阔，住所喜明亮，家庭氛围温馨',
+    '太阳_福德':'心态阳光积极喜欢热闹，不喜孤独，晚年精神好',
+    '太阳_父母':'父亲性格热情外向，对子女教育开明大方',
+    '武曲_命宫':'性格刚毅果断执行力强，适合金融/技术/军警等行业',
+    '武曲_兄弟':'兄弟中有经济实力强者，可互相投资合作',
+    '武曲_夫妻':'配偶性格刚强务实重物质基础，但浪漫不足需理解',
+    '武曲_子女':'子女性格独立坚强，未来在经济方面有成就',
+    '武曲_财帛':'正财运极好，靠硬实力赚钱，财源稳定可靠',
+    '武曲_疾厄':'注意呼吸道/肺部/大肠，金气盛需防秋燥伤身',
+    '武曲_迁移':'外出打拼有实力，靠专业技能在异地立足',
+    '武曲_交友':'朋友中多有钱有势之人，关系偏务实而非交心',
+    '武曲_官禄':'事业靠实力说话，适合专业技术岗/管理层',
+    '武曲_田宅':'不动产积累能力强，房产多为投资所得而非继承',
+    '武曲_福德':'内心重视物质安全感，晚年不缺钱花',
+    '武曲_父母':'父亲性格刚强务实，经济头脑好，影响命主理财观',
+    '天同_命宫':'性格温和善良有福气，人缘好但缺冲劲，适合文职/艺术',
+    '天同_兄弟':'兄弟姐妹关系融洽有福同享，家庭氛围温馨',
+    '天同_夫妻':'感情平和温馨，配偶温柔，但不宜找事业心太强对象',
+    '天同_子女':'子女乖巧听话性格温和，好带不费心',
+    '天同_财帛':'财运不求暴富但求够用，常有意外之财帮衬',
+    '天同_疾厄':'身体偏弱，注意免疫系统/肾脏，不宜过度透支',
+    '天同_迁移':'在外有人缘有人照顾，适合有熟人帮助的地方',
+    '天同_交友':'朋友圈温和善良者多，相处融洽无压力',
+    '天同_官禄':'事业需有贵人提携，独立打拼比较吃力',
+    '天同_田宅':'家庭温馨和睦，居住环境以舒适为宜不追求奢华',
+    '天同_福德':'内心平和享福，晚年生活安逸满足',
+    '天同_父母':'父母温和慈爱，对命主呵护有加，童年幸福',
+    '廉贞_命宫':'性格严谨自律有原则，但易钻牛角尖，适合法律/纪检',
+    '廉贞_兄弟':'兄弟中有严谨自律者，关系微妙但不失亲情',
+    '廉贞_夫妻':'感情认真投入但标准高，需避免苛求对方',
+    '廉贞_子女':'子女认真有原则但易固执，教育需耐心引导',
+    '廉贞_财帛':'财运靠专业知识和自律获取，绝不投机取巧',
+    '廉贞_疾厄':'重点注意血液循环/皮肤/免疫系统，远离高风险活动',
+    '廉贞_迁移':'在外发展需遵纪守法，靠正业立足非旁门左道',
+    '廉贞_交友':'朋友中性情严谨之人，交往有底线有原则',
+    '廉贞_官禄':'适合严谨精细的工作：审计/法律/科研/质检',
+    '廉贞_田宅':'家居环境整洁有序，家庭氛围严肃认真',
+    '廉贞_福德':'内心标准极高追求完美，晚年需学会放下执念',
+    '廉贞_父母':'父母管教严格，是非对错分得清，养成命主规矩意识',
+    '天府_命宫':'性情稳重包容有容人之量，做事稳妥可靠值得信赖',
+    '天府_兄弟':'兄弟中有稳重可靠者，家庭关系稳定不冲突',
+    '天府_夫妻':'配偶稳重可靠是人生好伴侣，感情细水长流',
+    '天府_子女':'子女性格稳重大气，教育顺利成绩稳定',
+    '天府_财帛':'财运稳定不虚浮，财富积累慢但实在，守财型',
+    '天府_疾厄':'身体底子好消化系统佳恢复力强，小病不碍事',
+    '天府_迁移':'在外发展稳步前进，有积蓄有根基不潦倒',
+    '天府_交友':'朋友多稳重可靠之人，关系持久不轻易翻脸',
+    '天府_官禄':'事业稳步发展不贪快但根基扎实，适合管理岗位',
+    '天府_田宅':'不动产富足家宅安稳，是安身立命的坚固堡垒',
+    '天府_福德':'精神世界丰富从容，晚年安逸享受生活',
+    '天府_父母':'父母稳重可靠，给命主充分安全感和良好家教',
+    '太阴_命宫':'性格温柔细腻善解人意，适合文职/艺术/服务行业',
+    '太阴_兄弟':'兄弟中有女性影响力者，或关系温暖亲密',
+    '太阴_夫妻':'配偶温柔体贴，感情细腻有深度，是善解人意的伴侣',
+    '太阴_子女':'子女乖巧懂事，与母亲关系亲密，贴心小棉袄',
+    '太阴_财帛':'财运细水长流善于理财规划，暗财运（副业/投资）佳',
+    '太阴_疾厄':'注意泌尿系统/妇科（女性），湿气重注意保暖驱寒',
+    '太阴_迁移':'在外发展靠细腻和耐心取胜，适合服务业',
+    '太阴_交友':'朋友圈温柔善感者多，交心之友而非酒肉朋友',
+    '太阴_官禄':'适合需要细心和审美的职业：设计/护理/会计',
+    '太阴_田宅':'家居温馨精致，住所布置有品味有情调',
+    '太阴_福德':'喜欢安静优雅的晚年，精神世界细腻丰富',
+    '太阴_父母':'母亲影响较大，性格温柔，或从事文艺相关',
+    '贪狼_命宫':'性格活跃机敏多才多艺，人缘桃花旺，适合演艺/销售',
+    '贪狼_兄弟':'兄弟中有活跃之人，社交能力强带动命主',
+    '贪狼_夫妻':'感情热烈丰富，桃花运旺盛选择多，但需定心',
+    '贪狼_子女':'子女活泼好动有才艺天赋，人缘好粉丝多',
+    '贪狼_财帛':'财运靠人脉和才艺，做资源整合型生意很合适',
+    '贪狼_疾厄':'注意肝胆/内分泌，桃花多也需注意个人健康管理',
+    '贪狼_迁移':'在外人缘桃花旺盛，社交场合如鱼得水',
+    '贪狼_交友':'朋友圈广阔三教九流都有，社交资源丰富',
+    '贪狼_官禄':'适合需要人脉的行业：市场/商务/娱乐/文旅',
+    '贪狼_田宅':'家居装修有品味，可能多处房产投资',
+    '贪狼_福德':'追求精神享乐和艺术审美，晚年生活精彩不单调',
+    '贪狼_父母':'父母一方有才艺或艺术修养，家庭有文艺氛围',
+    '巨门_命宫':'性格善辩深思口才好但藏锋，适合研究/法律/辩论',
+    '巨门_兄弟':'兄弟间有口舌之争但感情不差，越争越亲',
+    '巨门_夫妻':'夫妻沟通是核心课题——坦诚表达是解药，冷战是毒药',
+    '巨门_子女':'子女能言善辩，可能走教育/法律路线发展',
+    '巨门_财帛':'财运靠口才和专业分析，适合咨询/律师行业',
+    '巨门_疾厄':'注意口腔/消化系统，肠胃功能需悉心调养',
+    '巨门_迁移':'在外易有口舌是非，低调少言为上策',
+    '巨门_交友':'朋友言语交流多但易生误会，择言需慎重',
+    '巨门_官禄':'适合需要分析和表达的工作：律师/记者/教师/科研',
+    '巨门_田宅':'家中有学术/研究氛围，或住宅靠近学校/机构',
+    '巨门_福德':'喜欢深度思考和阅读，晚年精神世界深邃',
+    '巨门_父母':'父母一方善言辞，重视语言表达能力的培养',
+    '天相_命宫':'性格公正不偏善协调有服务精神，适合行政/HR',
+    '天相_兄弟':'兄弟姐妹关系融洽互相帮衬，有事能商量',
+    '天相_夫妻':'配偶正派婚姻稳定，是理性平和的结合',
+    '天相_子女':'子女性格公正明理，教育不费心自觉',
+    '天相_财帛':'财运靠服务和管理能力，正职收入为主副业为辅',
+    '天相_疾厄':'身体健康较均衡，需注意水/肾脏系统养护',
+    '天相_迁移':'在外容易得到公平对待，有贵人前后维护',
+    '天相_交友':'朋友多正派之人，关系干净不复杂',
+    '天相_官禄':'适合幕僚/助理/行政等协调型工作，辅佐能力突出',
+    '天相_田宅':'家庭氛围和谐，居住环境舒适宜居',
+    '天相_福德':'内心追求公平正义，晚年享清福心安',
+    '天相_父母':'父母为人正派家教良好，给命主好的价值观根基',
+    '天梁_命宫':'心慈善良有智慧有担当，贵人多助，适合教育/医疗',
+    '天梁_兄弟':'兄长或姐中有德高望重者，对命主有指导作用',
+    '天梁_夫妻':'配偶成熟稳重有长者风范，年龄差可能较大',
+    '天梁_子女':'子女聪明好学有学者气息，教育投入大回报高',
+    '天梁_财帛':'财运靠专业学识和资历——越老越值钱，晚年最富',
+    '天梁_疾厄':'身体尚可但中年后注意骨骼关节，适当运动保灵活',
+    '天梁_迁移':'在外有长者贵人照拂，尤其适合学术交流/访学',
+    '天梁_交友':'朋友多德高望重者，交友重质不重量',
+    '天梁_官禄':'适合学术/法律/医疗/公务员等清贵行业，口碑事业',
+    '天梁_田宅':'家中可能有长辈同住，住宅有历史感或文化气息',
+    '天梁_福德':'晚年享清福子女孝顺，心态平和满足',
+    '天梁_父母':'父母一方有学识或修行背景，对命主有精神引领',
+    '七杀_命宫':'性格果断果敢敢闯敢拼，适合开创性工作/军警/创业',
+    '七杀_兄弟':'兄弟中有强势独立之人，关系竞争性强',
+    '七杀_夫妻':'感情激烈但易冲突，需学会包容对方的棱角',
+    '七杀_子女':'子女性格坚强独立，成人后事业有成',
+    '七杀_财帛':'财运大起大落，敢投资有魄力但必须控制风险',
+    '七杀_疾厄':'重点注意外伤/意外，高风险活动务必谨慎',
+    '七杀_迁移':'在外发展有魄力有冲劲，适合异地开拓市场',
+    '七杀_交友':'朋友多有个性强烈之人，关系激烈而短暂',
+    '七杀_官禄':'适合决断力强的工作：创业/管理/军警/探险',
+    '七杀_田宅':'有可能多次搬迁，住所变动大，不宜过早锁定',
+    '七杀_福德':'晚年内心仍有斗志和活力，不甘平淡',
+    '七杀_父母':'父母严厉，家教偏向独立自主，培养命主坚强性格',
+    '破军_命宫':'性格敢作敢为不拘一格，适合艺术/创业/改革型工作',
+    '破军_兄弟':'兄弟中有标新立异者，关系不稳但有趣',
+    '破军_夫妻':'感情多变需不断新鲜感维持，不适合传统婚姻模式',
+    '破军_子女':'子女性格独特有主见，不走寻常路可成大器',
+    '破军_财帛':'财运大起大落先破后立，创业型收入模式',
+    '破军_疾厄':'身体消耗大代谢快，注意休息和恢复以免透支',
+    '破军_迁移':'在外发展破旧立新，适合去新市场开疆拓土',
+    '破军_交友':'朋友更新换代快，旧去新来是常态不必介怀',
+    '破军_官禄':'事业格局多变，适合创新/创业/艺术非传统领域',
+    '破军_田宅':'住所常有变化改造，喜欢换环境重新布置',
+    '破军_福德':'晚年精神活跃不安现状，总在追求新事物',
+    '破军_父母':'父母有改革精神，家庭氛围开放自由不拘束'
+  };
+  return m[k]||'';
+}
+
+// Helper: get opposite palace name (对宫)
+function getOppositePalaceName(palaceName) {
+  const mapping = {
+    '命宫': '迁移宫', '兄弟宫': '交友宫', '夫妻宫': '官禄宫',
+    '子女宫': '田宅宫', '财帛宫': '福德宫', '疾厄宫': '父母宫',
+    '迁移宫': '命宫', '交友宫': '兄弟宫', '官禄宫': '夫妻宫',
+    '田宅宫': '子女宫', '福德宫': '财帛宫', '父母宫': '疾厄宫'
+  };
+  return mapping[palaceName] || '未知';
+}
+
+// Helper: calculate lai yin palace (来因宫) based on birth year heavenly stem
+function calculateLaiYinPalace(d) {
+  // 来因宫计算：根据出生年天干确定
+  // 映射表：出生年天干 → 来因宫地支
+  const laiYinMapping = {
+    '甲': '戌', '丙': '申', '戊': '午', '庚': '辰', '壬': '寅',
+    '乙': '酉', '丁': '未', '己': '巳', '辛': '卯', '癸': '亥'
+  };
+  
+  // 计算出生年天干
+  const year = d.birth.year;
+  const stems = ['癸', '甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬'];
+  const remainder = (year - 3) % 10;
+  const stem = stems[remainder];
+  
+  // 查找来因宫地支
+  const laiYinBranch = laiYinMapping[stem];
+  if (!laiYinBranch) return pn(d, '福德宫'); // 备用
+  
+  // 在命盘中查找对应地支的宫位
+  const laiYinPalace = d.palaces.find(p => p.branch === laiYinBranch);
+  return laiYinPalace || pn(d, '福德宫');
+}
+
+// Helper: analyze one palace using actual star data
+function analyzeOnePalace(p,d){
+  let txt='';
+  const allStars=[...p.stars];
+  const majorStars=allStars.filter(s=>['紫微','天机','太阳','武曲','天同','廉贞','天府','太阴','贪狼','巨门','天相','天梁','七杀','破军'].includes(s.name));
+  const luckyStars=allStars.filter(s=>['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(s.name));
+  const evilStars=allStars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+  const otherStars=allStars.filter(s=>!majorStars.includes(s)&&!luckyStars.includes(s)&&!evilStars.includes(s));
+  
+  if(majorStars.length===0){
+    txt+=`<p><strong>此宫无主星（借对宫星曜来论）。</strong>该领域受"外来影响"大，弹性强、不受固定约束，顺境借力、逆境则有漂泊感。具体运势需结合对宫（${getOppositePalaceName(p.name)}）星曜和大限飞星来判断。</p>`;
+  }else{
+    majorStars.forEach(s=>{
+      const m=getPalaceStarMeaning(s.name,p.name);
+      if(m){
+        txt+=`<p><strong class="highlight">${s.name}[${s.brightness||'平'}]${s.siHua?'[化'+hn(s.siHua)+']':''}</strong>坐<span class="highlight">${p.stem}${p.branch}·${p.name}</span>——${m}。${brightMod(s.brightness)}${siHuaMod(s.siHua)}。</p>`;
+      }else{
+        txt+=`<p><strong class="highlight">${s.name}[${s.brightness||'平'}]${s.siHua?'[化'+hn(s.siHua)+']':''}</strong>守${p.stem}${p.branch}·${p.name}。${brightMod(s.brightness)}${siHuaMod(s.siHua)}。</p>`;
+      }
+    });
+  }
+  
+  // 吉星
+  if(luckyStars.length>0){
+    const lNames=luckyStars.map(s=>s.name).join('、');
+    txt+=`<p><span class="star-lucky">【吉星助阵】</span>${lNames}加会，此宫得到额外助力。${
+      luckyStars.some(s=>s.name==='天魁'||s.name==='天钺')?'贵人运旺，关键时候有人提携。':''
+    }${
+      luckyStars.some(s=>s.name==='左辅'||s.name==='右弼')?'有帮手，不至于孤军奋战。':''
+    }${
+      luckyStars.some(s=>s.name==='文昌'||s.name==='文曲')?'学识才华为此宫增色，以文取胜。':''
+    }${
+      luckyStars.some(s=>s.name==='禄存')?'财库有锁，资源不轻易流失。':''
+    }${
+      luckyStars.some(s=>s.name==='天马')?'动中得利，奔波即为收获。':''
+    }</p>`;
+  }
+  
+  // 煞星
+  if(evilStars.length>0){
+    const eNames=evilStars.map(s=>s.name).join('、');
+    txt+=`<p><span class="star-evil">【暗面提醒】</span>${eNames}入此宫，带来波折和考验。${
+      evilStars.some(s=>s.name==='擎羊'||s.name==='陀罗')?'有反复纠缠之事，需耐心化解。':''
+    }${
+      evilStars.some(s=>s.name==='火星'||s.name==='铃星')?'突发状况多，做事需留有余地。':''
+    }${
+      evilStars.some(s=>s.name==='地空'||s.name==='地劫')?'注意计划落空或付出得不到回报。':''
+    }</p>`;
+  }
+  
+  // ── 夹宫分析（需传入完整命盘 d）──
+  if(d){
+    const DZ_ORDER=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    const idx=DZ_ORDER.indexOf(p.branch);
+    if(idx>=0){
+      const prev=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+11)%12]);
+      const next=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+1)%12]);
+      if(prev&&next){
+        const prevEvil=prev.stars.filter(s=>['地空','地劫','擎羊','陀罗'].includes(s.name));
+        const nextEvil=next.stars.filter(s=>['地空','地劫','擎羊','陀罗'].includes(s.name));
+        
+        // 检测1: 地空/地劫夹宫
+        const kongjieClip=(
+          (prev.stars.some(s=>s.name==='地空')&&next.stars.some(s=>s.name==='地劫'))||
+          (prev.stars.some(s=>s.name==='地劫')&&next.stars.some(s=>s.name==='地空'))
+        );
+        if(kongjieClip){
+          txt+=`<p><span class="star-evil">⚠ 【空劫夹宫】</span>地空在${prev.name}（${prev.branch}）+ 地劫在${next.name}（${next.branch}），<strong>两煞左右夹持${p.name}</strong>——此宫凡事易有空亡之象，付出与回报不成正比。${p.name==='命宫'?'命主一生需警惕「理想丰满、现实骨感」的困境。':''}${p.name==='夫妻宫'?'感情易有「有缘无分」之叹，需格外用心经营。':''}${p.name==='财帛宫'?'财来财去留不住，理财需保守稳健。':''}${p.name==='官禄宫'?'事业易有「半空折翅」之象，冲高后遇阻，需保持务实心态。':''}${p.name==='疾厄宫'?'健康需防隐疾突然发作，定期体检不可省。':''}</p>`;
+        }
+        
+        // 检测2: 擎羊/陀罗夹宫
+        const qingtuoClip=(
+          (prev.stars.some(s=>s.name==='擎羊')&&next.stars.some(s=>s.name==='陀罗'))||
+          (prev.stars.some(s=>s.name==='陀罗')&&next.stars.some(s=>s.name==='擎羊'))
+        );
+        if(qingtuoClip){
+          txt+=`<p><span class="star-evil">⚠ 【羊陀夹宫】</span>擎羊+陀罗一前一后夹持${p.name}——此宫之事多反复纠缠、进退两难。${p.name==='命宫'?'性格易有「进退维谷」之感，重大决定需有外力推一把。':''}${p.name==='夫妻宫'?'感情易拖泥带水，须防三角关系或藕断丝连。':''}${p.name==='财帛宫'?'钱难进也难出，财运胶着需打开局面。':''}</p>`;
+        }
+        
+        // 检测3: 两邻宫均见煞星（任意煞）
+        if(prevEvil.length>0&&nextEvil.length>0){
+          const clipNames=[...new Set([...prevEvil.map(s=>s.name),...nextEvil.map(s=>s.name)])].join('、');
+          txt+=`<p style="font-size:12px;color:#d9534f">[夹宫煞] ${prev.name}有${prevEvil.map(s=>s.name).join('/')} + ${next.name}有${nextEvil.map(s=>s.name).join('/')}，夹持此宫，${p.name}之事难度加倍。</p>`;
+        }
+        
+        // 检测4: 廉贞落陷 + 贪狼落陷（任意位置）
+        const lzXL=allStars.some(s=>s.name==='廉贞'&&s.brightness==='陷');
+        const tlXL=allStars.some(s=>s.name==='贪狼'&&s.brightness==='陷');
+        if(lzXL&&tlXL&&p.name==='命宫'){
+          txt+=`<p><span class="star-evil">⚠ 【廉贪落陷】</span>廉贞陷+贪狼陷同在命宫——此为"泛水桃花"格局，命主一生情欲与物质诱惑交织，若不自持极易迷失本心。需借文昌文曲来救、借职业道德来守。</p>`;
+        }
+      }
+    }
+  }
+  
+  // 杂曜
+  if(otherStars.length>0){
+    const oNames=otherStars.slice(0,4).map(s=>s.name).join('、');
+    txt+=`<p style="font-size:11px;color:#888">[杂曜] ${oNames}${otherStars.length>4?'等':''}，增加此宫的细节色彩。</p>`;
+  }
+  
+  return txt;
+}
+
+// ── 重写的分析函数（数据驱动）──
+
+function renderMingGongAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderShenGongAnalysis(p,d){
+  let txt=analyzeOnePalace(p,d);
+  txt+=`<p><strong class="highlight">※ 身宫在此（${p.name}）</strong>——这是命主一生最重视的领域，不仅影响性格更主导人生后半段的走向。身宫所在即是"人生修行场"。</p>`;
+  return txt;
+}
+
+function renderPatternAnalysis(d){
+  let txt='', patterns=[];
+  const M=pn(d,'命宫'),T=pn(d,'田宅'),FQ=pn(d,'夫妻'),FV=pn(d,'子女'),XD=pn(d,'兄弟'),FD=pn(d,'福德'),GL=pn(d,'官禄'),CB=pn(d,'财帛');
+  
+  // 原有10种经典格局
+  const allPatterns=[
+    [[M],'阳梁昌禄',(p)=>hs(p,'太阳')&&hs(p,'天梁')&&(hs(p,'文曲')||hs(p,'文昌'))],
+    [[T],'紫微守库',(p)=>hs(p,'紫微')&&hs(p,'禄存')],
+    [[FQ],'巨日同宫',(p)=>hs(p,'巨门')&&hs(p,'太阳')],
+    [[FQ],'同巨陷落',(p)=>hs(p,'天同')&&hs(p,'巨门')],
+    [[M],'紫府同宫',(p)=>hs(p,'紫微')&&hs(p,'天府')],
+    [[M],'日月并明',(p)=>hs(p,'太阳')&&hs(p,'太阴')],
+    [[M],'武贪同行',(p)=>hs(p,'武曲')&&hs(p,'贪狼')],
+    [[M],'廉贞清白',(p)=>hs(p,'廉贞')&&!hs(p,'贪狼')],
+    [[XD],'武曲化禄在兄弟',(p)=>hs(p,'武曲')&&gs(p,'武曲')&&gs(p,'武曲').siHua==='lu'],
+    [[FV],'贪狼在子午',(p)=>hs(p,'贪狼')&&['子','午'].includes(p.branch)]
+  ];
+  allPatterns.forEach(([palaces,name,check])=>{
+    if(palaces.some(p=>check(p))) patterns.push(name);
+  });
+  
+  // ── 新增：夹宫格局检测 ──
+  const DZ_ORDER=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const shaPatterns=[];
+  d.palaces.forEach(p=>{
+    const idx=DZ_ORDER.indexOf(p.branch);
+    if(idx<0)return;
+    const prev=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+11)%12]);
+    const next=d.palaces.find(p2=>p2.branch===DZ_ORDER[(idx+1)%12]);
+    if(!prev||!next)return;
+    
+    // 空劫夹宫
+    const kj1=prev.stars.some(s=>s.name==='地空')&&next.stars.some(s=>s.name==='地劫');
+    const kj2=prev.stars.some(s=>s.name==='地劫')&&next.stars.some(s=>s.name==='地空');
+    if(kj1||kj2){
+      shaPatterns.push({name:'空劫夹宫',palace:p.name,branch:p.branch,desc:`地空/地劫左右夹持<span class="highlight">${p.name}（${p.branch}）</span>——此宫之事易有「半空折翅」：起步迅猛、中途落空，极需务实稳健来对冲。${p.name==='命宫'?'命主一生须警惕眼高手低。':''}${p.name==='官禄宫'?'事业冲高后易遇瓶颈。':''}${p.name==='财帛宫'?'财富守住比赚到更重要。':''}${p.name==='夫妻宫'?'感情有落差感，需降低幻想、磨合现实。':''}`});
+    }
+    
+    // 羊陀夹宫
+    const yt1=prev.stars.some(s=>s.name==='擎羊')&&next.stars.some(s=>s.name==='陀罗');
+    const yt2=prev.stars.some(s=>s.name==='陀罗')&&next.stars.some(s=>s.name==='擎羊');
+    if(yt1||yt2){
+      shaPatterns.push({name:'羊陀夹宫',palace:p.name,branch:p.branch,desc:`擎羊/陀罗左右夹持<span class="highlight">${p.name}（${p.branch}）</span>——此宫之事多点进退两难、反复周折，犹如陷入泥沼难以脱身。${p.name==='命宫'?'关键抉择时需外力推动。':''}${p.name==='夫妻宫'?'感情需防剪不断理还乱。':''}${p.name==='财帛宫'?'钱途胶着需另辟蹊径。':''}`});
+    }
+  });
+  
+  // ── 新增：廉贞贪狼落陷检测 ──
+  const lzStar=d.palaces.flatMap(p=>p.stars.filter(s=>s.name==='廉贞').map(s=>({...s,palace:p})));
+  const tlStar=d.palaces.flatMap(p=>p.stars.filter(s=>s.name==='贪狼').map(s=>({...s,palace:p})));
+  
+  // 廉贞陷+贪狼陷 = 泛水桃花
+  const lzXL=lzStar.filter(s=>s.brightness==='陷');
+  const tlXL=tlStar.filter(s=>s.brightness==='陷');
+  if(lzXL.length>0&&tlXL.length>0){
+    shaPatterns.push({name:'廉贪落陷（泛水桃花）',palace:'全局',branch:'',desc:`<span class="highlight">廉贞落陷</span>（在${lzXL.map(s=>s.palace.name).join('、')}）+ <span class="highlight">贪狼落陷</span>（在${tlXL.map(s=>s.palace.name).join('、')}）——此为"泛水桃花"格局，一生情欲与物质诱惑交织如潮。若不以文昌文曲来救、不以职业道德自守，极易在感情与金钱中迷失。`});
+  }
+  
+  // 廉贞在命陷+空劫在迁或对冲宫 = 刑囚夹印
+  if(lzXL.some(s=>s.palace.name==='命宫')){
+    const qian=pn(d,'迁移');
+    if(qian.stars.some(s=>['地空','地劫'].includes(s.name))){
+      shaPatterns.push({name:'刑囚夹印',palace:'命迁',branch:'',desc:`<span class="highlight">廉贞陷在命宫</span> + <span class="highlight">空劫在迁移宫</span>——此即"刑囚夹印"格局变体，命运起伏大、容易卷入是非，外出发展处处碰壁，一生需靠稳守和自省来化解。`});
+    }
+  }
+  
+  // ── 检测：冲宫分析（命迁对冲、夫官对冲等）──
+  const oppMap={子:'午',丑:'未',寅:'申',卯:'酉',辰:'戌',巳:'亥',午:'子',未:'丑',申:'寅',酉:'卯',戌:'辰',亥:'巳'};
+  const keyPairs=[{a:'命宫',b:'迁移宫',label:'命迁对冲'},{a:'夫妻宫',b:'官禄宫',label:'夫官对冲'},{a:'财帛宫',b:'福德宫',label:'财福对冲'},{a:'疾厄宫',b:'父母宫',label:'疾父对冲'}];
+  keyPairs.forEach(kp=>{
+    const pa=pn(d,kp.a),pb=pn(d,kp.b);
+    if(!pa||!pb)return;
+    const paSha=pa.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+    const pbSha=pb.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+    if(paSha.length>0&&pbSha.length>0){
+      shaPatterns.push({name:kp.label,palace:kp.a+'/'+kp.b,branch:'',desc:`<span class="highlight">${kp.a}</span>（${pa.branch}）与<span class="highlight">${kp.b}</span>（${pb.branch}）对冲，且两宫均见煞星（${[...paSha.map(s=>s.name),...pbSha.map(s=>s.name)].join('、')}），此为"${kp.label}"的紧张格局——该领域内外交困，容易两头都落空。`});
+    }
+    // 一宫见空劫另一宫见羊陀
+    const paKJ=pa.stars.some(s=>['地空','地劫'].includes(s.name));
+    const pbYT=pb.stars.some(s=>['擎羊','陀罗'].includes(s.name));
+    if(paKJ&&pbYT){
+      shaPatterns.push({name:kp.label+'（折翅）',palace:kp.a+'/'+kp.b,branch:'',desc:`<span class="highlight">${kp.a}见空劫</span> + <span class="highlight">${kp.b}见羊陀</span>——此对冲格局有"半空折翅"之象：${kp.a}端理想落空 + ${kp.b}端现实受阻，双重打击下该领域极易高开低走。`});
+    }
+  });
+  
+  // 输出经典格局
+  if(patterns.length>0){
+    patterns.forEach(pn=>{
+      const desc={
+        '阳梁昌禄':'太阳+天梁+文昌/文曲在命宫——格局清贵，命主越老越香，适合教育/法律/医疗，40岁后真正发力',
+        '紫微守库':'田宅宫紫微+禄存——紫微帝星坐守财库，一生不愁吃住，不动产运强，晚年家业丰隆',
+        '巨日同宫':'巨门+太阳同宫——口才极好但容易因言惹事，适合需要辩才的行业',
+        '同巨陷落':'天同+巨门均在陷地——夫妻宫最需留意的配置，福星陷地+暗星阻隔，沟通是终身课题',
+        '紫府同宫':'紫微+天府同守——帝王配库星，稳重有担当，一生格局开阔',
+        '日月并明':'太阳+太阴同宫——阴阳调和，性格刚柔并济，人缘极佳',
+        '武贪同行':'武曲+贪狼同宫——魄力与欲望并存，适合创业经商',
+        '廉贞清白':'廉贞独坐无贪狼来扰——清白自守，适合公检法/纪律职位',
+        '武曲化禄在兄弟':'兄弟宫武曲化禄——兄弟姐妹中有人财力雄厚，是命主的财务靠山',
+        '贪狼在子午':'贪狼在子/午位——桃花最旺之处，人缘魅力势不可挡'
+      };
+      txt+=`<p><strong class="highlight">「${pn}」格：</strong>${desc[pn]||''}</p>`;
+    });
+  }else{
+    txt+=`<p>此命盘无明显传统格局组合，十二宫配置各自独立，需结合大限运转详参。</p>`;
+  }
+  
+  // 输出煞格/夹宫/对冲分析
+  if(shaPatterns.length>0){
+    txt+=`<h4 style="color:#d9534f;margin-top:18px">⚠ 煞格与夹宫分析</h4>`;
+    shaPatterns.forEach(sp=>{
+      txt+=`<div class="warning" style="margin-bottom:8px"><strong>「${sp.name}」</strong>：${sp.desc}</div>`;
+    });
+  }
+  
+  return txt;
+}
+
+function renderTianZhaiAnalysis(p,d){
+  let txt=analyzeOnePalace(p,d);
+  txt+=`<p><strong>※ 倪海厦《天纪》强调：田宅宫看一生福禄。</strong>田宅是人的"仓库"，仓库多大福禄多厚。星曜表征不动产运、居家环境、晚年生活质量——这些是人生最终成绩单。</p>`;
+  return txt;
+}
+
+function renderCaiBoAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderGuanLuAnalysis(p,d){return analyzeOnePalace(p,d);}
+
+function renderFuDeAnalysis(p,d){
+  let txt=analyzeOnePalace(p,d);
+  txt+=`<p><strong class="highlight">※ 来因宫在${globalLaiYin.name}（${globalLaiYin.stem}${globalLaiYin.branch}）</strong>——今生因果的起点在此。命主内心深处真正追求的东西、前世的业力种子、今生的精神课题，都由${globalLaiYin.name}的星曜揭示。此宫是命主一辈子"和自己内心相处"的答卷。</p>`;
+  return txt;
+}
+
+function renderQianYiAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderJiEAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderFuMuAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderXiongDiAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderZiNvAnalysis(p,d){return analyzeOnePalace(p,d);}
+function renderPuYiAnalysis(p,d){return analyzeOnePalace(p,d);}
+
+function renderTriSquare(ming,cai,guan,qian,d){
+  let txt='';
+  const ms2=ms(ming).map(s=>starName(s)).join('、')||'空宫（借对宫）';
+  const cs=ms(cai).map(s=>starName(s)).join('、')||'空宫';
+  const gs2=ms(guan).map(s=>starName(s)).join('、')||'空宫';
+  const qs=ms(qian).map(s=>starName(s)).join('、')||'空宫';
+  
+  txt+=`<p><strong>本宫·命宫（${ming.stem}${ming.branch}）：</strong>${ms2} —— 先天禀赋和人生根基</p>`;
+  txt+=`<p><strong>对宫·迁移宫（${qian.stem}${qian.branch}）：</strong>${qs} —— 外出发展的外部环境</p>`;
+  txt+=`<p><strong>财帛宫（${cai.stem}${cai.branch}）：</strong>${cs} —— 赚钱能力和理财方式</p>`;
+  txt+=`<p><strong>官禄宫（${guan.stem}${guan.branch}）：</strong>${gs2} —— 事业发展方向</p>`;
+  
+  // ── 三方四正：煞星对冲分析 ──
+  if(d){
+    const mingSha=ming.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    const qianSha=qian.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    const caiSha=cai.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    const guanSha=guan.stars.filter(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name));
+    
+    // 命迁对冲有煞
+    if(mingSha.length>0&&qianSha.length>0){
+      const msh=mingSha.map(s=>s.name).join('、'),qsh=qianSha.map(s=>s.name).join('、');
+      txt+=`<div class="warning"><strong>⚠ 命迁对冲见煞</strong>：命宫（${msh}）⟷ 迁移宫（${qsh}）——两宫对冲且均见煞星，命主在「安守现状」与「外出闯荡」之间承受拉扯之痛，容易两头落空。建议择一端深耕，避免频繁切换。（此即"冲半空折翅"之象）</div>`;
+    }
+    
+    // 命宫/官禄宫见空劫 + 对宫见羊陀
+    const mkongJie=ming.stars.some(s=>['地空','地劫'].includes(s.name));
+    const gkongJie=guan.stars.some(s=>['地空','地劫'].includes(s.name));
+    const qyangTuo=qian.stars.some(s=>['擎羊','陀罗'].includes(s.name));
+    if((mkongJie||gkongJie)&&qyangTuo){
+      txt+=`<div class="warning"><strong>⚠ 半空折翅</strong>：${mkongJie?'命宫':'官禄宫'}见空劫 + 迁移宫见羊陀——事业或人生在即将冲高之际突遇现实阻碍（羊陀），加上理想落空（空劫），犹如飞鸟折翅。命主需牢记：务实比理想更重要，稳扎稳打比激进更安全。</div>`;
+    }
+    
+    // 命宫空劫 + 财帛宫空劫 = 财命同空
+    if(mkongJie&&cai.stars.some(s=>['地空','地劫'].includes(s.name))){
+      txt+=`<div class="warning"><strong>⚠ 财命同空</strong>：命宫与财帛宫同时见空劫——财运与人生根基都有不稳定性，赚钱靠灵感而非持续产出，不适合稳定工薪，适合靠创意/信息差变现。</div>`;
+    }
+  }
+  
+  // Dynamic analysis of tri-square
+  const allMajors=[...new Set([...ms(ming),...ms(cai),...ms(guan)].map(s=>s.name))];
+  const strengths=[],weaknesses=[];
+  if(allMajors.includes('紫微')||allMajors.includes('天府'))strengths.push('命-财-官三合有尊贵稳重之气，适合管理路线');
+  if(allMajors.includes('武曲')||allMajors.includes('太阴'))strengths.push('财星入三合，财运根基扎实');
+  if(allMajors.includes('太阳')||allMajors.includes('天梁'))strengths.push('清贵之星入三合，适合需要声望和口碑的事业');
+  if(allMajors.includes('天机')||allMajors.includes('贪狼'))weaknesses.push('变动之星在三合，人生方向容易多变，适合多元化发展');
+  if(allMajors.includes('巨门'))weaknesses.push('暗星在三合，事业中需特别注意沟通和信息对称');
+  if(allMajors.includes('七杀')||allMajors.includes('破军'))weaknesses.push('将星/耗星在三合，人生有破立之气，大起大落后见真章');
+  
+  if(strengths.length)txt+=`<p>【优势】${strengths.join('；')}。</p>`;
+  if(weaknesses.length)txt+=`<p>【注意】${weaknesses.join('；')}。</p>`;
+  
+  return txt;
+}
+
+function renderDaXian(d){
+  const dx=d.daXians;
+  let txt='<div class="daxian-table-wrapper"><table class="daxian-table"><tr><th>大限</th><th>虚岁</th><th>宫位</th><th>本宫主星</th><th>阶段解读</th></tr>';
+  dx.forEach((x,i)=>{
+    const p=pn(d,x.palaceName);
+    const stars=ms(p).map(s=>starName(s)).join('、')||'空宫';
+    const isNow=d.currentAge>=x.startAge&&d.currentAge<=x.endAge;
+    const label=['第一','第二','第三','第四','第五','第六','第七','第八','第九','第十','十一','十二'][i];
+    const meaning=getPalaceStarMeaning((ms(p)[0]||{}).name||'',x.palaceName)||'按本宫星曜运转';
+    
+    txt+=`<tr class="${isNow?'now':''}"><td>${label}大限${isNow?' ⬅':''}</td><td>${x.startAge}~${x.endAge}岁</td><td>${x.palaceName}（${x.palaceBranch}宫）</td><td>${stars}</td><td>${meaning.substring(0,60)}${meaning.length>60?'…':''}</td></tr>`;
+  });
+  txt+='</table></div>';
+  
+  const cur=dx.find(x=>d.currentAge>=x.startAge&&d.currentAge<=x.endAge);
+  if(cur){
+    txt+=`<p style="text-indent:0">命主当前处于<strong class="highlight">第${dx.indexOf(cur)+1}大限（${cur.startAge}~${cur.endAge}岁，${cur.palaceName}）</strong>。此阶段星曜能量集中于<span class="highlight">${cur.palaceName}</span>，该领域的吉凶消长是这十年的核心主题。</p>`;
+  }
+  return txt;
+}
+
+// ──────────────────────────────────────────────
+// 断前事·关键年份筛选（纯规则引擎 — 硬筛选）
+// ──────────────────────────────────────────────
+function renderKeyYears(d){
+  if(!d.pastYears||d.pastYears.length===0){
+    return '<p style="color:#999">无流年数据，请确认排盘服务正常运行</p>';
+  }
+  
+  // === 常量 ===
+  const GAN='甲乙丙丁戊己庚辛壬癸';
+  const GSH={
+    '甲':['廉贞禄','破军权','武曲科','太阳忌'],'乙':['天机禄','天梁权','紫微科','太阴忌'],
+    '丙':['天同禄','天机权','文昌科','廉贞忌'],'丁':['太阴禄','天同权','天机科','巨门忌'],
+    '戊':['贪狼禄','太阴权','右弼科','天机忌'],'己':['武曲禄','贪狼权','天梁科','文曲忌'],
+    '庚':['太阳禄','武曲权','太阴科','天同忌'],'辛':['巨门禄','太阳权','文曲科','文昌忌'],
+    '壬':['天梁禄','紫微权','左辅科','武曲忌'],'癸':['破军禄','巨门权','太阴科','贪狼忌']
+  };
+  // R1优先宫位: 命宫,夫妻宫,官禄宫,财帛宫,疾厄宫
+  const R1_PALACES=['命','夫妻','官禄','财帛','疾厄'];
+  // R2优先宫位: 命宫,夫妻宫,官禄宫,财帛宫,疾厄宫,田宅宫
+  const R2_PALACES=['命','夫妻','官禄','财帛','疾厄','田宅'];
+  
+  // === 数据准备 ===
+  // 星曜→本命宫映射
+  const SPM={};
+  d.palaces.forEach(p=>{p.stars.forEach(s=>{SPM[s.name]=p.name;});});
+  // 地支→本命宫映射
+  const BPM={};
+  d.palaces.forEach(p=>{BPM[p.branch]=p.name;});
+  // 生年天干
+  const BG=GAN[(d.birth.year-4)%10];
+  
+  // === 逐年份筛选 ===
+  const candidates=[];
+  
+  d.pastYears.forEach(y=>{
+    const yr=y.year;
+    if(yr<2016||yr>new Date().getFullYear())return;
+    const ag=y.age;
+    const gan=GAN[(yr-4)%10];
+    const sihua=GSH[gan]||[];
+    const pb=(y.yearlyPalaceBranch||'').trim();
+    const origName=BPM[pb]||'';
+    
+    // ── 规则1: 流年四化引动 ──
+    const r1Hits=[];
+    sihua.forEach(s=>{
+      const sn=s.replace(/[禄权科忌]/g,'');
+      const ht=s.replace(/[^禄权科忌]/g,'');
+      if(ht!=='禄'&&ht!=='忌')return; // 只取化禄/化忌
+      const sp=(SPM[sn]||'').replace('宫','');
+      if(sp&&R1_PALACES.includes(sp)){
+        r1Hits.push({star:sn,type:ht,palace:sp});
+      }
+    });
+    const hasR1=r1Hits.length>0;
+    // 化忌优先
+    const jiHits=r1Hits.filter(m=>m.type==='忌');
+    const luHits=r1Hits.filter(m=>m.type==='禄');
+    const primary=(jiHits.length>0?jiHits[0]:(luHits.length>0?luHits[0]:null));
+    
+    // ── 规则2: 流年命宫叠原局 ──
+    const en=(origName||'').replace('宫','');
+    const hasR2=en&&R2_PALACES.includes(en);
+    
+    // ── 规则3: 大限引动 ──
+    const idx=d.pastYears.indexOf(y);
+    const prev=idx>0?d.pastYears[idx-1]:null;
+    const next=idx<d.pastYears.length-1?d.pastYears[idx+1]:null;
+    const isFirst=prev&&prev.decadalPalace!==y.decadalPalace;
+    const isLast=next&&next.decadalPalace!==y.decadalPalace;
+    // 流年四化星落入大限宫位
+    let dxHit=false;
+    const dxp=y.decadalPalace.replace('宫','');
+    sihua.forEach(s=>{
+      const sn=s.replace(/[禄权科忌]/g,'');
+      const ht=s.replace(/[^禄权科忌]/g,'');
+      if(ht!=='禄'&&ht!=='忌')return;
+      const sp=(SPM[sn]||'').replace('宫','');
+      if(sp.replace('宫','')===dxp)dxHit=true;
+    });
+    const hasR3=isFirst||isLast||dxHit;
+    
+    // ── 统计 ──
+    const rc=(hasR1?1:0)+(hasR2?1:0)+(hasR3?1:0);
+    if(rc<2)return; // 至少满足2条
+    
+    // ── 构建"满足规则"描述 ──
+    const rd=[];
+    r1Hits.forEach(m=>rd.push('流年'+m.star+'化'+m.type+'入'+m.palace+'宫'));
+    if(hasR2)rd.push('流年命宫叠'+en+'宫');
+    if(isFirst){rd.push(y.decadalPalace+'大限第一年');
+    }else if(isLast){rd.push(y.decadalPalace+'大限最后一年');
+    }else if(dxHit){rd.push('流年四化引动大限');}
+    
+    // ── 确定领域 ──
+    let domain='事业';
+    if(primary){
+      const pm=primary.palace;
+      if(pm.includes('夫妻'))domain='感情';
+      else if(pm.includes('官禄'))domain='事业';
+      else if(pm.includes('财帛'))domain='财运';
+      else if(pm.includes('疾厄'))domain='健康';
+      else if(pm.includes('命'))domain='事业';
+    }else{
+      if(en==='夫妻')domain='感情';
+      else if(en==='官禄')domain='事业';
+      else if(en==='财帛')domain='财运';
+      else if(en==='疾厄')domain='健康';
+      else if(en==='田宅')domain='家庭';
+    }
+    
+    // ── 生成事件倾向（一句话） ──
+    const tendency=getTendency(primary,hasR2,en,isFirst,isLast,dxHit);
+    
+    candidates.push({
+      year:yr,age:ag,rc,hasR1,hasR2,hasR3,
+      primary,ruleDesc:rd.join(' + '),
+      domain,tendency
+    });
+  });
+  
+  // === 排序: 3规则 > 2规则含R1 > 含化忌 >> 其余 ===
+  candidates.sort((a,b)=>{
+    if(a.rc!==b.rc)return b.rc-a.rc;
+    if(a.hasR1!==b.hasR1)return a.hasR1?-1:1;
+    if(a.primary&&a.primary.type==='忌'&&(!b.primary||b.primary.type!=='忌'))return -1;
+    if(b.primary&&b.primary.type==='忌'&&(!a.primary||a.primary.type!=='忌'))return 1;
+    return 0;
+  });
+  
+  const top=candidates.slice(0,5);
+  
+  // === 渲染（加黑版） ===
+  let txt='<div style="background:#f4efe4;border:1px solid #ccc0a0;padding:12px 16px;margin:8px 0;border-radius:4px;font-size:14px;color:#1a1008;line-height:1.6;">';
+  txt+='<p style="margin:0 0 4px;"><strong style="font-size:15px;color:#000;">筛选规则</strong><span style="color:#1a1008;">：满足以下至少2条</span></p>';
+  txt+='<p style="margin:2px 0;color:#1a1008;">① 流年四化引动：化禄或化忌落入命/夫/官/财/疾宫</p>';
+  txt+='<p style="margin:2px 0;color:#1a1008;">② 流年命宫叠原局：叠命/夫/官/财/疾/田宫</p>';
+  txt+='<p style="margin:2px 0;color:#1a1008;">③ 大限引动：大限首尾年、或流年四化引动大限宫</p>';
+  txt+='</div>';
+  
+  txt+='<div style="max-height:720px;overflow-y:auto;background:#fffcf8;border:1px solid #d0c4a8;border-radius:4px;">';
+  
+  top.forEach((yr,i)=>{
+    const isNow=yr.year===new Date().getFullYear();
+    const starBadge=yr.primary?(yr.primary.type==='忌'?'⚠':'🟢'):'';
+    
+    txt+=`<div style="padding:16px 18px;border-bottom:1px solid #d0c4a8;background:${isNow?'#ece0c0':''};${i===0?'border-top:none;':''}">`;
+    
+    // 标题行 — 加黑
+    txt+=`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">`;
+    txt+=`<span style="font-size:17px;font-weight:bold;color:#000;">${starBadge} <span style="color:#6b3000;font-weight:bold;">${yr.year}年（虚${yr.age}岁）</span> <span style="font-size:13px;font-weight:600;color:#1a1008;">满足${yr.rc}条规则</span></span>`;
+    if(isNow)txt+=`<span style="font-size:12px;font-weight:bold;background:#b8942a;color:#fff;padding:2px 8px;border-radius:3px;">当前</span>`;
+    txt+=`</div>`;
+    
+    // 满足规则 — 加深底框+加黑文字
+    txt+=`<div style="background:#ede6d8;padding:10px 12px;margin:4px 0;border-radius:4px;font-size:15px;line-height:1.7;border-left:3px solid ${yr.primary&&yr.primary.type==='忌'?'#8b0000':'#8b6914'};">`;
+    txt+=`<p style="margin:0 0 4px;color:#000;"><strong style="font-size:15px;color:#000;">满足规则</strong>：<span style="color:#1a1008;">${yr.ruleDesc}</span></p>`;
+    txt+=`<p style="margin:0 0 4px;color:#000;"><strong style="font-size:15px;color:#000;">可能领域</strong>：<span style="color:#1a1008;">${yr.domain}</span></p>`;
+    txt+=`<p style="margin:0;color:#000;"><strong style="font-size:15px;color:#000;">事件倾向</strong>：<span style="color:#1a1008;">${yr.tendency}</span></p>`;
+    txt+=`</div>`;
+    
+    txt+=`</div>`;
+  });
+  
+  txt+=`</div>`;
+  return txt;
+}
+
+// 事件倾向生成器 — 一句话，无模糊词汇，基于规则驱动
+function getTendency(primary,hasR2,origPalace,isFirst,isLast,dxHit){
+  const parts=[];
+  
+  if(primary){
+    const p=primary.palace;
+    const t=primary.type;
+    if(t==='忌'){
+      if(p==='命')parts.push('易自我困惑或决策失误');
+      else if(p==='夫妻')parts.push('易感情不顺或冷战分手');
+      else if(p==='官禄')parts.push('易工作/学业有阻碍');
+      else if(p==='财帛')parts.push('易破财或意外开销');
+      else if(p==='疾厄')parts.push('易健康出状况或情绪低落');
+    }else{ // 化禄
+      if(p==='命')parts.push('得人赏识但易安于现状');
+      else if(p==='夫妻')parts.push('感情有新进展');
+      else if(p==='官禄')parts.push('事业/学业遇良机');
+      else if(p==='财帛')parts.push('财运有起色');
+      else if(p==='疾厄')parts.push('身体状况好转');
+    }
+  }
+  
+  if(hasR2&&origPalace==='田宅')parts.push('家庭方面有变动');
+  
+  if(isFirst)parts.push('进入人生新阶段');
+  else if(isLast)parts.push('面临收尾与总结');
+  else if(dxHit&&!primary)parts.push('受大限能量推动');
+  
+  return parts.join('，')||'此年多重引动，变化明显';
+}
+
+// 前世因果推断（数据驱动版）
+function renderPastLife(d){
+  let txt='';
+  const ming=pn(d,'命宫'),fude=pn(d,'福德'),jie=pn(d,'疾厄'),tian=pn(d,'田宅'),fumu=pn(d,'父母'),funv=pn(d,'子女'),fuqi=pn(d,'夫妻');
+
+  txt+=`<p style="text-indent:0"><strong class="highlight">【推算逻辑】</strong>紫微斗数中，<strong>福德宫</strong>看前世福报和精神境界；<strong>来因宫</strong>（${globalLaiYin.branch}·${globalLaiYin.name}）看今生因果起点；<strong>命宫</strong>看前世遗留的性格种子；<strong>田宅宫</strong>看前世积累的物质福报转入今生；<strong>疾厄宫</strong>看前世业力在身体的遗留。</p>`;
+
+  txt+=`<h4>1. 前世身份与业力（数据驱动）</h4>`;
+  let pastIdentity=[];
+  const starIdentities={
+    '紫微':'前世极可能是帝王/高官/领袖，有掌控大权的经历，今生遗留"自尊极高"的业力',
+    '天机':'前世是谋士/学者/商人，一生思虑过重，今生需修"简化思维"',
+    '太阳':'前世是教师/官员/公众人物，光明正大，遗留"公正"的种子',
+    '武曲':'前世是武将/商人/技术工匠，刚毅果断，遗留"实干"的业力',
+    '天同':'前世是富家子弟/享受生活之人，福气足但进取心不足',
+    '廉贞':'前世可能与司法/刑狱/宗教有关，自律甚严，遗留"不轻信"的业力',
+    '天府':'前世是大地主/银行家/仓库管理员，善于积累，遗留"稳重"的业力',
+    '太阴':'前世是贵族女性/艺术家/服务者，细腻温柔，遗留"审美"的业力',
+    '贪狼':'前世是艺人/商人/交际花，桃花缘重，遗留"人脉"的业力',
+    '巨门':'前世是辩士/律师/密探，因言惹祸或立功，遗留"慎言"的业力',
+    '天相':'前世是幕僚/宰相/审判官，公正无私，遗留"协调"的业力',
+    '天梁':'前世是修行者/医生/教师，行善积德，遗留"贵人缘"的业力',
+    '七杀':'前世是将军/执法者/开拓者，威猛刚强，遗留"竞争"的业力',
+    '破军':'前世是革命者/艺术家/航海家，破旧立新，遗留"不羁"的业力'
+  };
+  
+  // Analyze ming, fude, tian, jie for past life clues
+  const relevantPalaces=[ming,fude,tian,jie];
+  relevantPalaces.forEach(p=>{
+    ms(p).forEach(s=>{
+      if(starIdentities[s.name]&&!pastIdentity.some(pi=>pi.includes(s.name))){
+        pastIdentity.push(`<b>● ${s.name}在${p.name}</b>——${starIdentities[s.name]}。`);
+      }
+    });
+  });
+  
+  if(pastIdentity.length===0){
+    txt+=`<p>命盘前世信息较为隐晦，关键宫位星曜无明显指向。前世的业力印记已淡化，<span class="highlight">今生是全新的开始</span>。</p>`;
+  }else{
+    pastIdentity.forEach(pi=>txt+=`<p>${pi}</p>`);
+  }
+  
+  txt+=`<h4>2. 前世因缘关系（数据驱动）</h4>`;
+  let karmaRels=[];
+  // 父母宫
+  ms(fumu).forEach(s=>{
+    if(s.name==='七杀')karmaRels.push(`<b>父母宫七杀</b>——前世与父母/权威人物之间有未尽恩情或冲突。七杀为将星，暗示前世父母一方可能为军/纪律严苛之人。今生你在延续"修忍辱"的功课。`);
+    if(s.name==='紫微')karmaRels.push(`<b>父母宫紫微</b>——前世父母地位显赫，对你有高期望。今生父母仍以高标准要求你，是在还前世的"成才之约"。`);
+    if(s.name==='天梁')karmaRels.push(`<b>父母宫天梁</b>——前世与父母有修行缘分，可能前世即是师徒/修行伙伴。今生父母对你有精神层面的引领。`);
+  });
+  // 夫妻宫
+  ms(fuqi).forEach(s=>{
+    if(s.name==='巨门')karmaRels.push(`<b>夫妻宫巨门</b>——前世夫妻间有沟通障碍/误解未解。今生需重修"坦诚表达"这一课。`);
+    if(s.name==='贪狼')karmaRels.push(`<b>夫妻宫贪狼</b>——前世桃花缘重，可能有多角关系未了。今生感情世界注定丰富，但需学会"定心"。`);
+    if(s.name==='七杀')karmaRels.push(`<b>夫妻宫七杀</b>——前世感情有激烈冲突或离别。今生感情模式容易"不打不相识"。`);
+  });
+  // 子女宫
+  ms(funv).forEach(s=>{
+    if(s.name==='贪狼')karmaRels.push(`<b>子女宫贪狼</b>——前世桃花/子女缘重，可能有未了的情感牵扯。今生转化为子女/下属关系。`);
+    if(s.name==='破军')karmaRels.push(`<b>子女宫破军</b>——前世与子女有分离之痛或重大变故。今生子女个性独立，是在完成"放手"的功课。`);
+  });
+  
+  if(karmaRels.length===0){
+    txt+=`<p>前世人际关系无显著因果牵连的迹象，今生可以视为全新的缘分。</p>`;
+  }else{
+    karmaRels.forEach(kr=>txt+=`<p>${kr}</p>`);
+  }
+  
+  txt+=`<h4>3. 今生修行课题</h4>`;
+  let lessons=[];
+  ms(fude).forEach(s=>{if(s.name==='天机')lessons.push('<b>修"简"</b>——前世思虑过重，今生需学会简化思维，不钻牛角尖');});
+  ms(fude).forEach(s=>{if(s.name==='陀罗')lessons.push('<b>修"放"</b>——前世有未解执念，今生需学会放下');});
+  ms(fuqi).forEach(s=>{if(s.name==='巨门')lessons.push('<b>修"言"</b>——前世沟通障碍，今生学会坦诚表达');});
+  ms(ming).forEach(s=>{if(s.name==='天梁')lessons.push('<b>修"慈"</b>——前世有教化之德，今生继续发挥助人天赋');});
+  if(lessons.length===0)lessons.push('<b>修"心"</b>——今生是重新开始的机会，用心生活即是修行');
+  
+  txt+=`<p>综合命盘信息，命主今生最重要的修行方向：${lessons.join('；')}。</p>`;
+  return txt;
+}
+
+// 姻缘流年（保留已测试通过的计算逻辑，添加更多细节）
+// (renderMarriageYears unchanged - already data-driven)
+
+// 健康风险预警（保留已测试通过的计算逻辑，添加数据驱动细节）
+function renderHealthRisks(d){
+  let txt='';
+  const jie=pn(d,'疾厄'),ming=pn(d,'命宫');
+  
+  txt+=`<p style="text-indent:0"><strong class="highlight">【推算逻辑】</strong>(1)流年命宫走入本命疾厄宫——身体能量聚焦；(2)流年疾厄宫见本命煞星——脆弱点被触发；(3)大限走入疾厄宫——十年健康主旋律；(4)流年疾厄宫与本命命宫对冲——命-疾相冲根基动摇。</p>`;
+  
+  // 先天健康特质（数据驱动）
+  txt+=`<h4>先天健康特质</h4>`;
+  const healthStars=ms(jie);
+  healthStars.forEach(s=>{
+    const hw=getPalaceStarMeaning(s.name,'疾厄');
+    txt+=`<p><strong>${s.name}[${s.brightness||'平'}]守疾厄——</strong>${hw||'此生需定期体检保持关注'}。</p>`;
+  });
+  if(healthStars.length===0)txt+=`<p>疾厄宫无主星——身体底子随大限运转而变化，灵活应变即可，无固定短板。</p>`;
+  
+  // 吉星/煞星在疾厄
+  const luckyJie=jie.stars.filter(s=>['天魁','天钺','左辅','右弼','文昌','文曲','禄存'].includes(s.name));
+  const evilJie=jie.stars.filter(s=>['擎羊','陀罗','火星','铃星','地空','地劫'].includes(s.name));
+  if(luckyJie.length>0)txt+=`<p><span class="star-lucky">[吉]</span>${luckyJie.map(s=>s.name).join('、')}在疾厄，自愈力好，生病容易找到好医生。</p>`;
+  if(evilJie.length>0)txt+=`<p><span class="star-evil">[煞]</span>${evilJie.map(s=>s.name).join('、')}在疾厄，需防突发性/慢性健康问题。</p>`;
+  
+  // 大限疾厄
+  const jieDaXian=d.daXians.find(dx=>dx.palaceName==='疾厄');
+  if(jieDaXian){
+    const age=parseInt(d.currentAge);
+    if(age>=jieDaXian.startAge&&age<=jieDaXian.endAge){
+      txt+=`<div class="warning"><h4>⚠ 当前处于疾厄宫大限（${jieDaXian.startAge}~${jieDaXian.endAge}岁）</h4><p>这十年健康是人生主旋律，定期体检不可省略，不宜透支身体。</p></div>`;
+    }else if(jieDaXian.startAge>age){
+      txt+=`<div class="warning"><h4>⚠ 疾厄宫大限预告（${jieDaXian.startAge}~${jieDaXian.endAge}岁）</h4><p>命主将在${jieDaXian.startAge}岁迎来十年健康关键期。提前养好身体有备无患。</p></div>`;
+    }
+  }
+  
+  // 流年风险计算
+  const oppMap={子:'午',丑:'未',寅:'申',卯:'酉',辰:'戌',巳:'亥',午:'子',未:'丑',申:'寅',酉:'卯',戌:'辰',亥:'巳'};
+  const shaStars=['擎羊','陀罗','火星','铃星','地空','地劫'];
+  const shaPalaces=d.palaces.filter(p=>p.stars.some(s=>shaStars.includes(s.name)));
+  const curYear=new Date().getFullYear();
+  const birthYear=d.birth.year;
+  const risks=[];
+  
+  for(let yr=curYear;yr<curYear+20;yr++){
+    const diZhi=(yr-4)%12;
+    const dz=DZ[diZhi];
+    const vAge=yr-birthYear+1;
+    const liuNianMing=dz;
+    const liuNianJiE=DZ[(diZhi+5)%12];
+    let reasons=[],level='';
+    
+    if(liuNianMing===jie.branch){reasons.push('流年命宫走入本命疾厄宫');level='high'}
+    const shaMatch=shaPalaces.filter(p=>p.branch===liuNianJiE);
+    if(shaMatch.length>0){
+      const shaNames=shaMatch[0].stars.filter(s=>shaStars.includes(s.name)).map(s=>s.name).join('、');
+      reasons.push('流年疾厄见煞星：'+shaNames);
+      if(!level)level='medium';
+    }
+    if(oppMap[liuNianJiE]===ming.branch){reasons.push('流年疾厄与本命命宫对冲');level='high'}
+    if(oppMap[liuNianMing]===jie.branch){reasons.push('流年命宫与本命疾厄宫对冲');if(!level||level!=='high')level='medium'}
+    if(reasons.length>0)risks.push({year:yr,vAge,dz,level:level||'low',reasons});
+  }
+  
+  if(risks.length>0){
+    txt+=`<h4>流年健康风险年表</h4>`;
+    txt+=`<table class="daxian-table"><tr><th>年份</th><th>虚岁</th><th>等级</th><th>推理依据</th></tr>`;
+    risks.forEach(r=>{
+      const label=r.level==='high'?'<span style="color:#dc3545;font-weight:bold">🔴 高</span>':r.level==='medium'?'<span style="color:#f0ad4e;font-weight:bold">🟡 中</span>':'<span style="color:#5cb85c">🟢 低</span>';
+      txt+=`<tr><td><strong>${r.year}年</strong></td><td>${r.vAge}岁</td><td>${label}</td><td>${r.reasons.join('；')}</td></tr>`;
+    });
+    txt+=`</table>`;
+    
+    const highRisks=risks.filter(r=>r.level==='high');
+    if(highRisks.length>0){
+      txt+=`<div class="warning"><h4>⚠ 重点年份：${highRisks.map(r=>r.year+'年').join('、')}</h4><p>建议<strong>避免危险运动/高风险活动</strong>，定期体检，保持良好作息。</p></div>`;
+    }
+  }
+  return txt;
+}
+
+// 姻缘流年（保留原计算逻辑，增加数据驱动标注）
+function renderMarriageYears(d){
+  let txt='';
+  const fuqi=pn(d,'夫妻'),funv=pn(d,'子女'),ming=pn(d,'命宫');
+  
+  txt+=`<p style="text-indent:0"><strong class="highlight">【推算逻辑】</strong>三条主线：(1)流年命宫走入夫妻宫——夫妻宫被直接引动；(2)流年夫妻宫见红鸾/天喜——婚喜之星触发；(3)流年命宫与夫妻宫三合——形成合力。</p>`;
+  
+  // 本命夫妻宫分析
+  txt+=`<h4>本命夫妻宫基础</h4>`;
+  txt+=analyzeOnePalace(fuqi,d);
+  
+  const now=new Date();
+  const curYear=now.getFullYear();
+  const birthYear=d.birth.year;
+  const hongLuanMap={子:'卯',丑:'寅',寅:'丑',卯:'子',辰:'亥',巳:'戌',午:'酉',未:'申',申:'未',酉:'午',戌:'巳',亥:'辰'};
+  const tianXiMap={子:'酉',丑:'申',寅:'未',卯:'午',辰:'巳',巳:'辰',午:'卯',未:'寅',申:'丑',酉:'子',戌:'亥',亥:'戌'};
+  const fuqiBranch=fuqi.branch,mingBranch=ming.branch;
+  const triHaiMaoWei=['亥','卯','未'],triYinWuXu=['寅','午','戌'],triSiYouChou=['巳','酉','丑'],triShenZiChen=['申','子','辰'];
+  function getTriGroup(b){if(triHaiMaoWei.includes(b))return triHaiMaoWei;if(triYinWuXu.includes(b))return triYinWuXu;if(triSiYouChou.includes(b))return triSiYouChou;return triShenZiChen;}
+  const fuqiTri=getTriGroup(fuqiBranch),mingTri=getTriGroup(mingBranch);
+  const marrYears=[];
+  
+  for(let yr=curYear;yr<curYear+15;yr++){
+    const diZhi=(yr-4)%12,dz=DZ[diZhi],vAge=yr-birthYear+1;
+    const liuNianMing=dz,liuNianFuqi=DZ[(diZhi+3)%12];
+    let reasons=[],score=0;
+    if(liuNianMing===fuqiBranch){reasons.push('流年命宫=本命夫妻宫');score+=3}
+    const hlBranch=hongLuanMap[fuqiBranch];
+    if(liuNianFuqi===hlBranch){reasons.push('流年夫妻宫重合红鸾位');score+=2}
+    const txBranch=tianXiMap[fuqiBranch];
+    if(liuNianFuqi===txBranch){reasons.push('流年夫妻宫重合天喜位');score+=2}
+    if(fuqiTri.includes(liuNianMing)){reasons.push('流年命宫与夫妻宫三合');score+=2}
+    if(mingTri.includes(liuNianFuqi)){reasons.push('流年夫妻宫与命宫三合');score+=1}
+    if(score>=2)marrYears.push({year:yr,vAge,dz,score,reasons});
+  }
+  
+  if(marrYears.length===0){
+    txt+=`<p>未来15年内姻缘信号较弱。不代表没有姻缘，而是缘分方式比较特殊，或命主需要主动创造机会。</p>`;
+  }else{
+    txt+=`<table class="daxian-table"><tr><th>年份</th><th>虚岁</th><th>强度</th><th>推理依据</th></tr>`;
+    marrYears.forEach(m=>{
+      txt+=`<tr><td><strong>${m.year}年</strong></td><td>${m.vAge}岁</td><td>${'⭐'.repeat(Math.min(m.score,5))}</td><td>${m.reasons.join('；')}</td></tr>`;
+    });
+    txt+=`</table>`;
+    txt+=`<p>⭐越多=能量越集中。信号强≠必然结婚——也代表遇到重要对象/关系质变的年份。本命夫妻宫配置为：<span class="highlight">${ms(fuqi).map(s=>s.name).join('、')}</span>，其特质影响所有姻缘的质量。</p>`;
+  }
+  return txt;
+}
+
+function renderWealthYears(d){
+  let txt='';
+  const cai=pn(d,'财帛'),guan=pn(d,'官禄'),ming=pn(d,'命宫');
+  
+  const now=new Date(),curYear=now.getFullYear(),birthYear=d.birth.year;
+  
+  txt+=`<p style="text-indent:0"><strong class="highlight">【推算逻辑】</strong>财运三条主线：(1)流年命宫走入财帛宫——财帛宫被直接引动；(2)流年财帛宫见禄存/天马——财星汇聚；(3)流年命宫与财帛宫三合——形成合力。</p>`;
+  
+  // 本命财帛宫分析
+  txt+=`<h4>本命财帛宫基础</h4>`;
+  txt+=analyzeOnePalace(cai,d);
+  
+  // 官禄宫配置（事业影响收入渠道）
+  txt+=`<h4>官禄宫配置</h4>`;
+  txt+=analyzeOnePalace(guan,d);
+  
+  // 流年财运分析
+  const tianMaMap={子:'寅',丑:'卯',寅:'午',卯:'子',辰:'丑',巳:'卯',午:'亥',未:'酉',申:'午',酉:'子',戌:'丑',亥:'卯'};
+  const luCunMap={子:'癸',丑:'癸',寅:'丙',卯:'乙',辰:'癸',巳:'丙',午:'丁',未:'癸',申:'庚',酉:'乙',戌:'辛',亥:'壬'};
+  const caiBranch=cai.branch,mingBranch=ming.branch;
+  const triHaiMaoWei=['亥','卯','未'],triYinWuXu=['寅','午','戌'],triSiYouChou=['巳','酉','丑'],triShenZiChen=['申','子','辰'];
+  function getTriGroup(b){if(triHaiMaoWei.includes(b))return triHaiMaoWei;if(triYinWuXu.includes(b))return triYinWuXu;if(triSiYouChou.includes(b))return triSiYouChou;return triShenZiChen;}
+  const caiTri=getTriGroup(caiBranch),mingTri=getTriGroup(mingBranch);
+  const wealthYears=[];
+  
+  for(let yr=curYear;yr<curYear+15;yr++){
+    const diZhi=(yr-4)%12,dz=DZ[diZhi],vAge=yr-birthYear+1;
+    const liuNianMing=dz,liuNianCai=DZ[(diZhi+3)%12];
+    let reasons=[],score=0;
+    if(liuNianMing===caiBranch){reasons.push('流年命宫=本命财帛宫');score+=3}
+    if(liuNianCai===caiBranch){reasons.push('流年财帛宫叠本命财帛宫');score+=2}
+    const tmBranch=tianMaMap[caiBranch];
+    if(liuNianCai===tmBranch){reasons.push('流年财帛宫重合天马位');score+=2}
+    const lcBranch=luCunMap[caiBranch];
+    if(liuNianCai===lcBranch){reasons.push('流年财帛宫重合禄存位');score+=2}
+    if(caiTri.includes(liuNianMing)){reasons.push('流年命宫与财帛宫三合');score+=2}
+    if(mingTri.includes(liuNianCai)){reasons.push('流年财帛宫与命宫三合');score+=1}
+    if(score>=2)wealthYears.push({year:yr,vAge,dz,score,reasons});
+  }
+  
+  if(wealthYears.length===0){
+    txt+=`<p>未来15年内财运信号较弱，不代表没有财，而是需要主动创造收入来源。</p>`;
+  }else{
+    txt+=`<table class="daxian-table"><tr><th>年份</th><th>虚岁</th><th>强度</th><th>推理依据</th></tr>`;
+    wealthYears.forEach(m=>{
+      const starIcon=m.score>=4?'🌟':m.score>=3?'💰':'✨';
+      txt+=`<tr><td><strong>${m.year}年</strong></td><td>${m.vAge}岁</td><td>${starIcon}${'⭐'.repeat(Math.min(m.score-1,4))}</td><td>${m.reasons.join('；')}</td></tr>`;
+    });
+    txt+=`</table>`;
+    txt+=`<p>🌟/💰越多=财运能量越强。财帛宫主星：<span class="highlight">${ms(cai).map(s=>s.name).join('、')}</span>，官禄宫主星：<span class="highlight">${ms(guan).map(s=>s.name).join('、')}</span>，两者共同决定收入模式与财运走向。</p>`;
+  }
+  return txt;
+}
+
+function renderSuggestions(d){
+  let txt='';
+  const ming=pn(d,'命宫'),fuqi=pn(d,'夫妻'),cai=pn(d,'财帛'),tian=pn(d,'田宅'),jie=pn(d,'疾厄'),guan=pn(d,'官禄');
+  
+  // 事业——从命宫+官禄宫星曜提取
+  txt+=`<div class="suggestion"><h4>✓ 事业方向</h4>`;
+  const careerStars=[...ms(ming),...ms(guan)];
+  const careerRecs=[];
+  careerStars.forEach(s=>{
+    const recs={
+      '紫微':'适合担任管理者或自行创业','天机':'适合策划/咨询/IT等脑力密集型行业',
+      '太阳':'适合教育/传媒/公益等面向公众的行业','武曲':'适合金融/技术/军警等硬实力行业',
+      '天同':'适合文职/艺术/公务员等安居型工作','廉贞':'适合法律/纪检/科研等严谨型工作',
+      '天府':'适合管理/仓储/金融等积累型工作','太阴':'适合设计/护理/会计等细心型工作',
+      '贪狼':'适合市场/商务/娱乐等人脉型工作','巨门':'适合律师/记者/教师等表达型工作',
+      '天相':'适合HR/行政/助理等协调型工作','天梁':'适合教育/医疗/法律等清贵型工作',
+      '七杀':'适合创业/管理/军警等开创型工作','破军':'适合创新/艺术/创业等变革型工作'
+    };
+    if(recs[s.name]&&!careerRecs.includes(recs[s.name]))careerRecs.push(recs[s.name]);
+  });
+  if(careerRecs.length>0)txt+=`<p>${careerRecs.slice(0,3).join('；')}。</p>`;
+  else txt+=`<p>适合弹性大、多元化发展路线，随大限流转调整方向。</p>`;
+  txt+=`</div>`;
+  
+  // 财运
+  txt+=`<div class="suggestion"><h4>✓ 财运策略</h4>`;
+  const caiStars=ms(cai);
+  const caiRecs=[];
+  caiStars.forEach(s=>{
+    if(s.name==='武曲')caiRecs.push('正财路为主，靠专业技能稳定收入');
+    if(s.name==='太阴')caiRecs.push('细水长流型，善理财规划，暗财运（副业/投资）有优势');
+    if(s.name==='天府')caiRecs.push('稳扎稳打不投机，财富积累虽慢但结实');
+    if(s.name==='贪狼')caiRecs.push('靠人脉和资源整合赚钱，多元收入更合适');
+    if(s.name==='紫微')caiRecs.push('财路宽广，适合做大格局生意或管理型收入');
+    if(s.name==='破军')caiRecs.push('先破后立型，创业收入波动大，需预留缓冲');
+    if(s.name==='七杀')caiRecs.push('大进大出型，有魄力但必须控制风险上限');
+  });
+  if(hs(tian,'紫微')||hs(tian,'禄存'))caiRecs.push('田宅运好，不动产是最优长期投资');
+  if(caiRecs.length>0)txt+=`<p>${caiRecs.join('；')}。</p>`;
+  else txt+=`<p>财运随大限起伏，建议理财储蓄为主，避免投机。</p>`;
+  txt+=`</div>`;
+  
+  // 感情
+  txt+=`<div class="suggestion"><h4>✓ 感情建议</h4>`;
+  const fqStars=ms(fuqi);
+  const fqRecs=[];
+  fqStars.forEach(s=>{
+    if(s.name==='天同')fqRecs.push('感情温和是福，但不宜找事业心太强的对象');
+    if(s.name==='巨门')fqRecs.push('沟通是毕生课题——坦诚是解药，冷战是毒药');
+    if(s.name==='贪狼')fqRecs.push('桃花运旺盛，选择多但需定心择一');
+    if(s.name==='七杀')fqRecs.push('感情激烈有火花，需学会包容对方棱角');
+    if(s.name==='破军')fqRecs.push('需不断新鲜感，不适合传统婚姻模式');
+    if(s.name==='紫微')fqRecs.push('配偶地位高，婚姻中注意权力平衡');
+    if(s.name==='天府')fqRecs.push('感情细水长流，日久生情型最稳');
+    if(s.name==='天梁')fqRecs.push('可能有年龄差，配偶成熟有长者风范');
+  });
+  if(fqRecs.length>0)txt+=`<p>${fqRecs.join('；')}。</p>`;
+  else txt+=`<p>感情需以真诚和耐心经营，不急于求成。</p>`;
+  txt+=`</div>`;
+  
+  // 健康提醒
+  const jieStars=ms(jie);
+  if(jieStars.some(s=>['廉贞','七杀','破军'].includes(s.name))||jie.stars.some(s=>['地空','地劫','擎羊','陀罗','火星','铃星'].includes(s.name))){
+    txt+=`<div class="warning"><h4>⚠ 健康提醒</h4>`;
+    jieStars.forEach(s=>{
+      if(s.name==='廉贞')txt+=`<p>注意血液循环/免疫系统，定期体检避高风险。</p>`;
+      if(s.name==='七杀')txt+=`<p>注意外伤/意外，行动多加小心。</p>`;
+      if(s.name==='破军')txt+=`<p>身体消耗大，注意休息和恢复。</p>`;
+    });
+    txt+=`</div>`;
+  }
+  
+  return txt;
+}
+
+function renderFooter(d,ming,cai,fuqi,tian){
+  let jiYu=[];
+  const mStars=ms(ming).map(s=>s.name);
+  if(mStars.length>0)jiYu.push(mStars.join('、')+'坐命');
+  const tStars=ms(tian).map(s=>s.name);
+  if(tStars.length>0&&(tStars.includes('紫微')||tStars.includes('天府')||tStars.includes('禄存')))jiYu.push('田宅深厚福禄双全');
+  const cStars=ms(cai).map(s=>s.name);
+  if(cStars.length>0)jiYu.push(cStars.join('、')+'守财帛，财运有根基');
+  
+  if(jiYu.length===0)jiYu.push('命盘配置平衡，一生平安');
+  
+  let txt=`<p><strong>命理师寄语：</strong></p>`;
+  txt+=`<p>命主<strong class="highlight">${jiYu.join('，')}</strong>。运势随大限流转，顺境不骄、逆境不馁，修身即是改命。</p>`;
+  txt+=`<p style="margin-top:20px;color:#8a7a5a;">—— iztro 紫微斗数排盘系统 ——</p>`;
+  txt+=`<p style="color:#8a7a5a;font-size:12px;">注：本分析限于研究/娱乐目的，不构成专业建议。内容由 iztro 引擎排盘 + 星曜数据库自动生成。</p>`;
+  return txt;
+}
+// auto-load on page open when default values are set
+// support URL params: ?year=1993&month=8&day=31&hour=12&gender=female
+window.addEventListener('DOMContentLoaded',()=>{
+  const params=new URLSearchParams(location.search);
+  if(params.has('year'))document.getElementById('s-year').value=params.get('year');
+  if(params.has('month'))document.getElementById('s-month').value=params.get('month');
+  if(params.has('day'))document.getElementById('s-day').value=params.get('day');
+  if(params.has('hour'))document.getElementById('s-hour').value=params.get('hour');
+  if(params.has('gender'))document.getElementById('s-gender').value=params.get('gender');
+  getChart();
+});
+
+
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+
+
+(function(){
+'use strict';
+
+// ============================================================
+// ENGINE (client-side, no API needed)
+// ============================================================
+
+// ============================================================
+// CITY DATABASE (300+ cities with longitude)
+// ============================================================
+const CITY_LNG = {
+  // 直辖市
+  '北京':116.4,'上海':121.5,'天津':117.2,'重庆':106.5,
+  // 省会
+  '石家庄':114.5,'太原':112.5,'呼和浩特':111.7,'沈阳':123.4,'长春':125.3,'哈尔滨':126.5,
+  '南京':118.8,'杭州':120.2,'合肥':117.3,'福州':119.3,'南昌':115.9,'济南':117.0,
+  '郑州':113.7,'武汉':114.3,'长沙':113.0,'广州':113.3,'南宁':108.3,'海口':110.3,
+  '成都':104.1,'贵阳':106.7,'昆明':102.7,'拉萨':91.1,'西安':108.9,'兰州':103.7,
+  '西宁':101.8,'银川':106.3,'乌鲁木齐':87.6,
+  // 计划单列市+重要城市
+  '深圳':114.1,'厦门':118.1,'宁波':121.5,'青岛':120.4,'大连':121.6,
+  // 河北省
+  '唐山':118.2,'秦皇岛':119.6,'邯郸':114.5,'邢台':114.5,'保定':115.5,'张家口':114.9,'承德':117.9,'沧州':116.8,'廊坊':116.7,'衡水':115.7,'燕郊':116.8,'雄县':116.1,
+  // 山西省
+  '大同':113.3,'阳泉':113.6,'长治':113.1,'晋城':112.9,'朔州':112.4,'晋中':112.7,'运城':111.0,'忻州':112.7,'临汾':111.5,'吕梁':111.1,
+  // 内蒙古
+  '包头':109.8,'乌海':106.8,'赤峰':118.9,'通辽':122.3,'鄂尔多斯':109.8,'呼伦贝尔':119.8,'巴彦淖尔':107.4,'乌兰察布':113.1,'兴安盟':122.0,'锡林浩特':116.1,'阿拉善':105.7,
+  // 辽宁省
+  '鞍山':123.0,'抚顺':124.0,'本溪':123.8,'丹东':124.4,'锦州':121.1,'营口':122.2,'阜新':121.7,'辽阳':123.2,'盘锦':122.1,'铁岭':123.8,'朝阳':120.5,'葫芦岛':120.8,
+  // 吉林省
+  '吉林':126.5,'四平':124.4,'辽源':125.1,'通化':125.9,'白山':126.4,'松原':124.8,'白城':122.8,'延吉':129.5,'图们':129.8,'珲春':130.4,
+  // 黑龙江省
+  '齐齐哈尔':123.9,'鸡西':130.9,'鹤岗':130.3,'双鸭山':131.2,'大庆':125.0,'伊春':128.9,'佳木斯':130.3,'七台河':131.0,'牡丹江':129.6,'黑河':127.5,'绥化':127.0,'大兴安岭':124.1,
+  // 江苏省
+  '无锡':120.3,'徐州':117.2,'常州':119.9,'苏州':120.6,'南通':120.9,'连云港':119.2,'淮安':119.0,'盐城':120.2,'扬州':119.4,'镇江':119.4,'泰州':119.9,'宿迁':118.3,'昆山':121.0,'江阴':120.3,'宜兴':119.8,
+  // 浙江省
+  '温州':120.7,'嘉兴':120.8,'湖州':120.1,'绍兴':120.6,'金华':119.6,'衢州':118.9,'舟山':122.2,'台州':121.4,'丽水':119.9,'义乌':120.1,'慈溪':121.2,
+  // 安徽省
+  '芜湖':118.4,'蚌埠':117.4,'淮南':117.0,'马鞍山':118.5,'淮北':116.8,'铜陵':117.8,'安庆':117.1,'黄山':118.3,'滁州':118.3,'阜阳':115.8,'宿州':117.0,'六安':116.5,'亳州':115.8,'池州':117.5,'宣城':118.8,
+  // 福建省
+  '莆田':119.0,'三明':117.6,'泉州':118.6,'漳州':117.6,'南平':118.2,'龙岩':117.0,'宁德':119.5,'石狮':118.6,'晋江':118.6,
+  // 江西省
+  '景德镇':117.2,'萍乡':113.8,'九江':116.0,'新余':114.9,'鹰潭':117.0,'赣州':114.9,'吉安':115.0,'宜春':114.4,'抚州':116.4,'上饶':118.0,'井冈山':114.1,'瑞金':116.0,
+  // 山东省
+  '淄博':118.0,'枣庄':117.3,'东营':118.7,'烟台':121.4,'潍坊':119.1,'济宁':116.6,'泰安':117.1,'威海':122.1,'日照':119.5,'莱芜':117.7,'临沂':118.3,'德州':116.3,'聊城':116.0,'滨州':118.0,'菏泽':115.5,'曲阜':117.0,'蓬莱':120.8,
+  // 河南省
+  '开封':114.3,'洛阳':112.4,'平顶山':113.3,'安阳':114.4,'鹤壁':114.3,'新乡':113.9,'焦作':113.2,'濮阳':115.0,'许昌':113.8,'漯河':114.0,'三门峡':111.2,'南阳':112.5,'商丘':115.7,'信阳':114.1,'周口':114.6,'驻马店':114.0,'济源':112.6,
+  // 湖北省
+  '黄石':115.1,'十堰':110.8,'宜昌':111.3,'襄阳':112.1,'鄂州':114.9,'荆门':112.2,'孝感':113.9,'荆州':112.2,'黄冈':114.9,'咸宁':114.3,'随州':113.4,'恩施':109.5,'仙桃':113.4,'潜江':112.9,'天门':113.2,'神农架':110.7,
+  // 湖南省
+  '株洲':113.1,'湘潭':112.9,'衡阳':112.6,'邵阳':111.5,'岳阳':113.1,'常德':111.7,'张家界':110.5,'益阳':112.4,'郴州':113.0,'永州':111.6,'怀化':110.0,'娄底':112.0,'湘西':109.7,'浏阳':113.6,'韶山':112.5,'凤凰':109.6,
+  // 广东省
+  '韶关':113.6,'珠海':113.6,'汕头':116.7,'佛山':113.1,'江门':113.1,'湛江':110.4,'茂名':110.9,'肇庆':112.5,'惠州':114.4,'梅州':116.1,'汕尾':115.4,'河源':114.7,'阳江':111.9,'清远':113.1,'东莞':113.8,'中山':113.4,'潮州':116.6,'揭阳':116.4,'云浮':112.0,
+  // 广西
+  '柳州':109.4,'桂林':110.3,'梧州':111.3,'北海':109.1,'防城港':108.3,'钦州':108.6,'贵港':109.6,'玉林':110.2,'百色':106.6,'贺州':111.6,'河池':108.1,'来宾':109.2,'崇左':107.4,'阳朔':110.5,
+  // 海南省
+  '三亚':109.5,'三沙':112.3,'儋州':109.6,'琼海':110.5,'文昌':110.8,'万宁':110.4,'东方':108.7,'五指山':109.5,'陵水':110.0,'博鳌':110.6,
+  // 四川省
+  '自贡':104.8,'攀枝花':101.7,'泸州':105.4,'德阳':104.4,'绵阳':104.7,'广元':105.8,'遂宁':105.6,'内江':105.1,'乐山':103.8,'南充':106.1,'眉山':103.9,'宜宾':104.6,'广安':106.6,'达州':107.5,'雅安':103.0,'巴中':106.8,'资阳':104.6,'阿坝':102.2,'甘孜':101.9,'凉山':102.3,'西昌':102.3,'峨眉山':103.5,'都江堰':103.6,'九寨沟':104.2,
+  // 贵州省
+  '六盘水':104.8,'遵义':106.9,'安顺':105.9,'毕节':105.3,'铜仁':109.2,'黔西南':104.9,'黔东南':107.9,'黔南':107.5,'仁怀':106.4,'凯里':107.9,
+  // 云南省
+  '曲靖':103.8,'玉溪':102.5,'保山':99.2,'昭通':103.7,'丽江':100.2,'普洱':100.9,'临沧':100.1,'楚雄':101.5,'红河':103.3,'文山':104.2,'西双版纳':100.8,'大理':100.2,'德宏':98.6,'怒江':98.9,'迪庆':99.7,'香格里拉':99.7,'瑞丽':97.8,'腾冲':98.5,
+  // 西藏
+  '昌都':97.2,'山南':91.8,'日喀则':88.9,'那曲':92.1,'阿里':80.1,'林芝':94.3,
+  // 陕西省
+  '铜川':109.1,'宝鸡':107.2,'咸阳':108.7,'渭南':109.5,'延安':109.5,'汉中':107.0,'榆林':109.7,'安康':109.0,'商洛':109.9,'杨凌':108.1,
+  // 甘肃省
+  '嘉峪关':98.3,'金昌':102.2,'白银':104.1,'天水':105.7,'武威':102.6,'张掖':100.4,'平凉':106.7,'酒泉':98.5,'庆阳':107.6,'定西':104.6,'陇南':104.9,'临夏':103.2,'甘南':102.9,'敦煌':94.7,
+  // 青海省
+  '海东':102.1,'海北':100.9,'黄南':102.0,'海南州':100.6,'果洛':100.2,'玉树':97.0,'海西':97.4,'格尔木':94.9,'德令哈':97.4,
+  // 宁夏
+  '石嘴山':106.4,'吴忠':106.2,'固原':106.3,'中卫':105.2,
+  // 新疆
+  '克拉玛依':84.9,'吐鲁番':89.2,'哈密':93.5,'昌吉':87.3,'博尔塔拉':82.1,'巴音郭楞':86.1,'阿克苏':80.3,'克孜勒苏':76.1,'喀什':75.9,'和田':79.9,'伊犁':81.3,'塔城':82.9,'阿勒泰':88.1,'石河子':86.0,
+  // 港澳台
+  '香港':114.2,'九龙':114.2,'新界':114.1,'离岛':113.9,'澳门':113.5,'氹仔':113.6,'台北':121.5,'新北':121.5,'桃园':121.3,'台中':120.7,'台南':120.2,'高雄':120.3,'基隆':121.7,'新竹':121.0,'嘉义':120.4,'宜兰':121.8,'花莲':121.6,'台东':121.1,'澎湖':119.6,'金门':118.3,'马祖':119.9
+};
+
+// Build city index array for search
+const cityIndex = [];
+for(const [name, lng] of Object.entries(CITY_LNG)){
+  cityIndex.push({name, lng});
+}
+cityIndex.sort((a,b)=>a.name.localeCompare(b.name,'zh'));
+
+// ============================================================
+// TRUE SOLAR TIME
+// ============================================================
+const DIZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const SHICHEN_RANGES = [
+  '23:00-01:00','01:00-03:00','03:00-05:00','05:00-07:00',
+  '07:00-09:00','09:00-11:00','11:00-13:00','13:00-15:00',
+  '15:00-17:00','17:00-19:00','19:00-21:00','21:00-23:00'
+];
+
+function calcTrueSolarOffset(lng){
+  // offset = (120 - longitude) * 4 minutes
+  return (120 - lng) * 4;
+}
+
+function calcTrueSolarTime(hour, minute, lng){
+  const offsetMin = calcTrueSolarOffset(lng);
+  let totalMin = hour * 60 + minute + offsetMin;
+  // Clamp to 0-1439
+  totalMin = ((totalMin % 1440) + 1440) % 1440;
+  const solarHour = Math.floor(totalMin / 60);
+  return solarHour;
+}
+
+function hourToShichen(hour){
+  if(hour === 23 || hour === 0) return 0;
+  return Math.ceil(hour / 2);
+}
+
+function formatShichen(hour){
+  const idx = hourToShichen(hour);
+  return DIZHI[idx] + '时（' + SHICHEN_RANGES[idx] + '）';
+}
+
+// ============================================================
+// DOM REFS
+// ============================================================
+const $ = id => document.getElementById(id);
+
+// ============================================================
+// INITIALIZE SELECTS
+// ============================================================
+(function initSelects(){
+  // Year: 1900 - 2026
+  const yearOpts = '<option value="">年</option>';
+  for(let y = 2026; y >= 1900; y--){
+    // Rebuild each time for clarity
+  }
+  ['yearA','yearB'].forEach(id=>{
+    let html = '<option value="">年</option>';
+    for(let y = 2026; y >= 1900; y--){
+      html += '<option value="'+y+'">'+y+'</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Month: 1-12
+  ['monthA','monthB'].forEach(id=>{
+    let html = '<option value="">月</option>';
+    for(let m = 1; m <= 12; m++){
+      html += '<option value="'+m+'">'+m+'月</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Day: 1-31
+  ['dayA','dayB'].forEach(id=>{
+    let html = '<option value="">日</option>';
+    for(let d = 1; d <= 31; d++){
+      html += '<option value="'+d+'">'+d+'</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Hour: 0-23
+  ['hourA','hourB'].forEach(id=>{
+    let html = '<option value="">时</option>';
+    for(let h = 0; h <= 23; h++){
+      html += '<option value="'+h+'">'+h+'时</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Minute: 0-59
+  ['minuteA','minuteB'].forEach(id=>{
+    let html = '<option value="">分</option>';
+    for(let m = 0; m <= 59; m++){
+      html += '<option value="'+m+'">'+m+'分</option>';
+    }
+    $(id).innerHTML = html;
+  });
+})();
+
+// ============================================================
+// HAMBURGER MENU
+// ============================================================
+const hamburgerBtn = $('hamburgerBtn');
+const mobileMenu = $('mobileMenu');
+
+hamburgerBtn.addEventListener('click',()=>{
+  const isOpen = hamburgerBtn.classList.toggle('open');
+  mobileMenu.classList.toggle('open', isOpen);
+});
+
+// Close mobile menu on link click
+mobileMenu.querySelectorAll('a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    hamburgerBtn.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  });
+});
+
+// ============================================================
+// CALENDAR TOGGLE
+// ============================================================
+document.querySelectorAll('.calendar-toggle').forEach(toggle=>{
+  toggle.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    // Toggle active
+    toggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    // Note: lunar conversion not implemented, just UI
+  });
+});
+
+// ============================================================
+// GENDER TOGGLE
+// ============================================================
+['genderToggleA','genderToggleB'].forEach(id=>{
+  const toggle = $(id);
+  toggle.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    toggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+function getGender(person){
+  const toggle = $('genderToggle' + person);
+  const active = toggle.querySelector('button.active');
+  return active ? active.dataset.gender : (person === 'A' ? 'male' : 'female');
+}
+
+// ============================================================
+// LOCATION PICKER
+// ============================================================
+// State per person
+const locState = {
+  A: { city: null, lng: null },
+  B: { city: null, lng: null }
+};
+
+['A','B'].forEach(person => {
+  const locBtn = $('locBtn'+person);
+  const locSearch = $('locSearch'+person);
+  const locDropdown = $('locDropdown'+person);
+  const locLabel = $('locLabel'+person);
+  const locArrow = $('locArrow'+person);
+
+  // Toggle search input
+  locBtn.addEventListener('click',()=>{
+    const isOpen = locSearch.classList.toggle('visible');
+    locArrow.classList.toggle('open', isOpen);
+    if(isOpen){
+      locSearch.focus();
+      // Show all cities by default
+      renderDropdown(person, '');
+    } else {
+      locDropdown.classList.remove('visible');
+    }
+  });
+
+  // Search input
+  locSearch.addEventListener('input',()=>{
+    const query = locSearch.value.trim();
+    renderDropdown(person, query);
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click',(e)=>{
+    const wrapper = $('locWrapper'+person);
+    if(!wrapper.contains(e.target)){
+      locSearch.classList.remove('visible');
+      locDropdown.classList.remove('visible');
+      locArrow.classList.remove('open');
+    }
+  });
+});
+
+function renderDropdown(person, query){
+  const dropdown = $('locDropdown'+person);
+  let filtered = cityIndex;
+  if(query){
+    const q = query.toLowerCase();
+    filtered = cityIndex.filter(c => c.name.includes(q));
+  }
+
+  if(filtered.length === 0){
+    dropdown.innerHTML = '<div class="location-dropdown-item" style="color:#999">未找到匹配城市</div>';
+  } else {
+    dropdown.innerHTML = filtered.slice(0, 30).map(c =>
+      '<div class="location-dropdown-item" data-name="'+c.name+'" data-lng="'+c.lng+'">'+
+      '<span class="city-name">'+c.name+'</span>'+
+      '<span class="city-lng">'+c.lng+'°E</span>'+
+      '</div>'
+    ).join('');
+
+    dropdown.querySelectorAll('.location-dropdown-item[data-name]').forEach(item=>{
+      item.addEventListener('click',()=>{
+        const name = item.dataset.name;
+        const lng = parseFloat(item.dataset.lng);
+        selectCity(person, name, lng);
+      });
+    });
+  }
+  dropdown.classList.add('visible');
+}
+
+function selectCity(person, name, lng){
+  locState[person] = { city: name, lng: lng };
+  $('locLabel'+person).textContent = name;
+  $('locSearch'+person).classList.remove('visible');
+  $('locDropdown'+person).classList.remove('visible');
+  $('locArrow'+person).classList.remove('open');
+  updateTrueSolar(person);
+}
+
+function updateTrueSolar(person){
+  const state = locState[person];
+  const hourEl = $('hour'+person);
+  const solarText = $('solarText'+person);
+
+  if(!state.lng || !hourEl.value){
+    solarText.textContent = '真太阳时 → 选择地点和时间后显示';
+    return;
+  }
+
+  const hour = parseInt(hourEl.value);
+  if(isNaN(hour)){
+    solarText.textContent = '真太阳时 → 请先选择出生时间';
+    return;
+  }
+
+  const minute = parseInt($('minute'+person).value) || 0;
+  const solarHour = calcTrueSolarTime(hour, minute, state.lng);
+  const shichen = formatShichen(solarHour);
+
+  solarText.textContent = '真太阳时 → ' + shichen;
+}
+
+// Update true solar when hour/minute changes
+['hourA','minuteA','hourB','minuteB'].forEach(id=>{
+  $(id).addEventListener('change',()=>{
+    const person = id.includes('A') ? 'A' : 'B';
+    updateTrueSolar(person);
+  });
+});
+
+// ============================================================
+// UNKNOWN TIME CHECKBOX
+// ============================================================
+['unknownA','unknownB'].forEach(id=>{
+  $(id).addEventListener('change',function(){
+    const person = id.includes('A') ? 'A' : 'B';
+    const hourEl = $('hour'+person);
+    const minuteEl = $('minute'+person);
+    if(this.checked){
+      hourEl.value = '12';
+      minuteEl.value = '0';
+      hourEl.disabled = true;
+      minuteEl.disabled = true;
+    } else {
+      hourEl.disabled = false;
+      minuteEl.disabled = false;
+    }
+  });
+});
+
+// ============================================================
+// VALIDATE FORM
+// ============================================================
+function validatePerson(person){
+  const errors = [];
+  const year = parseInt($('year'+person).value);
+  const month = parseInt($('month'+person).value);
+  const day = parseInt($('day'+person).value);
+  const hour = parseInt($('hour'+person).value);
+  const minute = parseInt($('minute'+person).value);
+
+  if(isNaN(year)) errors.push('出生年份');
+  if(isNaN(month)) errors.push('出生月份');
+  if(isNaN(day)) errors.push('出生日期');
+  if(isNaN(hour)) errors.push('出生小时');
+  if(isNaN(minute)) errors.push('出生分钟');
+
+  return { valid: errors.length === 0, errors };
+}
+
+// ============================================================
+// ============================================================
+// CLIENT-SIDE ENGINE CALLS (no API needed)
+// ============================================================
+
+/** Wrap engine chart output into format renderChartCard expects */
+function chartToRenderFormat(raw){
+  return {
+    palaces: raw.palaces,
+    info: {
+      mingZhu: raw.mingPalace ? raw.mingPalace.name : '',
+      shenZhu: raw.bodyPalace ? raw.bodyPalace.name : '',
+      wuxingJu: raw.fiveElementsClass || ''
+    },
+    birth: { gender: raw.gender }
+  };
+}
+
+/** Build renderAnalysis-friendly hepan result from engine output */
+function hepanToRenderFormat(mhp){
+  const c = mhp.compat;
+  const breakdown = {};
+  const overviewParts = [];
+  const strengths = [];
+  const challenges = [];
+
+  const dimNames = {
+    palace_alignment: '宫位对齐',
+    star_harmony: '星曜和谐',
+    mutagen_interaction: '四化感应',
+    zodiac: '生肖入宫',
+    life_rhythm: '人生节奏'
+  };
+
+  for(const d of c.dimensions){
+    const label = dimNames[d.id] || d.id;
+    const pct = d.max > 0 ? Math.round((d.score / d.max) * 100) : 0;
+    breakdown[label] = { score: pct, label: label, raw: d.score.toFixed(1), max: d.max };
+
+    if(d.reason_summary && d.reason_summary.display_text){
+      overviewParts.push('【'+label+'】'+d.reason_summary.display_text);
+    }
+    if(d.score >= d.max * 0.7){ strengths.push(label + '非常契合（'+pct+'分）'); }
+    else if(d.score < 0){ challenges.push(label + '存在较大冲突'); }
+  }
+
+  const overview = overviewParts.join('\n\n');
+  return {
+    data: {
+      total_score: c.score,
+      breakdown: breakdown,
+      overview: overview,
+      strengths: strengths.length ? strengths : ['各方面表现均衡'],
+      challenges: challenges.length ? challenges : ['需日常磨合，互相理解包容']
+    }
+  };
+}
+
+function fetchChart(person){
+  if(!window.Ziwei||!window.Ziwei.computeChart){ throw new Error('引擎未加载完成，请刷新后重试'); }
+  const year = parseInt($('year'+person).value);
+  const month = parseInt($('month'+person).value);
+  const day = parseInt($('day'+person).value);
+  const hour = parseInt($('hour'+person).value);
+  const minute = parseInt($('minute'+person).value) || 0;
+  const gender = getGender(person);
+  const state = locState[person];
+  const lng = state && state.lng ? state.lng : 120;
+
+  const raw = window.Ziwei.computeChart(year, month, day, hour, minute, gender, lng);
+  return chartToRenderFormat(raw);
+}
+
+function fetchHepan(){
+  if(!window.Ziwei||!window.Ziwei.computeHepan){ throw new Error('引擎未加载完成，请刷新后重试'); }
+  const ya = parseInt($('yearA').value), ma = parseInt($('monthA').value), da = parseInt($('dayA').value);
+  const ha = parseInt($('hourA').value), mia = parseInt($('minuteA').value) || 0;
+  const ga = getGender('A');
+  const lna = (locState['A'] && locState['A'].lng) ? locState['A'].lng : 120;
+
+  const yb = parseInt($('yearB').value), mb = parseInt($('monthB').value), db = parseInt($('dayB').value);
+  const hb = parseInt($('hourB').value), mib = parseInt($('minuteB').value) || 0;
+  const gb = getGender('B');
+  const lnb = (locState['B'] && locState['B'].lng) ? locState['B'].lng : 120;
+
+  const hepan = window.Ziwei.computeHepan(ya, ma, da, ha, mia, ga, lna, yb, mb, db, hb, mib, gb, lnb);
+  return {
+    hepanResult: hepanToRenderFormat(hepan),
+    chartA: chartToRenderFormat(hepan.chartA),
+    chartB: chartToRenderFormat(hepan.chartB)
+  };
+}
+
+// ============================================================
+// RENDER RESULTS
+// ============================================================
+function renderScore(score){
+  let color, grade, comment;
+  if(score >= 90){ color = '#059669'; grade = '天作之合'; comment = '命理契合度极高，是难得的良缘'; }
+  else if(score >= 80){ color = '#2563eb'; grade = '佳偶天成'; comment = '缘分深厚，有很高的契合度'; }
+  else if(score >= 70){ color = '#7c3aed'; grade = '良缘可期'; comment = '整体契合，值得珍惜'; }
+  else if(score >= 60){ color = '#d97706'; grade = '一般缘份'; comment = '有缘但需经营，互相理解很重要'; }
+  else if(score >= 50){ color = '#dc2626'; grade = '缘浅情疏'; comment = '契合度较低，需更多包容'; }
+  else { color = '#991b1b'; grade = '多有不顺'; comment = '命理上不太契合，慎重考虑'; }
+
+  $('scoreCard').innerHTML = `
+    <div class="score-number" style="color:${color}">${score}</div>
+    <div class="score-grade" style="color:${color}">${grade}</div>
+    <div class="score-label">${comment}</div>
+  `;
+}
+
+function renderChartCard(personName, charName, chartData){
+  if(!chartData || !chartData.palaces){
+    return '<div class="chart-card"><div class="chart-card-header">'+personName+'<br><span class="chart-name">'+charName+'</span></div><p style="text-align:center;color:#999;padding:20px">命盘数据暂无</p></div>';
+  }
+
+  const palaces = chartData.palaces;
+  const info = chartData.info || {};
+  const birth = chartData.birth || {};
+
+  const mingZhu = info.mingZhu || '';
+  const shenZhu = info.shenZhu || '';
+
+  function palaceHtml(p){
+    const starsHtml = (p.stars || []).map(s => {
+      let cls = 'star-minor';
+      if(s.type === 'major') cls = 'star-major';
+      else if(s.siHua) cls = 'star-lucky';
+      return '<span class="'+cls+'">'+s.name+(s.siHua?'['+s.siHua+']':'')+'</span>';
+    }).join(' ');
+
+    let extraClass = '';
+    let badge = '';
+    if(mingZhu === p.name){ extraClass = ' ming'; badge = '<span class="palace-badge badge-ming">命</span>'; }
+    else if(shenZhu === p.name){ extraClass = ' shen'; badge = '<span class="palace-badge badge-shen">身</span>'; }
+
+    return '<div class="palace-cell'+extraClass+'">'+
+      badge+
+      '<div class="palace-name">'+p.name+'</div>'+
+      '<div class="star-entry">'+starsHtml+'</div>'+
+      '</div>';
+  }
+
+  return '<div class="chart-card">'+
+    '<div class="chart-card-header">'+personName+
+    '<br><span class="chart-name">'+charName+
+    ' · '+birth.gender+' · '+(info.wuxingJu||'')+
+    '</span></div>'+
+    '<div class="palace-grid">'+palaces.map(palaceHtml).join('')+'</div>'+
+    '</div>';
+}
+
+function renderAnalysis(result){
+  if(!result || !result.data){
+    return '<p style="color:#999;text-align:center">暂无分析数据</p>';
+  }
+
+  const d = result.data;
+  const totalScore = d.total_score || d.totalScore || d.score || 0;
+  const breakdown = d.breakdown || d.sub_scores || d.dimensions || {};
+
+  let html = '<div class="analysis-title">合盘分析详情</div>';
+
+  // Dimension scores
+  if(Object.keys(breakdown).length > 0){
+    html += '<div class="analysis-section"><h4>维度得分</h4>';
+    for(const [key, val] of Object.entries(breakdown)){
+      const score = typeof val === 'object' ? (val.score || val.value || 0) : val;
+      const label = typeof val === 'object' ? (val.label || val.name || key) : key;
+      const dotColor = score >= 80 ? '#059669' : score >= 60 ? '#2563eb' : score >= 40 ? '#d97706' : '#dc2626';
+      html += '<div class="analysis-item">'+
+        '<span class="score-dot" style="background:'+dotColor+'"></span>'+
+        '<span style="flex:1">'+label+'</span>'+
+        '<span style="font-weight:700">'+score+'分</span>'+
+        '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Overview text
+  const overview = d.overview || d.summary || d.description || d.overall_text || '';
+  if(overview){
+    html += '<div class="analysis-section"><h4>综合解读</h4><p>'+overview+'</p></div>';
+  }
+
+  // Strengths
+  const strengths = d.strengths || d.pros || d.highlights || [];
+  if(strengths.length > 0){
+    html += '<div class="analysis-section"><h4>优势亮点</h4>';
+    strengths.forEach(s => {
+      html += '<p style="margin-bottom:8px">✦ '+s+'</p>';
+    });
+    html += '</div>';
+  }
+
+  // Challenges
+  const challenges = d.challenges || d.cons || d.warnings || [];
+  if(challenges.length > 0){
+    html += '<div class="analysis-section"><h4>需注意的方面</h4>';
+    challenges.forEach(c => {
+      html += '<p style="margin-bottom:8px;color:#dc2626">⚠ '+c+'</p>';
+    });
+    html += '</div>';
+  }
+
+  // Raw detail if nothing else
+  if(!overview && Object.keys(breakdown).length === 0){
+    html += '<div class="analysis-section"><h4>原始结果</h4>'+
+      '<pre style="font-size:12px;white-space:pre-wrap;background:#f8f8f8;padding:16px;border-radius:8px;max-height:400px;overflow-y:auto">'+
+      JSON.stringify(d, null, 2)+'</pre></div>';
+  }
+
+  return html;
+}
+
+async function doHepan(){
+  if(typeof window.Ziwei==="undefined"||!window.Ziwei.computeHepan){
+    showStatus('引擎未加载，请刷新页面重试（Ctrl+Shift+R）','error');
+    return;
+  }
+  const submitBtn = $('hepanSubmit');
+  const statusEl = $('hepanStatus');
+
+  // Validate
+  const va = validatePerson('A');
+  const vb = validatePerson('B');
+
+  if(!va.valid || !vb.valid){
+    const missing = [...(va.valid?[]:['甲方：'+va.errors.join('、')]), ...(vb.valid?[]:['乙方：'+vb.errors.join('、')])];
+    showStatus('请完善以下信息：'+missing.join('；'), 'error');
+    return;
+  }
+
+  // Loading state
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+  showStatus('正在排盘并分析合盘...', 'loading');
+  $('resultsSection').classList.remove('visible');
+
+  try {
+    // Compute everything client-side (charts + hepan in one shot)
+    const result = fetchHepan();
+    const chartA = result.chartA;
+    const chartB = result.chartB;
+    const hepanResult = result.hepanResult;
+
+    // Render results
+    const nameA = $('nameA').value.trim() || '甲方';
+    const nameB = $('nameB').value.trim() || '乙方';
+
+    // Score
+    const score = hepanResult.data?.total_score || hepanResult.data?.totalScore || hepanResult.data?.score || 0;
+    renderScore(score);
+
+    // Charts
+    $('chartDualSection').innerHTML =
+      renderChartCard(nameA, chartA.birth ? chartA.birth.gender+' · '+(chartA.info?.wuxingJu||'') : '甲方命盘', chartA) +
+      renderChartCard(nameB, chartB.birth ? chartB.birth.gender+' · '+(chartB.info?.wuxingJu||'') : '乙方命盘', chartB);
+
+    // Analysis
+    $('analysisCard').innerHTML = renderAnalysis(hepanResult);
+
+    // Show results
+    $('resultsSection').classList.add('visible');
+    showStatus('', '');
+    $('resultsSection').scrollIntoView({behavior:'smooth', block:'start'});
+
+  } catch(err){
+    showStatus('合盘分析失败：'+err.message, 'error');
+    console.error(err);
+  } finally {
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+  }
+}
+
+function showStatus(msg, type){
+  const el = $('hepanStatus');
+  el.textContent = msg;
+  el.className = 'hepan-status';
+  if(msg){
+    el.classList.add(type, 'visible');
+  }
+}
+
+// ============================================================
+// EVENT BINDINGS
+// ============================================================
+$('hepanSubmit').addEventListener('click', doHepan);
+
+// Keyboard: Enter submits
+document.addEventListener('keydown',(e)=>{
+  if(e.key === 'Enter' && e.target.tagName === 'INPUT'){
+    // Don't submit on location search
+    if(e.target.id.startsWith('locSearch')) return;
+    e.preventDefault();
+    doHepan();
+  }
+});
+
+// ============================================================
+// INIT: Pre-select Beijing as default location
+// ============================================================
+setTimeout(()=>{
+  selectCity('A', '北京', 116.4);
+  selectCity('B', '上海', 121.5);
+}, 100);
+
+console.log('Metis 紫微合盘 · HEMING 已就绪');
+console.log('Engine: client-side Ziwei engine (no server needed)');
+console.log('城市数据库已加载 ' + cityIndex.length + ' 个城市');
+
+})();
+
+
+})();
+</script>
+
+<script>
+window.switchTab = function(tab){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+};
+</script>
+
+</body>
+</html>
