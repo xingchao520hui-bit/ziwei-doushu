@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ziwei-doushu-api
+    env: node
+    buildCommand: npm install
+    startCommand: node chart-server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3211"

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>紫微斗数 · 排盘合盘</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#fafaf9;color:#1d1d1f;min-height:100vh}
+.header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:clamp(14px,2vw,24px) clamp(16px,3vw,32px);background:rgba(250,250,249,0.85);backdrop-filter:blur(20px)}
+.logo{font-size:clamp(24px,3vw,38px);font-weight:900;letter-spacing:-0.02em;text-decoration:none;color:#1d1d1f}
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:clamp(120px,20vh,180px) 24px 60px}
+.hero h1{font-size:clamp(40px,8vw,72px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px}
+.hero p{font-size:clamp(15px,2vw,18px);color:#6e6e73;max-width:500px;line-height:1.6}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1100px;margin:0 auto;padding:0 24px 80px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.8) 100%);border:0.5px solid rgba(0,0,0,0.12);border-radius:20px;padding:clamp(24px,4vw,36px);backdrop-filter:blur(28px);box-shadow:0 4px 24px rgba(0,0,0,0.04);transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;color:#1d1d1f;display:block}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,0.08)}
+.card .num{font-size:12px;letter-spacing:0.3em;color:#b0b0b0;margin-bottom:12px;text-transform:uppercase}
+.card h2{font-size:clamp(20px,3vw,26px);font-weight:600;letter-spacing:-0.02em;margin-bottom:8px}
+.card p{font-size:14px;color:#6e6e73;line-height:1.6}
+.card .tag{display:inline-block;margin-top:14px;padding:4px 12px;background:rgba(0,0,0,0.06);border-radius:12px;font-size:12px;color:#6e6e73}
+footer{text-align:center;padding:24px;border-top:1px solid #f0f0f0;font-size:12px;color:#9b9b9b}
+footer a{color:#6b6b6b;text-decoration:none}
+@media(max-width:680px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <a href="/" class="logo">紫微斗数</a>
+</header>
+
+<section class="hero">
+  <h1>紫微斗数</h1>
+  <p>基于iztro排盘引擎 · 14主星 · 12宫位 · 专业命盘解读 · 合盘缘分分析</p>
+</section>
+
+<div class="cards">
+  <a href="/ziwei-hepan-metis.html" class="card">
+    <div class="num">01</div>
+    <h2>紫微合盘</h2>
+    <p>双人缘分深度分析 · 毛玻璃极简设计 · 真太阳时校正 · 四维度评分</p>
+    <span class="tag">✨ 推荐</span>
+  </a>
+  <a href="/ziwei-app.html" class="card">
+    <div class="num">02</div>
+    <h2>专业命盘</h2>
+    <p>完整十二宫解读 · 三方四正 · 大限流年 · 格局分析 · 断前事</p>
+    <span class="tag">📖 深度</span>
+  </a>
+  <a href="/ziwei-fun.html" class="card">
+    <div class="num">03</div>
+    <h2>吃瓜版</h2>
+    <p>大白话解读 · 趣味指数 · 轻松看盘 · 适合命理入门</p>
+    <span class="tag">🍉 轻松</span>
+  </a>
+  <a href="/ziwei-hepan-romantic.html" class="card">
+    <div class="num">04</div>
+    <h2>浪漫合盘</h2>
+    <p>粉色浪漫风格 · 缘分匹配 · 星曜互动 · 关系走向</p>
+    <span class="tag">💕 浪漫</span>
+  </a>
+</div>
+
+<footer>
+  <p>基于传统文化研究，仅供学习参考</p>
+  <p style="margin-top:4px">© 2026 · Powered by <a href="https://github.com/xingchao520hui-bit/ziwei-doushu">iztro</a></p>
+</footer>
+</body>
+</html>
