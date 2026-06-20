@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <title>紫微斗数 · Metis</title>
 <style>
-/* ===== METIS DESIGN ===== */
+/* ===== METIS DESIGN SYSTEM ===== */
 
 /* ===== CSS Reset & Base ===== */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -697,116 +697,22 @@ body{
 .tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--accent);border-radius:1px}
 .tab-panel{display:none}.tab-panel.active{display:block}
 
-/* ===== SINGLE CHART AREA (app dark theme) ===== */
-.single-chart-area{font-family:'Microsoft YaHei','SimSun',serif}
-
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Microsoft YaHei','SimSun',serif;background:linear-gradient(to bottom,#1a0a0a,#0a0a1a);color:#e8dcc8;line-height:1.8;padding:20px}
-.container{max-width:1200px;margin:0 auto}
-.header{text-align:center;padding:40px 20px;border-bottom:3px double #c8a96e;margin-bottom:40px;background:rgba(0,0,0,.3)}
-.header h1{color:#c8a96e;font-size:42px;margin-bottom:10px;text-shadow:2px 2px 4px rgba(0,0,0,.5)}
-.header .subtitle{color:#8a7a5a;font-size:16px;font-style:italic}
-
-/* input */
-.input-card{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
-.input-card h2{color:#c8a96e;margin-bottom:18px;font-size:20px;text-align:center}
-.form-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:flex-end}
-.form-group{display:flex;flex-direction:column;min-width:100px}
-.form-group label{color:#8a7a5a;font-size:12px;margin-bottom:4px}
-.form-group input,.form-group select{padding:10px 12px;background:rgba(0,0,0,.5);border:1px solid #2a2a4a;color:#e8dcc8;border-radius:5px;font-size:14px;font-family:inherit}
-.form-group input:focus,.form-group select:focus{outline:none;border-color:#c8a96e}
-.btn-submit{padding:10px 30px;background:linear-gradient(135deg,#c8a96e,#b8963e);color:#1a0a0a;border:none;border-radius:5px;font-size:15px;font-weight:bold;cursor:pointer;letter-spacing:2px;transition:.3s;white-space:nowrap}
-.btn-submit:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(200,169,110,.3)}
-.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.btn-geocode{padding:10px 12px;background:rgba(200,169,110,.15);border:1px solid #c8a96e;color:#c8a96e;border-radius:5px;font-size:14px;cursor:pointer;transition:.3s;white-space:nowrap}
-.btn-geocode:hover{background:rgba(200,169,110,.3)}
-.geocode-msg{text-align:center;color:#8a7a5a;font-size:11px;margin-top:6px;display:none}
-.geocode-msg.show{display:block}
-.status{text-align:center;margin-bottom:20px;display:none;padding:10px}
-.status.show{display:block}.status.error{color:#dc3545}.status.loading{color:#c8a96e}
-
-/* result */
-.result-area{display:none}.result-area.show{display:block}
-
-.intro-section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px;border-left:4px solid #c8a96e}
-.intro-section h2{color:#c8a96e;margin-bottom:15px;font-size:24px}
-.intro-section p{color:#e8dcc8;margin-bottom:10px;text-indent:2em}
-.intro-section .info-row{display:flex;flex-wrap:wrap;gap:8px 24px}
-.intro-section .info-row span{font-size:14px}
-.intro-section .info-row strong{color:#c8a96e}
-
-.chart-section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
-.chart-title{color:#c8a96e;font-size:20px;margin-bottom:20px;text-align:center;border-bottom:1px solid #2a2a4a;padding-bottom:10px}
-.palace-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#2a2a4a;border:2px solid #c8a96e;margin-bottom:20px}
-.palace{background:rgba(26,26,58,.9);padding:10px;min-height:100px;border:1px solid #3a3a5a;position:relative}
-.palace.ming{background:rgba(42,26,42,.9);border-color:#c8a96e}
-.palace.shen{background:rgba(42,26,42,.9);border-color:#9b2335}
-.palace-name{font-size:11px;color:#8a7a5a;margin-bottom:5px}
-.palace-badge{position:absolute;top:5px;right:5px;font-size:10px;padding:1px 5px;border-radius:3px}
-.badge-ming{background:#c8a96e;color:#1a0a0a}.badge-shen{background:#9b2335;color:#fff}
-.star-list{font-size:10px;line-height:1.4}.star-main{color:#c8a96e;font-weight:bold}
-.star-lucky{color:#5cb85c}.star-evil{color:#d9534f}.star-minor{color:#888}
-
-.analysis-section{background:rgba(18,18,42,.8);padding:30px;border:1px solid #2a2a4a;margin-bottom:30px}
-.analysis-title{color:#c8a96e;font-size:18px;margin-bottom:15px;border-bottom:1px solid #2a2a4a;padding-bottom:10px}
-.analysis-content{color:#e8dcc8}
-.analysis-content h3{color:#c8a96e;margin-top:20px;margin-bottom:10px;font-size:16px}
-.analysis-content h4{color:#a0522d;margin-top:15px;margin-bottom:8px;font-size:14px}
-.analysis-content p{margin-bottom:10px;text-indent:2em}
-.analysis-content ul{margin-left:20px;margin-bottom:10px}
-.analysis-content li{margin-bottom:5px}
-.highlight{color:#c8a96e;font-weight:bold}
-.warning{background:rgba(220,53,69,.1);border:1px solid #dc3545;padding:15px;margin:15px 0;border-radius:5px}
-.warning h4{color:#dc3545}.warning p{text-indent:0}
-.suggestion{background:rgba(40,167,69,.1);border:1px solid #28a745;padding:15px;margin:15px 0;border-radius:5px}
-.suggestion h4{color:#28a745}.suggestion p{text-indent:0}
-
-.daxian-table{width:100%;border-collapse:collapse;margin:15px 0;font-size:13px}
-.daxian-table th{background:rgba(200,169,110,.15);color:#c8a96e;padding:8px 10px;text-align:left;border:1px solid #2a2a4a}
-.daxian-table td{padding:8px 10px;border:1px solid #2a2a4a;color:#e8dcc8}
-.daxian-table tr.now{background:rgba(155,35,53,.15)}.daxian-table tr.now td{color:#f88}
-
-.footer{text-align:center;padding:30px;border-top:2px solid #c8a96e;color:#8a7a5a;font-size:14px}
-
-@media(max-width:768px){.palace-grid{grid-template-columns:repeat(2,1fr)}.header h1{font-size:28px}.palace{min-height:75px}}
-
-
-/* ===== HEPAN LIGHT THEME ===== */
-.hepan-area .heming-dual-form{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
-@media(max-width:680px){.hepan-area .heming-dual-form{grid-template-columns:1fr}}
-.hepan-area .heming-person-card{background:var(--card-bg);border:var(--card-border);border-radius:16px;padding:24px;backdrop-filter:blur(28px) saturate(190%);-webkit-backdrop-filter:blur(28px) saturate(190%);box-shadow:var(--card-shadow)}
-.hepan-area .person-label{font-size:13px;font-weight:700;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:20px;text-align:center}
-.hepan-area .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
-.hepan-area .form-field{display:flex;flex-direction:column;gap:4px}
-.hepan-area .form-field label{font-size:12px;font-weight:600;letter-spacing:0.05em;color:var(--text-muted)}
-.hepan-area .form-field input,.hepan-area .form-field select{padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;color:var(--text);transition:border-color .2s}
-.hepan-area .form-field input:focus,.hepan-area .form-field select:focus{outline:none;border-color:var(--accent)}
-.hepan-area .inline-row{display:flex;gap:6px}
-.hepan-area .inline-row input{flex:1}
-.hepan-area .inline-row button{padding:10px;border:1px solid #ddd;border-radius:8px;background:var(--input-bg);cursor:pointer;font-size:14px;white-space:nowrap;transition:all .2s}
-.hepan-area .inline-row button:hover{border-color:var(--accent);color:var(--accent)}
-.hepan-area .btn-hepan-action{display:block;width:100%;max-width:300px;margin:28px auto 0;padding:16px;background:#000;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:0.15em;transition:all .3s}
-.hepan-area .btn-hepan-action:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,0,0,.25)}
-.hepan-area .btn-hepan-action:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.hepan-area .ts-info{text-align:center;font-size:12px;color:var(--text-light);margin-top:8px}
-.hepan-area .result-card{background:var(--card-bg);border:var(--card-border);border-radius:16px;padding:24px;backdrop-filter:blur(28px);box-shadow:var(--card-shadow);margin-bottom:24px}
-.hepan-area .result-card h3{font-size:20px;font-weight:700;margin-bottom:16px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:12px}
-.hepan-area .palace-grid-hepan{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#ddd;border:2px solid var(--accent);border-radius:8px;overflow:hidden}
-.hepan-area .palace-cell{background:#fff;padding:10px 8px;min-height:85px;border:1px solid var(--border);font-size:11px;line-height:1.5}
-.hepan-area .palace-cell .pname{font-size:10px;color:var(--text-light);margin-bottom:3px}
-.hepan-area .palace-cell .star{line-height:1.6}
-.hepan-area .palace-cell .star.main-star{color:var(--accent);font-weight:600}
-.hepan-area .palace-cell .star.aux-star{color:var(--text-muted)}
-.hepan-area .score-hero{text-align:center;padding:20px}
-.hepan-area .score-hero .big{font-size:48px;font-weight:700;color:var(--accent)}
-.hepan-area .score-hero .label{font-size:14px;color:var(--text-muted);margin-top:4px}
-.hepan-area .dim-row{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;margin:4px 0;background:var(--input-bg);border-radius:8px}
-.hepan-area .dim-row .name{font-weight:600}
-.hepan-area .dim-row .val{font-weight:700;color:var(--accent)}
-.hepan-area .dim-desc{font-size:12px;color:var(--text-light);padding:0 16px 8px}
+/* ===== SINGLE CHART RESULT STYLING (METIS THEME) ===== */
+.single-result{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif}
+.single-result .chart-section{margin-bottom:20px}
+.single-result h2{font-size:20px;font-weight:700;color:var(--text);margin:20px 0 12px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.single-result h3{font-size:16px;font-weight:600;color:var(--text);margin:16px 0 8px}
+.single-result .chart-palace-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:16px 0;background:var(--border);border-radius:8px;overflow:hidden}
+.single-result .chart-palace-grid .cp-cell{background:#fff;padding:10px 8px;font-size:11px;line-height:1.6;min-height:60px}
+.single-result .cp-cell .cn{color:var(--text-light);font-size:10px;margin-bottom:2px}
+.single-result .cp-cell .cs{font-weight:600;color:var(--accent)}
+.single-result table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.single-result th,.single-result td{border:1px solid var(--border);padding:8px 12px;text-align:left}
+.single-result th{background:var(--input-bg);font-weight:600}
+.single-result .highlight{color:var(--accent);font-weight:600}
 @media(max-width:680px){
   .tab-btn{padding:12px 28px;font-size:14px}
-  .hepan-area .palace-grid-hepan{grid-template-columns:repeat(2,1fr)}
+  .single-result .chart-palace-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -842,98 +748,989 @@ body{font-family:'Microsoft YaHei','SimSun',serif;background:linear-gradient(to 
 
 <!-- ===== TAB 1: SINGLE CHART ===== -->
 <div class="tab-panel active" id="panel-single">
-  <div class="single-chart-area">
 
-</head>
-<body>
-<div class="container">
-
-<div class="header">
-    <h1>古风命理咨询</h1>
-    <p class="subtitle">紫微斗数专业分析 · iztro 开源引擎排盘 · 三合派技法</p>
-</div>
-
-<!-- INPUT -->
-<div class="input-card">
-    <h2>请输入出生信息</h2>
-    <div class="form-row">
-        <div class="form-group"><label>出生年份</label><input type="number" id="year" min="1900" max="2100" value="1999"></div>
-        <div class="form-group"><label>出生月份</label><input type="number" id="month" min="1" max="12" value="2"></div>
-        <div class="form-group"><label>出生日期</label><input type="number" id="day" min="1" max="31" value="17"></div>
-        <div class="form-group"><label>出生时间(时)</label><input type="number" id="hour" min="0" max="23" value="22"></div>
-        <div class="form-group"><label>分钟</label><input type="number" id="minute" min="0" max="59" value="0"></div>
-        <div class="form-group"><label>性别</label><select id="gender"><option value="male">男</option><option value="female">女</option></select></div>
-        <div class="form-group"><label>出生地点</label><input type="text" id="location" placeholder="如：成都 / 北京朝阳" style="width:150px" oninput="onLocationInput()"></div>
-        <button type="button" class="btn-geocode" onclick="geocodeLocation()" title="查询该地点的经纬度">🔍</button>
-        <div class="form-group"><label>经度(°E)</label><input type="number" id="longitude" value="120" min="73" max="135" step="0.01" style="width:90px"></div>
-        <div class="form-group" style="justify-content:flex-end"><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;white-space:nowrap"><input type="checkbox" id="useTrueSolar" style="width:auto;margin:0;accent-color:#c8a96e">真太阳时</label></div>
-        <button class="btn-submit" onclick="getChart()">开 始 排 盘</button>
+    <div class="heming-person-card" style="max-width:520px;margin:0 auto">
+      <div class="person-label">&#x1F52E; 出生信息</div>
+      <div class="form-grid">
+        <div class="form-field"><label>出生年份</label><input type="number" id="s-year" value="1999" min="1900" max="2100"></div>
+        <div class="form-field"><label>月份</label><input type="number" id="s-month" value="6" min="1" max="12"></div>
+        <div class="form-field"><label>日期</label><input type="number" id="s-day" value="18" min="1" max="31"></div>
+        <div class="form-field"><label>时 (0-23)</label><input type="number" id="s-hour" value="8" min="0" max="23"></div>
+        <div class="form-field"><label>分</label><input type="number" id="s-minute" value="0" min="0" max="59"></div>
+        <div class="form-field"><label>性别</label><select id="s-gender"><option value="male" selected>男</option><option value="female">女</option></select></div>
+        <div class="form-field"><label>出生地</label>
+          <div class="inline-row"><input type="text" id="s-location" placeholder="城市名"><button type="button" onclick="lookupCitySingle()">&#x1F50D;</button></div>
+        </div>
+        <div class="form-field"><label>经度</label><input type="number" id="s-lng" value="120" min="73" max="135" step="0.01"></div>
+        <div class="form-field"><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px">
+          <input type="checkbox" id="s-ts" onchange="showTSInfoSingle()"> 真太阳时</label>
+        </div>
+      </div>
+      <div class="ts-info" id="s-tsinfo"></div>
     </div>
-    <div class="geocode-msg" id="geocodeMsg"></div>
-    <p style="text-align:center;color:#8a7a5a;font-size:11px;margin-top:10px">输入阳历出生年月日时，填写出生地点并点击🔍查询经度，勾选真太阳时后自动换算。支持任意年份。</p>
-</div>
-
-<div class="status" id="status"></div>
-
-<!-- RESULT -->
-<div class="result-area" id="result"></div>
-
-</div>
-
-
-  </div>
+    <div style="text-align:center">
+      <button class="btn-hepan-action" id="btn-single" onclick="doSingleChart()">&#x1F52E; 开 始 排 盘</button>
+    </div>
+    <div class="status-msg" id="s-status"></div>
+    <div id="s-result"></div>
 </div>
 
 <!-- ===== TAB 2: HEPAN ===== -->
 <div class="tab-panel" id="panel-hepan">
-  <div class="hepan-area">
 
+
+<!-- Mobile menu -->
+<nav class="mobile-menu" id="mobileMenu">
+  <div class="menu-label">01</div>
+  <a href="#">起盘</a>
+  <div class="menu-label">02</div>
+  <a href="#">合盘</a>
+  <div class="menu-label">03</div>
+  <a href="#">知识库</a>
+  <div class="menu-label">04</div>
+  <a href="#">古籍库</a>
+</nav>
+
+<!-- ===== Main Content ===== -->
+<main class="main-content">
+
+  <!-- Title Section -->
+  <section class="title-section">
+    <div class="title-tag">02 / SYNASTRY</div>
+    <h1 class="title-main">紫微合盘</h1>
+    <p class="title-sub">感情 · 合伙 · 亲子 · 朋友</p>
+    <div class="title-divider"></div>
+  </section>
+
+  <div class="page-container">
+
+    <!-- Dual Column Form -->
     <div class="heming-dual-form">
-      <div class="heming-person-card">
-        <div class="person-label">&#x1F9D1; 甲方 A</div>
-        <div class="form-grid">
-          <div class="form-field"><label>出生年份</label><input type="number" id="a-year" value="1999" min="1900" max="2100"></div>
-          <div class="form-field"><label>月份</label><input type="number" id="a-month" value="2" min="1" max="12"></div>
-          <div class="form-field"><label>日期</label><input type="number" id="a-day" value="17" min="1" max="31"></div>
-          <div class="form-field"><label>时 (0-23)</label><input type="number" id="a-hour" value="22" min="0" max="23"></div>
-          <div class="form-field"><label>分</label><input type="number" id="a-minute" value="0" min="0" max="59"></div>
-          <div class="form-field"><label>性别</label><select id="a-gender"><option value="male">男</option><option value="female" selected>女</option></select></div>
-          <div class="form-field"><label>出生地</label>
-            <div class="inline-row"><input type="text" id="a-location" placeholder="城市名"><button type="button" onclick="lookupCity('a')">&#x1F50D;</button></div>
+
+      <!-- ========== Person A Card ========== -->
+      <div class="heming-person-card" id="personACard">
+        <div class="person-label">甲方 — A</div>
+        <div class="birthform-card">
+          <!-- Name -->
+          <div class="form-row">
+            <label class="form-row-label">姓名（选填）</label>
+            <input type="text" class="input-name" id="nameA" placeholder="输入姓名">
           </div>
-          <div class="form-field"><label>经度</label><input type="number" id="a-lng" value="120" min="73" max="135" step="0.01"></div>
-          <div class="form-field"><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px">
-            <input type="checkbox" id="a-ts" onchange="showTSInfo('a')"> 真太阳时</label>
+
+          <!-- Date selects -->
+          <div class="form-row">
+            <label class="form-row-label">出生日期</label>
+            <div class="select-row">
+              <select id="yearA"><option value="">年</option></select>
+              <select id="monthA"><option value="">月</option></select>
+              <select id="dayA"><option value="">日</option></select>
+            </div>
+          </div>
+
+          <!-- Calendar toggle -->
+          <div class="calendar-toggle">
+            <button class="active" data-cal="solar" data-person="A">公历</button>
+            <button data-cal="lunar" data-person="A">农历</button>
+          </div>
+
+          <!-- Location -->
+          <div class="form-row">
+            <label class="form-row-label">出生地点</label>
+            <div class="location-wrapper" id="locWrapperA">
+              <button class="location-btn" id="locBtnA" type="button">
+                <span id="locLabelA">选择城市</span>
+                <span class="arrow" id="locArrowA">▼</span>
+              </button>
+              <input type="text" class="location-search-input" id="locSearchA" placeholder="输入城市名称搜索...">
+              <div class="location-dropdown" id="locDropdownA"></div>
+            </div>
+          </div>
+
+          <!-- Time selects -->
+          <div class="form-row">
+            <label class="form-row-label">出生时间</label>
+            <div class="time-select-row">
+              <select id="hourA"><option value="">时</option></select>
+              <select id="minuteA"><option value="">分</option></select>
+            </div>
+          </div>
+
+          <!-- True solar time -->
+          <div class="true-solar-display" id="solarA">
+            <span class="solar-icon">☀</span>
+            <span class="solar-time" id="solarTextA">真太阳时 → 选择地点后显示</span>
+          </div>
+
+          <!-- Unknown time checkbox -->
+          <div class="checkbox-row" id="unknownTimeA">
+            <input type="checkbox" id="unknownA">
+            <label for="unknownA">不知道出生时间</label>
+          </div>
+
+          <!-- Gender -->
+          <div class="form-row">
+            <label class="form-row-label">性别</label>
+            <div class="gender-toggle" id="genderToggleA">
+              <button class="active" data-gender="male">男</button>
+              <button data-gender="female">女</button>
+            </div>
           </div>
         </div>
-        <div class="ts-info" id="a-tsinfo"></div>
       </div>
-      <div class="heming-person-card">
-        <div class="person-label">&#x1F9D1; 乙方 B</div>
-        <div class="form-grid">
-          <div class="form-field"><label>出生年份</label><input type="number" id="b-year" value="1999" min="1900" max="2100"></div>
-          <div class="form-field"><label>月份</label><input type="number" id="b-month" value="6" min="1" max="12"></div>
-          <div class="form-field"><label>日期</label><input type="number" id="b-day" value="18" min="1" max="31"></div>
-          <div class="form-field"><label>时 (0-23)</label><input type="number" id="b-hour" value="8" min="0" max="23"></div>
-          <div class="form-field"><label>分</label><input type="number" id="b-minute" value="0" min="0" max="59"></div>
-          <div class="form-field"><label>性别</label><select id="b-gender"><option value="male" selected>男</option><option value="female">女</option></select></div>
-          <div class="form-field"><label>出生地</label>
-            <div class="inline-row"><input type="text" id="b-location" placeholder="城市名"><button type="button" onclick="lookupCity('b')">&#x1F50D;</button></div>
+
+      <!-- ========== Person B Card ========== -->
+      <div class="heming-person-card" id="personBCard">
+        <div class="person-label">乙方 — B</div>
+        <div class="birthform-card">
+          <!-- Name -->
+          <div class="form-row">
+            <label class="form-row-label">姓名（选填）</label>
+            <input type="text" class="input-name" id="nameB" placeholder="输入姓名">
           </div>
-          <div class="form-field"><label>经度</label><input type="number" id="b-lng" value="120" min="73" max="135" step="0.01"></div>
-          <div class="form-field"><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px">
-            <input type="checkbox" id="b-ts" onchange="showTSInfo('b')"> 真太阳时</label>
+
+          <!-- Date selects -->
+          <div class="form-row">
+            <label class="form-row-label">出生日期</label>
+            <div class="select-row">
+              <select id="yearB"><option value="">年</option></select>
+              <select id="monthB"><option value="">月</option></select>
+              <select id="dayB"><option value="">日</option></select>
+            </div>
+          </div>
+
+          <!-- Calendar toggle -->
+          <div class="calendar-toggle">
+            <button class="active" data-cal="solar" data-person="B">公历</button>
+            <button data-cal="lunar" data-person="B">农历</button>
+          </div>
+
+          <!-- Location -->
+          <div class="form-row">
+            <label class="form-row-label">出生地点</label>
+            <div class="location-wrapper" id="locWrapperB">
+              <button class="location-btn" id="locBtnB" type="button">
+                <span id="locLabelB">选择城市</span>
+                <span class="arrow" id="locArrowB">▼</span>
+              </button>
+              <input type="text" class="location-search-input" id="locSearchB" placeholder="输入城市名称搜索...">
+              <div class="location-dropdown" id="locDropdownB"></div>
+            </div>
+          </div>
+
+          <!-- Time selects -->
+          <div class="form-row">
+            <label class="form-row-label">出生时间</label>
+            <div class="time-select-row">
+              <select id="hourB"><option value="">时</option></select>
+              <select id="minuteB"><option value="">分</option></select>
+            </div>
+          </div>
+
+          <!-- True solar time -->
+          <div class="true-solar-display" id="solarB">
+            <span class="solar-icon">☀</span>
+            <span class="solar-time" id="solarTextB">真太阳时 → 选择地点后显示</span>
+          </div>
+
+          <!-- Unknown time checkbox -->
+          <div class="checkbox-row" id="unknownTimeB">
+            <input type="checkbox" id="unknownB">
+            <label for="unknownB">不知道出生时间</label>
+          </div>
+
+          <!-- Gender -->
+          <div class="form-row">
+            <label class="form-row-label">性别</label>
+            <div class="gender-toggle" id="genderToggleB">
+              <button data-gender="male">男</button>
+              <button class="active" data-gender="female">女</button>
+            </div>
           </div>
         </div>
-        <div class="ts-info" id="b-tsinfo"></div>
       </div>
+    </div><!-- /heming-dual-form -->
+
+    <!-- Hepan Action Card -->
+    <div class="hepan-action-card">
+      <div class="hepan-action-title">◉ 合盘分析 · HEMING</div>
+      <p class="hepan-action-hint">填好双方出生信息后，点击下方按钮 AI 将基于倪师体系深度分析两人缘分匹配度</p>
+      <button class="hepan-submit-btn" id="hepanSubmit">
+        <span class="spinner"></span>
+        开始合盘分析
+      </button>
     </div>
-    <div style="text-align:center">
-      <button class="btn-hepan-action" id="btn-hepan" onclick="doHepan()">&#x2764; 开 始 合 盘</button>
+
+    <!-- Status -->
+    <div class="hepan-status" id="hepanStatus"></div>
+
+    <!-- ===== Results Section ===== -->
+    <div class="results-section" id="resultsSection">
+
+      <!-- Score -->
+      <div class="score-card" id="scoreCard"></div>
+
+      <!-- Dual Charts -->
+      <div class="chart-dual-section" id="chartDualSection"></div>
+
+      <!-- Analysis -->
+      <div class="analysis-card" id="analysisCard"></div>
+
     </div>
-    <div class="status-msg" id="h-status"></div>
-    <div id="h-result"></div>
+
+  </div><!-- /page-container -->
+
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="metis-footer">
+  <div class="footer-links">
+    <a href="#">隐私政策</a><span class="footer-separator">·</span>
+    <a href="#">服务条款</a><span class="footer-separator">·</span>
+    <a href="#">违法举报</a><span class="footer-separator">·</span>
+    <a href="#">12377</a>
   </div>
+  <div class="footer-icp">粤ICP备2025XXXXXX号-1</div>
+  <div class="footer-copy">© 2026 Metis</div>
+</footer>
+
+
+<!-- ============================================= -->
+<!-- ============== JavaScript =================== -->
+<!-- ============================================= -->
+<script>
+// 引擎加载 - 主路径 + 兜底
+(function(){
+  var LOADED = false;
+  function checkEngine(){
+    if (typeof window.Ziwei === 'object' && window.Ziwei.computeChart) {
+      LOADED = true;
+      console.log('[Ziwei] 引擎加载成功');
+      return true;
+    }
+    return false;
+  }
+  function loadFallback(){
+    if (LOADED) return;
+    console.warn('[Ziwei] 主路径加载失败，尝试从 raw.githubusercontent.com 加载...');
+    var s = document.createElement('script');
+    s.src = 'https://raw.githubusercontent.com/xingchao520hui-bit/ziwei-doushu/master/ziwei-full-engine.js';
+    s.onload = function(){ checkEngine(); };
+    s.onerror = function(){
+      console.error('[Ziwei] 兜底也加载失败，请检查网络');
+    };
+    document.head.appendChild(s);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if (!checkEngine()) loadFallback();
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/gh/xingchao520hui-bit/ziwei-doushu@master/ziwei-full-engine.js"></script>
+<script>
+(function(){
+'use strict';
+
+// ============================================================
+// ENGINE (client-side, no API needed)
+// ============================================================
+
+// ============================================================
+// CITY DATABASE (300+ cities with longitude)
+// ============================================================
+const CITY_LNG = {
+  // 直辖市
+  '北京':116.4,'上海':121.5,'天津':117.2,'重庆':106.5,
+  // 省会
+  '石家庄':114.5,'太原':112.5,'呼和浩特':111.7,'沈阳':123.4,'长春':125.3,'哈尔滨':126.5,
+  '南京':118.8,'杭州':120.2,'合肥':117.3,'福州':119.3,'南昌':115.9,'济南':117.0,
+  '郑州':113.7,'武汉':114.3,'长沙':113.0,'广州':113.3,'南宁':108.3,'海口':110.3,
+  '成都':104.1,'贵阳':106.7,'昆明':102.7,'拉萨':91.1,'西安':108.9,'兰州':103.7,
+  '西宁':101.8,'银川':106.3,'乌鲁木齐':87.6,
+  // 计划单列市+重要城市
+  '深圳':114.1,'厦门':118.1,'宁波':121.5,'青岛':120.4,'大连':121.6,
+  // 河北省
+  '唐山':118.2,'秦皇岛':119.6,'邯郸':114.5,'邢台':114.5,'保定':115.5,'张家口':114.9,'承德':117.9,'沧州':116.8,'廊坊':116.7,'衡水':115.7,'燕郊':116.8,'雄县':116.1,
+  // 山西省
+  '大同':113.3,'阳泉':113.6,'长治':113.1,'晋城':112.9,'朔州':112.4,'晋中':112.7,'运城':111.0,'忻州':112.7,'临汾':111.5,'吕梁':111.1,
+  // 内蒙古
+  '包头':109.8,'乌海':106.8,'赤峰':118.9,'通辽':122.3,'鄂尔多斯':109.8,'呼伦贝尔':119.8,'巴彦淖尔':107.4,'乌兰察布':113.1,'兴安盟':122.0,'锡林浩特':116.1,'阿拉善':105.7,
+  // 辽宁省
+  '鞍山':123.0,'抚顺':124.0,'本溪':123.8,'丹东':124.4,'锦州':121.1,'营口':122.2,'阜新':121.7,'辽阳':123.2,'盘锦':122.1,'铁岭':123.8,'朝阳':120.5,'葫芦岛':120.8,
+  // 吉林省
+  '吉林':126.5,'四平':124.4,'辽源':125.1,'通化':125.9,'白山':126.4,'松原':124.8,'白城':122.8,'延吉':129.5,'图们':129.8,'珲春':130.4,
+  // 黑龙江省
+  '齐齐哈尔':123.9,'鸡西':130.9,'鹤岗':130.3,'双鸭山':131.2,'大庆':125.0,'伊春':128.9,'佳木斯':130.3,'七台河':131.0,'牡丹江':129.6,'黑河':127.5,'绥化':127.0,'大兴安岭':124.1,
+  // 江苏省
+  '无锡':120.3,'徐州':117.2,'常州':119.9,'苏州':120.6,'南通':120.9,'连云港':119.2,'淮安':119.0,'盐城':120.2,'扬州':119.4,'镇江':119.4,'泰州':119.9,'宿迁':118.3,'昆山':121.0,'江阴':120.3,'宜兴':119.8,
+  // 浙江省
+  '温州':120.7,'嘉兴':120.8,'湖州':120.1,'绍兴':120.6,'金华':119.6,'衢州':118.9,'舟山':122.2,'台州':121.4,'丽水':119.9,'义乌':120.1,'慈溪':121.2,
+  // 安徽省
+  '芜湖':118.4,'蚌埠':117.4,'淮南':117.0,'马鞍山':118.5,'淮北':116.8,'铜陵':117.8,'安庆':117.1,'黄山':118.3,'滁州':118.3,'阜阳':115.8,'宿州':117.0,'六安':116.5,'亳州':115.8,'池州':117.5,'宣城':118.8,
+  // 福建省
+  '莆田':119.0,'三明':117.6,'泉州':118.6,'漳州':117.6,'南平':118.2,'龙岩':117.0,'宁德':119.5,'石狮':118.6,'晋江':118.6,
+  // 江西省
+  '景德镇':117.2,'萍乡':113.8,'九江':116.0,'新余':114.9,'鹰潭':117.0,'赣州':114.9,'吉安':115.0,'宜春':114.4,'抚州':116.4,'上饶':118.0,'井冈山':114.1,'瑞金':116.0,
+  // 山东省
+  '淄博':118.0,'枣庄':117.3,'东营':118.7,'烟台':121.4,'潍坊':119.1,'济宁':116.6,'泰安':117.1,'威海':122.1,'日照':119.5,'莱芜':117.7,'临沂':118.3,'德州':116.3,'聊城':116.0,'滨州':118.0,'菏泽':115.5,'曲阜':117.0,'蓬莱':120.8,
+  // 河南省
+  '开封':114.3,'洛阳':112.4,'平顶山':113.3,'安阳':114.4,'鹤壁':114.3,'新乡':113.9,'焦作':113.2,'濮阳':115.0,'许昌':113.8,'漯河':114.0,'三门峡':111.2,'南阳':112.5,'商丘':115.7,'信阳':114.1,'周口':114.6,'驻马店':114.0,'济源':112.6,
+  // 湖北省
+  '黄石':115.1,'十堰':110.8,'宜昌':111.3,'襄阳':112.1,'鄂州':114.9,'荆门':112.2,'孝感':113.9,'荆州':112.2,'黄冈':114.9,'咸宁':114.3,'随州':113.4,'恩施':109.5,'仙桃':113.4,'潜江':112.9,'天门':113.2,'神农架':110.7,
+  // 湖南省
+  '株洲':113.1,'湘潭':112.9,'衡阳':112.6,'邵阳':111.5,'岳阳':113.1,'常德':111.7,'张家界':110.5,'益阳':112.4,'郴州':113.0,'永州':111.6,'怀化':110.0,'娄底':112.0,'湘西':109.7,'浏阳':113.6,'韶山':112.5,'凤凰':109.6,
+  // 广东省
+  '韶关':113.6,'珠海':113.6,'汕头':116.7,'佛山':113.1,'江门':113.1,'湛江':110.4,'茂名':110.9,'肇庆':112.5,'惠州':114.4,'梅州':116.1,'汕尾':115.4,'河源':114.7,'阳江':111.9,'清远':113.1,'东莞':113.8,'中山':113.4,'潮州':116.6,'揭阳':116.4,'云浮':112.0,
+  // 广西
+  '柳州':109.4,'桂林':110.3,'梧州':111.3,'北海':109.1,'防城港':108.3,'钦州':108.6,'贵港':109.6,'玉林':110.2,'百色':106.6,'贺州':111.6,'河池':108.1,'来宾':109.2,'崇左':107.4,'阳朔':110.5,
+  // 海南省
+  '三亚':109.5,'三沙':112.3,'儋州':109.6,'琼海':110.5,'文昌':110.8,'万宁':110.4,'东方':108.7,'五指山':109.5,'陵水':110.0,'博鳌':110.6,
+  // 四川省
+  '自贡':104.8,'攀枝花':101.7,'泸州':105.4,'德阳':104.4,'绵阳':104.7,'广元':105.8,'遂宁':105.6,'内江':105.1,'乐山':103.8,'南充':106.1,'眉山':103.9,'宜宾':104.6,'广安':106.6,'达州':107.5,'雅安':103.0,'巴中':106.8,'资阳':104.6,'阿坝':102.2,'甘孜':101.9,'凉山':102.3,'西昌':102.3,'峨眉山':103.5,'都江堰':103.6,'九寨沟':104.2,
+  // 贵州省
+  '六盘水':104.8,'遵义':106.9,'安顺':105.9,'毕节':105.3,'铜仁':109.2,'黔西南':104.9,'黔东南':107.9,'黔南':107.5,'仁怀':106.4,'凯里':107.9,
+  // 云南省
+  '曲靖':103.8,'玉溪':102.5,'保山':99.2,'昭通':103.7,'丽江':100.2,'普洱':100.9,'临沧':100.1,'楚雄':101.5,'红河':103.3,'文山':104.2,'西双版纳':100.8,'大理':100.2,'德宏':98.6,'怒江':98.9,'迪庆':99.7,'香格里拉':99.7,'瑞丽':97.8,'腾冲':98.5,
+  // 西藏
+  '昌都':97.2,'山南':91.8,'日喀则':88.9,'那曲':92.1,'阿里':80.1,'林芝':94.3,
+  // 陕西省
+  '铜川':109.1,'宝鸡':107.2,'咸阳':108.7,'渭南':109.5,'延安':109.5,'汉中':107.0,'榆林':109.7,'安康':109.0,'商洛':109.9,'杨凌':108.1,
+  // 甘肃省
+  '嘉峪关':98.3,'金昌':102.2,'白银':104.1,'天水':105.7,'武威':102.6,'张掖':100.4,'平凉':106.7,'酒泉':98.5,'庆阳':107.6,'定西':104.6,'陇南':104.9,'临夏':103.2,'甘南':102.9,'敦煌':94.7,
+  // 青海省
+  '海东':102.1,'海北':100.9,'黄南':102.0,'海南州':100.6,'果洛':100.2,'玉树':97.0,'海西':97.4,'格尔木':94.9,'德令哈':97.4,
+  // 宁夏
+  '石嘴山':106.4,'吴忠':106.2,'固原':106.3,'中卫':105.2,
+  // 新疆
+  '克拉玛依':84.9,'吐鲁番':89.2,'哈密':93.5,'昌吉':87.3,'博尔塔拉':82.1,'巴音郭楞':86.1,'阿克苏':80.3,'克孜勒苏':76.1,'喀什':75.9,'和田':79.9,'伊犁':81.3,'塔城':82.9,'阿勒泰':88.1,'石河子':86.0,
+  // 港澳台
+  '香港':114.2,'九龙':114.2,'新界':114.1,'离岛':113.9,'澳门':113.5,'氹仔':113.6,'台北':121.5,'新北':121.5,'桃园':121.3,'台中':120.7,'台南':120.2,'高雄':120.3,'基隆':121.7,'新竹':121.0,'嘉义':120.4,'宜兰':121.8,'花莲':121.6,'台东':121.1,'澎湖':119.6,'金门':118.3,'马祖':119.9
+};
+
+// Build city index array for search
+const cityIndex = [];
+for(const [name, lng] of Object.entries(CITY_LNG)){
+  cityIndex.push({name, lng});
+}
+cityIndex.sort((a,b)=>a.name.localeCompare(b.name,'zh'));
+
+// ============================================================
+// TRUE SOLAR TIME
+// ============================================================
+const DIZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const SHICHEN_RANGES = [
+  '23:00-01:00','01:00-03:00','03:00-05:00','05:00-07:00',
+  '07:00-09:00','09:00-11:00','11:00-13:00','13:00-15:00',
+  '15:00-17:00','17:00-19:00','19:00-21:00','21:00-23:00'
+];
+
+function calcTrueSolarOffset(lng){
+  // offset = (120 - longitude) * 4 minutes
+  return (120 - lng) * 4;
+}
+
+function calcTrueSolarTime(hour, minute, lng){
+  const offsetMin = calcTrueSolarOffset(lng);
+  let totalMin = hour * 60 + minute + offsetMin;
+  // Clamp to 0-1439
+  totalMin = ((totalMin % 1440) + 1440) % 1440;
+  const solarHour = Math.floor(totalMin / 60);
+  return solarHour;
+}
+
+function hourToShichen(hour){
+  if(hour === 23 || hour === 0) return 0;
+  return Math.ceil(hour / 2);
+}
+
+function formatShichen(hour){
+  const idx = hourToShichen(hour);
+  return DIZHI[idx] + '时（' + SHICHEN_RANGES[idx] + '）';
+}
+
+// ============================================================
+// DOM REFS
+// ============================================================
+const $ = id => document.getElementById(id);
+
+// ============================================================
+// INITIALIZE SELECTS
+// ============================================================
+(function initSelects(){
+  // Year: 1900 - 2026
+  const yearOpts = '<option value="">年</option>';
+  for(let y = 2026; y >= 1900; y--){
+    // Rebuild each time for clarity
+  }
+  ['yearA','yearB'].forEach(id=>{
+    let html = '<option value="">年</option>';
+    for(let y = 2026; y >= 1900; y--){
+      html += '<option value="'+y+'">'+y+'</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Month: 1-12
+  ['monthA','monthB'].forEach(id=>{
+    let html = '<option value="">月</option>';
+    for(let m = 1; m <= 12; m++){
+      html += '<option value="'+m+'">'+m+'月</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Day: 1-31
+  ['dayA','dayB'].forEach(id=>{
+    let html = '<option value="">日</option>';
+    for(let d = 1; d <= 31; d++){
+      html += '<option value="'+d+'">'+d+'</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Hour: 0-23
+  ['hourA','hourB'].forEach(id=>{
+    let html = '<option value="">时</option>';
+    for(let h = 0; h <= 23; h++){
+      html += '<option value="'+h+'">'+h+'时</option>';
+    }
+    $(id).innerHTML = html;
+  });
+
+  // Minute: 0-59
+  ['minuteA','minuteB'].forEach(id=>{
+    let html = '<option value="">分</option>';
+    for(let m = 0; m <= 59; m++){
+      html += '<option value="'+m+'">'+m+'分</option>';
+    }
+    $(id).innerHTML = html;
+  });
+})();
+
+// ============================================================
+// HAMBURGER MENU
+// ============================================================
+const hamburgerBtn = $('hamburgerBtn');
+const mobileMenu = $('mobileMenu');
+
+hamburgerBtn.addEventListener('click',()=>{
+  const isOpen = hamburgerBtn.classList.toggle('open');
+  mobileMenu.classList.toggle('open', isOpen);
+});
+
+// Close mobile menu on link click
+mobileMenu.querySelectorAll('a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    hamburgerBtn.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  });
+});
+
+// ============================================================
+// CALENDAR TOGGLE
+// ============================================================
+document.querySelectorAll('.calendar-toggle').forEach(toggle=>{
+  toggle.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    // Toggle active
+    toggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    // Note: lunar conversion not implemented, just UI
+  });
+});
+
+// ============================================================
+// GENDER TOGGLE
+// ============================================================
+['genderToggleA','genderToggleB'].forEach(id=>{
+  const toggle = $(id);
+  toggle.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    toggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+function getGender(person){
+  const toggle = $('genderToggle' + person);
+  const active = toggle.querySelector('button.active');
+  return active ? active.dataset.gender : (person === 'A' ? 'male' : 'female');
+}
+
+// ============================================================
+// LOCATION PICKER
+// ============================================================
+// State per person
+const locState = {
+  A: { city: null, lng: null },
+  B: { city: null, lng: null }
+};
+
+['A','B'].forEach(person => {
+  const locBtn = $('locBtn'+person);
+  const locSearch = $('locSearch'+person);
+  const locDropdown = $('locDropdown'+person);
+  const locLabel = $('locLabel'+person);
+  const locArrow = $('locArrow'+person);
+
+  // Toggle search input
+  locBtn.addEventListener('click',()=>{
+    const isOpen = locSearch.classList.toggle('visible');
+    locArrow.classList.toggle('open', isOpen);
+    if(isOpen){
+      locSearch.focus();
+      // Show all cities by default
+      renderDropdown(person, '');
+    } else {
+      locDropdown.classList.remove('visible');
+    }
+  });
+
+  // Search input
+  locSearch.addEventListener('input',()=>{
+    const query = locSearch.value.trim();
+    renderDropdown(person, query);
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click',(e)=>{
+    const wrapper = $('locWrapper'+person);
+    if(!wrapper.contains(e.target)){
+      locSearch.classList.remove('visible');
+      locDropdown.classList.remove('visible');
+      locArrow.classList.remove('open');
+    }
+  });
+});
+
+function renderDropdown(person, query){
+  const dropdown = $('locDropdown'+person);
+  let filtered = cityIndex;
+  if(query){
+    const q = query.toLowerCase();
+    filtered = cityIndex.filter(c => c.name.includes(q));
+  }
+
+  if(filtered.length === 0){
+    dropdown.innerHTML = '<div class="location-dropdown-item" style="color:#999">未找到匹配城市</div>';
+  } else {
+    dropdown.innerHTML = filtered.slice(0, 30).map(c =>
+      '<div class="location-dropdown-item" data-name="'+c.name+'" data-lng="'+c.lng+'">'+
+      '<span class="city-name">'+c.name+'</span>'+
+      '<span class="city-lng">'+c.lng+'°E</span>'+
+      '</div>'
+    ).join('');
+
+    dropdown.querySelectorAll('.location-dropdown-item[data-name]').forEach(item=>{
+      item.addEventListener('click',()=>{
+        const name = item.dataset.name;
+        const lng = parseFloat(item.dataset.lng);
+        selectCity(person, name, lng);
+      });
+    });
+  }
+  dropdown.classList.add('visible');
+}
+
+function selectCity(person, name, lng){
+  locState[person] = { city: name, lng: lng };
+  $('locLabel'+person).textContent = name;
+  $('locSearch'+person).classList.remove('visible');
+  $('locDropdown'+person).classList.remove('visible');
+  $('locArrow'+person).classList.remove('open');
+  updateTrueSolar(person);
+}
+
+function updateTrueSolar(person){
+  const state = locState[person];
+  const hourEl = $('hour'+person);
+  const solarText = $('solarText'+person);
+
+  if(!state.lng || !hourEl.value){
+    solarText.textContent = '真太阳时 → 选择地点和时间后显示';
+    return;
+  }
+
+  const hour = parseInt(hourEl.value);
+  if(isNaN(hour)){
+    solarText.textContent = '真太阳时 → 请先选择出生时间';
+    return;
+  }
+
+  const minute = parseInt($('minute'+person).value) || 0;
+  const solarHour = calcTrueSolarTime(hour, minute, state.lng);
+  const shichen = formatShichen(solarHour);
+
+  solarText.textContent = '真太阳时 → ' + shichen;
+}
+
+// Update true solar when hour/minute changes
+['hourA','minuteA','hourB','minuteB'].forEach(id=>{
+  $(id).addEventListener('change',()=>{
+    const person = id.includes('A') ? 'A' : 'B';
+    updateTrueSolar(person);
+  });
+});
+
+// ============================================================
+// UNKNOWN TIME CHECKBOX
+// ============================================================
+['unknownA','unknownB'].forEach(id=>{
+  $(id).addEventListener('change',function(){
+    const person = id.includes('A') ? 'A' : 'B';
+    const hourEl = $('hour'+person);
+    const minuteEl = $('minute'+person);
+    if(this.checked){
+      hourEl.value = '12';
+      minuteEl.value = '0';
+      hourEl.disabled = true;
+      minuteEl.disabled = true;
+    } else {
+      hourEl.disabled = false;
+      minuteEl.disabled = false;
+    }
+  });
+});
+
+// ============================================================
+// VALIDATE FORM
+// ============================================================
+function validatePerson(person){
+  const errors = [];
+  const year = parseInt($('year'+person).value);
+  const month = parseInt($('month'+person).value);
+  const day = parseInt($('day'+person).value);
+  const hour = parseInt($('hour'+person).value);
+  const minute = parseInt($('minute'+person).value);
+
+  if(isNaN(year)) errors.push('出生年份');
+  if(isNaN(month)) errors.push('出生月份');
+  if(isNaN(day)) errors.push('出生日期');
+  if(isNaN(hour)) errors.push('出生小时');
+  if(isNaN(minute)) errors.push('出生分钟');
+
+  return { valid: errors.length === 0, errors };
+}
+
+// ============================================================
+// ============================================================
+// CLIENT-SIDE ENGINE CALLS (no API needed)
+// ============================================================
+
+/** Wrap engine chart output into format renderChartCard expects */
+function chartToRenderFormat(raw){
+  return {
+    palaces: raw.palaces,
+    info: {
+      mingZhu: raw.mingPalace ? raw.mingPalace.name : '',
+      shenZhu: raw.bodyPalace ? raw.bodyPalace.name : '',
+      wuxingJu: raw.fiveElementsClass || ''
+    },
+    birth: { gender: raw.gender }
+  };
+}
+
+/** Build renderAnalysis-friendly hepan result from engine output */
+function hepanToRenderFormat(mhp){
+  const c = mhp.compat;
+  const breakdown = {};
+  const overviewParts = [];
+  const strengths = [];
+  const challenges = [];
+
+  const dimNames = {
+    palace_alignment: '宫位对齐',
+    star_harmony: '星曜和谐',
+    mutagen_interaction: '四化感应',
+    zodiac: '生肖入宫',
+    life_rhythm: '人生节奏'
+  };
+
+  for(const d of c.dimensions){
+    const label = dimNames[d.id] || d.id;
+    const pct = d.max > 0 ? Math.round((d.score / d.max) * 100) : 0;
+    breakdown[label] = { score: pct, label: label, raw: d.score.toFixed(1), max: d.max };
+
+    if(d.reason_summary && d.reason_summary.display_text){
+      overviewParts.push('【'+label+'】'+d.reason_summary.display_text);
+    }
+    if(d.score >= d.max * 0.7){ strengths.push(label + '非常契合（'+pct+'分）'); }
+    else if(d.score < 0){ challenges.push(label + '存在较大冲突'); }
+  }
+
+  const overview = overviewParts.join('\n\n');
+  return {
+    data: {
+      total_score: c.score,
+      breakdown: breakdown,
+      overview: overview,
+      strengths: strengths.length ? strengths : ['各方面表现均衡'],
+      challenges: challenges.length ? challenges : ['需日常磨合，互相理解包容']
+    }
+  };
+}
+
+function fetchChart(person){
+  if(!window.Ziwei||!window.Ziwei.computeChart){ throw new Error('引擎未加载完成，请刷新后重试'); }
+  const year = parseInt($('year'+person).value);
+  const month = parseInt($('month'+person).value);
+  const day = parseInt($('day'+person).value);
+  const hour = parseInt($('hour'+person).value);
+  const minute = parseInt($('minute'+person).value) || 0;
+  const gender = getGender(person);
+  const state = locState[person];
+  const lng = state && state.lng ? state.lng : 120;
+
+  const raw = window.Ziwei.computeChart(year, month, day, hour, minute, gender, lng);
+  return chartToRenderFormat(raw);
+}
+
+function fetchHepan(){
+  if(!window.Ziwei||!window.Ziwei.computeHepan){ throw new Error('引擎未加载完成，请刷新后重试'); }
+  const ya = parseInt($('yearA').value), ma = parseInt($('monthA').value), da = parseInt($('dayA').value);
+  const ha = parseInt($('hourA').value), mia = parseInt($('minuteA').value) || 0;
+  const ga = getGender('A');
+  const lna = (locState['A'] && locState['A'].lng) ? locState['A'].lng : 120;
+
+  const yb = parseInt($('yearB').value), mb = parseInt($('monthB').value), db = parseInt($('dayB').value);
+  const hb = parseInt($('hourB').value), mib = parseInt($('minuteB').value) || 0;
+  const gb = getGender('B');
+  const lnb = (locState['B'] && locState['B'].lng) ? locState['B'].lng : 120;
+
+  const hepan = window.Ziwei.computeHepan(ya, ma, da, ha, mia, ga, lna, yb, mb, db, hb, mib, gb, lnb);
+  return {
+    hepanResult: hepanToRenderFormat(hepan),
+    chartA: chartToRenderFormat(hepan.chartA),
+    chartB: chartToRenderFormat(hepan.chartB)
+  };
+}
+
+// ============================================================
+// RENDER RESULTS
+// ============================================================
+function renderScore(score){
+  let color, grade, comment;
+  if(score >= 90){ color = '#059669'; grade = '天作之合'; comment = '命理契合度极高，是难得的良缘'; }
+  else if(score >= 80){ color = '#2563eb'; grade = '佳偶天成'; comment = '缘分深厚，有很高的契合度'; }
+  else if(score >= 70){ color = '#7c3aed'; grade = '良缘可期'; comment = '整体契合，值得珍惜'; }
+  else if(score >= 60){ color = '#d97706'; grade = '一般缘份'; comment = '有缘但需经营，互相理解很重要'; }
+  else if(score >= 50){ color = '#dc2626'; grade = '缘浅情疏'; comment = '契合度较低，需更多包容'; }
+  else { color = '#991b1b'; grade = '多有不顺'; comment = '命理上不太契合，慎重考虑'; }
+
+  $('scoreCard').innerHTML = `
+    <div class="score-number" style="color:${color}">${score}</div>
+    <div class="score-grade" style="color:${color}">${grade}</div>
+    <div class="score-label">${comment}</div>
+  `;
+}
+
+function renderChartCard(personName, charName, chartData){
+  if(!chartData || !chartData.palaces){
+    return '<div class="chart-card"><div class="chart-card-header">'+personName+'<br><span class="chart-name">'+charName+'</span></div><p style="text-align:center;color:#999;padding:20px">命盘数据暂无</p></div>';
+  }
+
+  const palaces = chartData.palaces;
+  const info = chartData.info || {};
+  const birth = chartData.birth || {};
+
+  const mingZhu = info.mingZhu || '';
+  const shenZhu = info.shenZhu || '';
+
+  function palaceHtml(p){
+    const starsHtml = (p.stars || []).map(s => {
+      let cls = 'star-minor';
+      if(s.type === 'major') cls = 'star-major';
+      else if(s.siHua) cls = 'star-lucky';
+      return '<span class="'+cls+'">'+s.name+(s.siHua?'['+s.siHua+']':'')+'</span>';
+    }).join(' ');
+
+    let extraClass = '';
+    let badge = '';
+    if(mingZhu === p.name){ extraClass = ' ming'; badge = '<span class="palace-badge badge-ming">命</span>'; }
+    else if(shenZhu === p.name){ extraClass = ' shen'; badge = '<span class="palace-badge badge-shen">身</span>'; }
+
+    return '<div class="palace-cell'+extraClass+'">'+
+      badge+
+      '<div class="palace-name">'+p.name+'</div>'+
+      '<div class="star-entry">'+starsHtml+'</div>'+
+      '</div>';
+  }
+
+  return '<div class="chart-card">'+
+    '<div class="chart-card-header">'+personName+
+    '<br><span class="chart-name">'+charName+
+    ' · '+birth.gender+' · '+(info.wuxingJu||'')+
+    '</span></div>'+
+    '<div class="palace-grid">'+palaces.map(palaceHtml).join('')+'</div>'+
+    '</div>';
+}
+
+function renderAnalysis(result){
+  if(!result || !result.data){
+    return '<p style="color:#999;text-align:center">暂无分析数据</p>';
+  }
+
+  const d = result.data;
+  const totalScore = d.total_score || d.totalScore || d.score || 0;
+  const breakdown = d.breakdown || d.sub_scores || d.dimensions || {};
+
+  let html = '<div class="analysis-title">合盘分析详情</div>';
+
+  // Dimension scores
+  if(Object.keys(breakdown).length > 0){
+    html += '<div class="analysis-section"><h4>维度得分</h4>';
+    for(const [key, val] of Object.entries(breakdown)){
+      const score = typeof val === 'object' ? (val.score || val.value || 0) : val;
+      const label = typeof val === 'object' ? (val.label || val.name || key) : key;
+      const dotColor = score >= 80 ? '#059669' : score >= 60 ? '#2563eb' : score >= 40 ? '#d97706' : '#dc2626';
+      html += '<div class="analysis-item">'+
+        '<span class="score-dot" style="background:'+dotColor+'"></span>'+
+        '<span style="flex:1">'+label+'</span>'+
+        '<span style="font-weight:700">'+score+'分</span>'+
+        '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Overview text
+  const overview = d.overview || d.summary || d.description || d.overall_text || '';
+  if(overview){
+    html += '<div class="analysis-section"><h4>综合解读</h4><p>'+overview+'</p></div>';
+  }
+
+  // Strengths
+  const strengths = d.strengths || d.pros || d.highlights || [];
+  if(strengths.length > 0){
+    html += '<div class="analysis-section"><h4>优势亮点</h4>';
+    strengths.forEach(s => {
+      html += '<p style="margin-bottom:8px">✦ '+s+'</p>';
+    });
+    html += '</div>';
+  }
+
+  // Challenges
+  const challenges = d.challenges || d.cons || d.warnings || [];
+  if(challenges.length > 0){
+    html += '<div class="analysis-section"><h4>需注意的方面</h4>';
+    challenges.forEach(c => {
+      html += '<p style="margin-bottom:8px;color:#dc2626">⚠ '+c+'</p>';
+    });
+    html += '</div>';
+  }
+
+  // Raw detail if nothing else
+  if(!overview && Object.keys(breakdown).length === 0){
+    html += '<div class="analysis-section"><h4>原始结果</h4>'+
+      '<pre style="font-size:12px;white-space:pre-wrap;background:#f8f8f8;padding:16px;border-radius:8px;max-height:400px;overflow-y:auto">'+
+      JSON.stringify(d, null, 2)+'</pre></div>';
+  }
+
+  return html;
+}
+
+async function doHepan(){
+  if(typeof window.Ziwei==="undefined"||!window.Ziwei.computeHepan){
+    showStatus('引擎未加载，请刷新页面重试（Ctrl+Shift+R）','error');
+    return;
+  }
+  const submitBtn = $('hepanSubmit');
+  const statusEl = $('hepanStatus');
+
+  // Validate
+  const va = validatePerson('A');
+  const vb = validatePerson('B');
+
+  if(!va.valid || !vb.valid){
+    const missing = [...(va.valid?[]:['甲方：'+va.errors.join('、')]), ...(vb.valid?[]:['乙方：'+vb.errors.join('、')])];
+    showStatus('请完善以下信息：'+missing.join('；'), 'error');
+    return;
+  }
+
+  // Loading state
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+  showStatus('正在排盘并分析合盘...', 'loading');
+  $('resultsSection').classList.remove('visible');
+
+  try {
+    // Compute everything client-side (charts + hepan in one shot)
+    const result = fetchHepan();
+    const chartA = result.chartA;
+    const chartB = result.chartB;
+    const hepanResult = result.hepanResult;
+
+    // Render results
+    const nameA = $('nameA').value.trim() || '甲方';
+    const nameB = $('nameB').value.trim() || '乙方';
+
+    // Score
+    const score = hepanResult.data?.total_score || hepanResult.data?.totalScore || hepanResult.data?.score || 0;
+    renderScore(score);
+
+    // Charts
+    $('chartDualSection').innerHTML =
+      renderChartCard(nameA, chartA.birth ? chartA.birth.gender+' · '+(chartA.info?.wuxingJu||'') : '甲方命盘', chartA) +
+      renderChartCard(nameB, chartB.birth ? chartB.birth.gender+' · '+(chartB.info?.wuxingJu||'') : '乙方命盘', chartB);
+
+    // Analysis
+    $('analysisCard').innerHTML = renderAnalysis(hepanResult);
+
+    // Show results
+    $('resultsSection').classList.add('visible');
+    showStatus('', '');
+    $('resultsSection').scrollIntoView({behavior:'smooth', block:'start'});
+
+  } catch(err){
+    showStatus('合盘分析失败：'+err.message, 'error');
+    console.error(err);
+  } finally {
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+  }
+}
+
+function showStatus(msg, type){
+  const el = $('hepanStatus');
+  el.textContent = msg;
+  el.className = 'hepan-status';
+  if(msg){
+    el.classList.add(type, 'visible');
+  }
+}
+
+// ============================================================
+// EVENT BINDINGS
+// ============================================================
+$('hepanSubmit').addEventListener('click', doHepan);
+
+// Keyboard: Enter submits
+document.addEventListener('keydown',(e)=>{
+  if(e.key === 'Enter' && e.target.tagName === 'INPUT'){
+    // Don't submit on location search
+    if(e.target.id.startsWith('locSearch')) return;
+    e.preventDefault();
+    doHepan();
+  }
+});
+
+// ============================================================
+// INIT: Pre-select Beijing as default location
+// ============================================================
+setTimeout(()=>{
+  selectCity('A', '北京', 116.4);
+  selectCity('B', '上海', 121.5);
+}, 100);
+
+console.log('Metis 紫微合盘 · HEMING 已就绪');
+console.log('Engine: client-side Ziwei engine (no server needed)');
+console.log('城市数据库已加载 ' + cityIndex.length + ' 个城市');
+
+})();
+</script>
+
+</body>
+</html
 </div>
 
 </div><!-- page-container -->
@@ -943,548 +1740,139 @@ body{font-family:'Microsoft YaHei','SimSun',serif;background:linear-gradient(to 
 <script src="ziwei-full-engine.js"></script>
 
 <script>
+// ===== SINGLE CHART LOGIC =====
 (function(){
 'use strict';
 
+// Export CITY_LNG for use by other scripts
+window._CITY_LNG = window._CITY_LNG || {};
 
-const API='http://localhost:3211';
-const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
-let globalLaiYin = null; // 来因宫全局变量
-
-function pn(d,n){return d.palaces.find(p=>p.name===n)}
-function sn(p){return p.stars.map(s=>s.name)}
-function hs(p,n){return p.stars.some(s=>s.name===n)}
-function gs(p,n){return p.stars.find(s=>s.name===n)}
-function ms(p){return p.stars.filter(s=>s.type==='major')}
-function hn(v){const m={lu:'禄',quan:'权',ke:'科',ji:'忌'};return m[v]||v}
-function bri(s){const b=s.brightness;if(!b||b==='平')return b;return '['+b+']'}
-function starName(s){return s.name+(s.siHua?'['+hn(s.siHua)+']':'')+bri(s)}
-function allStarName(s){return s.name+(s.siHua?'['+hn(s.siHua)+']':'')}
-
-// ===== 真太阳时 & 地理编码 =====
-// 中国城市经纬度库（地级市+部分区县，300+条）
-window._CITY_LNG = CITY_LNG; const CITY_LNG = {
-// 直辖市
-'北京':116.4,'上海':121.5,'天津':117.2,'重庆':106.5,
-// 省会
-'石家庄':114.5,'太原':112.5,'呼和浩特':111.7,'沈阳':123.4,'长春':125.3,'哈尔滨':126.5,
-'南京':118.8,'杭州':120.2,'合肥':117.3,'福州':119.3,'南昌':115.9,'济南':117.0,
-'郑州':113.7,'武汉':114.3,'长沙':113.0,'广州':113.3,'南宁':108.3,'海口':110.3,
-'成都':104.1,'贵阳':106.7,'昆明':102.7,'拉萨':91.1,'西安':108.9,'兰州':103.7,
-'西宁':101.8,'银川':106.3,'乌鲁木齐':87.6,
-// 计划单列市+重要城市
-'深圳':114.1,'厦门':118.1,'宁波':121.5,'青岛':120.4,'大连':121.6,
-// 河北省
-'唐山':118.2,'秦皇岛':119.6,'邯郸':114.5,'邢台':114.5,'保定':115.5,'张家口':114.9,'承德':117.9,'沧州':116.8,'廊坊':116.7,'衡水':115.7,'燕郊':116.8,'雄县':116.1,
-// 山西省
-'大同':113.3,'阳泉':113.6,'长治':113.1,'晋城':112.9,'朔州':112.4,'晋中':112.7,'运城':111.0,'忻州':112.7,'临汾':111.5,'吕梁':111.1,
-// 内蒙古
-'包头':109.8,'乌海':106.8,'赤峰':118.9,'通辽':122.3,'鄂尔多斯':109.8,'呼伦贝尔':119.8,'巴彦淖尔':107.4,'乌兰察布':113.1,'兴安盟':122.0,'锡林浩特':116.1,'阿拉善':105.7,
-// 辽宁省
-'鞍山':123.0,'抚顺':124.0,'本溪':123.8,'丹东':124.4,'锦州':121.1,'营口':122.2,'阜新':121.7,'辽阳':123.2,'盘锦':122.1,'铁岭':123.8,'朝阳':120.5,'葫芦岛':120.8,
-// 吉林省
-'吉林':126.5,'四平':124.4,'辽源':125.1,'通化':125.9,'白山':126.4,'松原':124.8,'白城':122.8,'延吉':129.5,'图们':129.8,'珲春':130.4,
-// 黑龙江省
-'齐齐哈尔':123.9,'鸡西':130.9,'鹤岗':130.3,'双鸭山':131.2,'大庆':125.0,'伊春':128.9,'佳木斯':130.3,'七台河':131.0,'牡丹江':129.6,'黑河':127.5,'绥化':127.0,'大兴安岭':124.1,
-// 江苏省
-'无锡':120.3,'徐州':117.2,'常州':119.9,'苏州':120.6,'南通':120.9,'连云港':119.2,'淮安':119.0,'盐城':120.2,'扬州':119.4,'镇江':119.4,'泰州':119.9,'宿迁':118.3,'昆山':121.0,'江阴':120.3,'宜兴':119.8,
-// 浙江省
-'温州':120.7,'嘉兴':120.8,'湖州':120.1,'绍兴':120.6,'金华':119.6,'衢州':118.9,'舟山':122.2,'台州':121.4,'丽水':119.9,'义乌':120.1,'慈溪':121.2,
-// 安徽省
-'芜湖':118.4,'蚌埠':117.4,'淮南':117.0,'马鞍山':118.5,'淮北':116.8,'铜陵':117.8,'安庆':117.1,'黄山':118.3,'滁州':118.3,'阜阳':115.8,'宿州':117.0,'六安':116.5,'亳州':115.8,'池州':117.5,'宣城':118.8,
-// 福建省
-'莆田':119.0,'三明':117.6,'泉州':118.6,'漳州':117.6,'南平':118.2,'龙岩':117.0,'宁德':119.5,'石狮':118.6,'晋江':118.6,
-// 江西省
-'景德镇':117.2,'萍乡':113.8,'九江':116.0,'新余':114.9,'鹰潭':117.0,'赣州':114.9,'吉安':115.0,'宜春':114.4,'抚州':116.4,'上饶':118.0,'井冈山':114.1,'瑞金':116.0,
-// 山东省
-'淄博':118.0,'枣庄':117.3,'东营':118.7,'烟台':121.4,'潍坊':119.1,'济宁':116.6,'泰安':117.1,'威海':122.1,'日照':119.5,'莱芜':117.7,'临沂':118.3,'德州':116.3,'聊城':116.0,'滨州':118.0,'菏泽':115.5,'曲阜':117.0,'蓬莱':120.8,
-// 河南省
-'开封':114.3,'洛阳':112.4,'平顶山':113.3,'安阳':114.4,'鹤壁':114.3,'新乡':113.9,'焦作':113.2,'濮阳':115.0,'许昌':113.8,'漯河':114.0,'三门峡':111.2,'南阳':112.5,'商丘':115.7,'信阳':114.1,'周口':114.6,'驻马店':114.0,'济源':112.6,
-// 湖北省
-'黄石':115.1,'十堰':110.8,'宜昌':111.3,'襄阳':112.1,'鄂州':114.9,'荆门':112.2,'孝感':113.9,'荆州':112.2,'黄冈':114.9,'咸宁':114.3,'随州':113.4,'恩施':109.5,'仙桃':113.4,'潜江':112.9,'天门':113.2,'神农架':110.7,
-// 湖南省
-'株洲':113.1,'湘潭':112.9,'衡阳':112.6,'邵阳':111.5,'岳阳':113.1,'常德':111.7,'张家界':110.5,'益阳':112.4,'郴州':113.0,'永州':111.6,'怀化':110.0,'娄底':112.0,'湘西':109.7,'浏阳':113.6,'韶山':112.5,'凤凰':109.6,
-// 广东省
-'韶关':113.6,'珠海':113.6,'汕头':116.7,'佛山':113.1,'江门':113.1,'湛江':110.4,'茂名':110.9,'肇庆':112.5,'惠州':114.4,'梅州':116.1,'汕尾':115.4,'河源':114.7,'阳江':111.9,'清远':113.1,'东莞':113.8,'中山':113.4,'潮州':116.6,'揭阳':116.4,'云浮':112.0,
-// 广西
-'柳州':109.4,'桂林':110.3,'梧州':111.3,'北海':109.1,'防城港':108.3,'钦州':108.6,'贵港':109.6,'玉林':110.2,'百色':106.6,'贺州':111.6,'河池':108.1,'来宾':109.2,'崇左':107.4,'阳朔':110.5,
-// 海南省
-'三亚':109.5,'三沙':112.3,'儋州':109.6,'琼海':110.5,'文昌':110.8,'万宁':110.4,'东方':108.7,'五指山':109.5,'陵水':110.0,'博鳌':110.6,
-// 四川省
-'自贡':104.8,'攀枝花':101.7,'泸州':105.4,'德阳':104.4,'绵阳':104.7,'广元':105.8,'遂宁':105.6,'内江':105.1,'乐山':103.8,'南充':106.1,'眉山':103.9,'宜宾':104.6,'广安':106.6,'达州':107.5,'雅安':103.0,'巴中':106.8,'资阳':104.6,'阿坝':102.2,'甘孜':101.9,'凉山':102.3,'西昌':102.3,'峨眉山':103.5,'都江堰':103.6,'九寨沟':104.2,
-// 贵州省
-'六盘水':104.8,'遵义':106.9,'安顺':105.9,'毕节':105.3,'铜仁':109.2,'黔西南':104.9,'黔东南':107.9,'黔南':107.5,'仁怀':106.4,'凯里':107.9,
-// 云南省
-'曲靖':103.8,'玉溪':102.5,'保山':99.2,'昭通':103.7,'丽江':100.2,'普洱':100.9,'临沧':100.1,'楚雄':101.5,'红河':103.3,'文山':104.2,'西双版纳':100.8,'大理':100.2,'德宏':98.6,'怒江':98.9,'迪庆':99.7,'香格里拉':99.7,'瑞丽':97.8,'腾冲':98.5,
-// 西藏
-'昌都':97.2,'山南':91.8,'日喀则':88.9,'那曲':92.1,'阿里':80.1,'林芝':94.3,
-// 陕西省
-'铜川':109.1,'宝鸡':107.2,'咸阳':108.7,'渭南':109.5,'延安':109.5,'汉中':107.0,'榆林':109.7,'安康':109.0,'商洛':109.9,'杨凌':108.1,
-// 甘肃省
-'嘉峪关':98.3,'金昌':102.2,'白银':104.1,'天水':105.7,'武威':102.6,'张掖':100.4,'平凉':106.7,'酒泉':98.5,'庆阳':107.6,'定西':104.6,'陇南':104.9,'临夏':103.2,'甘南':102.9,'敦煌':94.7,
-// 青海省
-'海东':102.1,'海北':100.9,'黄南':102.0,'海南州':100.6,'果洛':100.2,'玉树':97.0,'海西':97.4,'格尔木':94.9,'德令哈':97.4,
-// 宁夏
-'石嘴山':106.4,'吴忠':106.2,'固原':106.3,'中卫':105.2,
-// 新疆
-'克拉玛依':84.9,'吐鲁番':89.2,'哈密':93.5,'昌吉':87.3,'博尔塔拉':82.1,'巴音郭楞':86.1,'阿克苏':80.3,'克孜勒苏':76.1,'喀什':75.9,'和田':79.9,'伊犁':81.3,'塔城':82.9,'阿勒泰':88.1,'石河子':86.0,
-// 港澳台
-'香港':114.2,'九龙':114.2,'新界':114.1,'离岛':113.9,'澳门':113.5,'氹仔':113.6,'台北':121.5,'新北':121.5,'桃园':121.3,'台中':120.7,'台南':120.2,'高雄':120.3,'基隆':121.7,'新竹':121.0,'嘉义':120.4,'宜兰':121.8,'花莲':121.6,'台东':121.1,'澎湖':119.6,'金门':118.3,'马祖':119.9
-};
-
-// 构建前缀索引（加速模糊搜索）
-let cityIndex = null;
-function buildCityIndex(){
-  cityIndex = [];
-  for(const [name,lng] of Object.entries(CITY_LNG)){
-    cityIndex.push({name, lng, pinyin: name.split('').map(c=>c).join('')});
-  }
-}
-buildCityIndex();
-
-let globalTrueSolar = null;
-
-// 智能匹配：输入文本中查找城市名
-function matchLocation(text){
-  if(!text) return [];
-  const t = text.trim();
-  const results = [];
-  // 精确包含匹配（优先）
-  for(const entry of cityIndex){
-    if(t.includes(entry.name)){
-      results.push({...entry, score: 1, matchType: 'contains'});
-    }
-  }
-  // 模糊匹配（输入是某个城市名的前缀）
-  if(results.length === 0){
-    for(const entry of cityIndex){
-      if(entry.name.includes(t)){
-        results.push({...entry, score: 0.5, matchType: 'prefix'});
-      }
-    }
-  }
-  // 按分数排序，短的优先（更精确）
-  results.sort((a,b)=>b.score-a.score || a.name.length-b.name.length);
-  return results.slice(0,12);
-}
-
-// 渲染建议列表
-function showLocationSuggestions(suggestions){
-  let el = document.getElementById('locationSuggestions');
-  if(!el){
-    el = document.createElement('div');
-    el.id = 'locationSuggestions';
-    el.style.cssText = 'position:absolute;top:100%;left:0;right:0;background:rgba(18,18,42,.95);border:1px solid #c8a96e;border-radius:0 0 5px 5px;max-height:240px;overflow-y:auto;z-index:10;display:none;font-size:13px';
-    document.getElementById('s-location').parentElement.style.position = 'relative';
-    document.getElementById('s-location').parentElement.appendChild(el);
-  }
-  if(!suggestions||suggestions.length===0){ el.style.display='none'; return; }
-  el.innerHTML = suggestions.map(s=>
-    '<div class="sug-item" data-name="'+s.name+'" data-lng="'+s.lng+'" style="padding:6px 10px;cursor:pointer;color:#e8dcc8;border-bottom:1px solid rgba(42,42,74,.5)">'+
-    '<span style="color:#c8a96e">'+s.name+'</span> '+
-    '<span style="color:#8a7a5a;font-size:11px">'+s.lng+'°E</span></div>'
-  ).join('');
-  el.querySelectorAll('.sug-item').forEach(item=>{
-    item.addEventListener('click',function(){
-      const name = this.getAttribute('data-name');
-      const lng = this.getAttribute('data-lng');
-      document.getElementById('s-location').value = name;
-      document.getElementById('s-lng').value = lng;
-      document.getElementById('s-status').textContent = '';
-      document.getElementById('s-status').className = 'geocode-msg';
-      el.style.display = 'none';
-    });
-    item.addEventListener('mouseenter',function(){this.style.background='rgba(200,169,110,.15)';});
-    item.addEventListener('mouseleave',function(){this.style.background='';});
-  });
-  el.style.display = 'block';
-}
-
-function onLocationInput(){
-  const val = document.getElementById('s-location').value;
-  const suggestions = matchLocation(val);
-  // 自动填入第一个精确匹配
-  if(suggestions.length>0 && suggestions[0].score===1){
-    document.getElementById('s-lng').value = suggestions[0].lng;
-  }
-  showLocationSuggestions(suggestions.length>1||suggestions.length===1? suggestions:[]);
-}
-
-// 点击空白处关闭建议
-document.addEventListener('click',function(e){
-  const inp = document.getElementById('s-location');
-  const sug = document.getElementById('locationSuggestions');
-  if(sug && e.target!==inp && !sug.contains(e.target)){
-    sug.style.display='none';
-  }
-});
-
-async function geocodeLocation(){
-  const q = document.getElementById('s-location').value.trim();
-  if(!q){ showGeocodeMsg('请先输入出生地点','err'); return; }
-  
-  // 先在本地库中匹配
-  const matches = matchLocation(q);
-  if(matches.length > 0 && matches[0].score === 1){
-    document.getElementById('s-location').value = matches[0].name;
-    document.getElementById('s-lng').value = matches[0].lng;
-    showGeocodeMsg('已匹配「'+matches[0].name+'」经度 '+matches[0].lng+'°E','ok');
-    return;
-  }
-  
-  // 尝试服务端Nominatim（可能较慢）
-  const btn = document.querySelector('.btn-geocode');
-  btn.disabled = true; btn.textContent = '⏳';
-  showGeocodeMsg('未在本地库查到，正在联网查询...','loading');
-  
-  const timeout = new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),8000));
-  try {
-    const resp = await Promise.race([
-      fetch(API+'/geocode?q='+encodeURIComponent(q)),
-      timeout
-    ]);
-    if(resp instanceof Error) throw resp;
-    const results = await resp.json();
-    btn.disabled = false; btn.textContent = '🔍';
-    if(results.error){
-      showGeocodeMsg(results.error + '，请在本地库中选择或手动输入经度','err');
-    } else {
-      let best = results.find(r => r.type === 'city') || results.find(r => r.type === 'administrative') || results[0];
-      document.getElementById('s-lng').value = best.lon.toFixed(2);
-      showGeocodeMsg('📍 '+best.name.split(',')[0]+' → 经度 '+best.lon.toFixed(2)+'°E','ok');
-    }
-  } catch(e) {
-    btn.disabled = false; btn.textContent = '🔍';
-    showGeocodeMsg('联网查询超时，请在本地库中选择或手动输入经度','err');
-  }
-}
-
-function showGeocodeMsg(msg, type){
-  const el = document.getElementById('s-status');
-  el.textContent = msg;
-  el.className = 'geocode-msg show';
-  el.style.color = type==='ok'?'#5cb85c':type==='err'?'#dc3545':'#c8a96e';
-}
-function hourToBranchIdx(h){
-  if(h===23||h===0) return 0;
-  return Math.ceil(h/2);
-}
-function calcTrueSolar(year,month,day,hour,minute,lng){
-  const offsetMin = Math.round((lng - 120) * 4);
-  let totalMin = hour * 60 + (minute||0) + offsetMin;
-  let adjDay = day, adjMonth = month, adjYear = year;
-  if(totalMin < 0){ totalMin += 1440; adjDay--; }
-  if(totalMin >= 1440){ totalMin -= 1440; adjDay++; }
-  // 处理跨月
-  if(adjDay < 1){ adjMonth--; if(adjMonth<1){adjMonth=12;adjYear--;}
-    adjDay = new Date(adjYear,adjMonth,0).getDate(); }
-  if(adjDay > new Date(adjYear,adjMonth,0).getDate()){ adjDay=1; adjMonth++;
-    if(adjMonth>12){adjMonth=1;adjYear++;} }
-  const adjHour = Math.floor(totalMin / 60);
-  const adjMinute = totalMin % 60;
-  const origIdx = hourToBranchIdx(hour);
-  const adjIdx = hourToBranchIdx(adjHour);
-  const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-  return {
-    origHour:hour, origMinute:minute, adjHour, adjMinute,
-    origDay:day, adjDay, origMonth:month, adjMonth, origYear:year, adjYear,
-    offsetMin, longitude:lng,
-    origBranch:DZ[origIdx], adjBranch:DZ[adjIdx],
-    branchChanged: origIdx !== adjIdx
-  };
-}
-
-async function getChart(){
-    const btn=document.querySelector('.btn-submit');
-    const st=document.getElementById('status');
-    btn.disabled=true;btn.textContent='排盘中...';
-    st.className='status show loading';st.textContent='正在计算命盘...';
-
-    // 真太阳时计算
-    let useYear = parseInt(document.getElementById('s-year').value);
-    let useMonth = parseInt(document.getElementById('s-month').value);
-    let useDay = parseInt(document.getElementById('s-day').value);
-    let useHour = parseInt(document.getElementById('s-hour').value);
-    let useMinute = parseInt(document.getElementById('s-minute').value) || 0;
-    globalTrueSolar = null;
-
-    if(document.getElementById('useTrueSolar').checked){
-        const lng = parseFloat(document.getElementById('s-lng').value) || 120;
-        globalTrueSolar = calcTrueSolar(useYear, useMonth, useDay, useHour, useMinute, lng);
-        useYear = globalTrueSolar.adjYear;
-        useMonth = globalTrueSolar.adjMonth;
-        useDay = globalTrueSolar.adjDay;
-        useHour = globalTrueSolar.adjHour;
-        useMinute = globalTrueSolar.adjMinute;
-    }
-
-    const params=new URLSearchParams({
-        year:useYear,
-        month:useMonth,
-        day:useDay,
-        hour:useHour,
-        minute:useMinute,
-        gender:document.getElementById('s-gender').value
-    });
-    try{
-        const resp=await fetch(API+'/chart?'+params);
-        if(!resp.ok)throw new Error('排盘失败');
-        const d=await resp.json();
-        if(d.error)throw new Error(d.error);
-        render(d);
-        
-        st.className='status';btn.disabled=false;btn.textContent='开始排盘';
-        document.getElementById('s-result').classList.add('show');
-        document.getElementById('s-result').scrollIntoView({behavior:'smooth'});
-        // auto-print when ?print=1
-        if(new URLSearchParams(location.search).get('print')==='1'){
-          setTimeout(()=>window.print(),1500);
-        }
-    }catch(e){
-        st.textContent='排盘失败: '+e.message+' (请确认服务已启动: node chart-server.js)';
-        st.className='status show error';btn.disabled=false;btn.textContent='重试';
-    }
-}
-
-function render(d){
-    const origH = globalTrueSolar ? globalTrueSolar.origHour : d.birth.hour;
-    const origM = globalTrueSolar ? globalTrueSolar.origMinute : (d.birth.minute ?? 0);
-    const hStr=HOUR_LABELS[Math.floor(origH/2)*2===22?22:Math.floor((origH+1)/2)*2];
-    const ymd = (globalTrueSolar
-      ? globalTrueSolar.origYear+'年'+globalTrueSolar.origMonth+'月'+globalTrueSolar.origDay+'日'
-      : d.birth.year+'年'+d.birth.month+'月'+d.birth.day+'日');
-    const genderTitle=d.birth.gender==='male'?'乾造':'坤造';
-
-    const ming=pn(d,'命宫');
-    const shen=d.palaces.find(p=>p.isBodyPalace);
-    const cai=pn(d,'财帛');const guan=pn(d,'官禄');
-    const qian=pn(d,'迁移');const tian=pn(d,'田宅');
-    const fuqi=pn(d,'夫妻');const funv=pn(d,'子女');
-    const fude=pn(d,'福德');const jie=pn(d,'疾厄');
-    const fumu=pn(d,'父母');const xiongdi=pn(d,'兄弟');
-    const puyi=pn(d,'仆役');
-    
-    // 计算来因宫
-    globalLaiYin = calculateLaiYinPalace(d);
-
-    const html=`
-<div class="intro-section">
-    <h2>命主基本信息</h2>
-    <div class="info-row">
-        <span><strong>性别：</strong>${d.birth.gender==='male'?'男':'女'}</span>
-        <span><strong>阳历：</strong>${ymd} ${origH}:${String(origM).padStart(2,'0')}时</span>
-        <span><strong>农历：</strong>${d.lunar.yearName}年${d.lunar.monthName}月${d.lunar.dayName}日${d.info.hourBranch}时</span>
-        ${globalTrueSolar ? '<span style="color:#c8a96e"><strong>⏱ 真太阳时：</strong>'+globalTrueSolar.adjYear+'年'+globalTrueSolar.adjMonth+'月'+globalTrueSolar.adjDay+'日 '+globalTrueSolar.adjHour+':'+String(globalTrueSolar.adjMinute).padStart(2,'0')+'（'+globalTrueSolar.adjBranch+'时） 经度'+globalTrueSolar.longitude.toFixed(2)+'°E 偏移'+(globalTrueSolar.offsetMin>0?'+':'')+globalTrueSolar.offsetMin+'分钟'+(globalTrueSolar.branchChanged?' <span style="color:#dc3545;font-weight:bold">时辰已变!</span>':'')+'</span>' : ''}
-    </div>
-    <div class="info-row" style="margin-top:6px">
-        <span><strong>五行局：</strong>${d.info.wuxingJu}</span>
-        <span><strong>命主：</strong>${d.info.mingZhu}</span>
-        <span><strong>身主：</strong>${d.info.shenZhu}</span>
-        <span><strong>身宫：</strong>${shen.branch}（${shen.name}）</span>
-        <span><strong>来因宫：</strong>${globalLaiYin.branch}（${globalLaiYin.name}）</span>
-        <span><strong>当前年龄：</strong>${d.currentAge}虚岁</span>
-    </div>
-</div>
-
-<div class="chart-section">
-    <h3 class="chart-title">命盘十二宫</h3>
-    <div class="palace-grid">
-        ${renderPalaceGrid(d,ming,shen)}
-    </div>
-</div>
-
-<div class="analysis-section">
-    <h3 class="analysis-title">专业命理分析</h3>
-    <div class="analysis-content">
-        ${renderAnalysis(d,ming,shen,cai,guan,qian,tian,fuqi,funv,fude,jie,fumu,xiongdi,puyi)}
-    </div>
-</div>
-
-<div class="footer">
-    ${renderFooter(d,ming,cai,fuqi,tian)}
-</div>`;
-
-    document.getElementById('s-result').innerHTML=html;
-}
-
-function renderPalaceGrid(d,ming,shen){
-    // render in fixed DZ order matching the original template layout
-    const dzOrder=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    return dzOrder.map(dz=>{
-        const p=d.palaces.find(p=>p.branch===dz);
-        if(!p)return'';
-        let cls='palace';
-        if(p.name==='命宫')cls+=' ming';
-        if(p.isBodyPalace)cls+=' shen';
-        let badges='';
-        if(p.name==='命宫')badges+='<span class="palace-badge badge-ming">命</span>';
-        if(p.isBodyPalace&&p.name!=='命宫')badges+='<span class="palace-badge badge-shen">身</span>';
-        let stars='';
-        p.stars.forEach(s=>{
-            let cn='';const nm=s.name;
-            if(s.type==='major')cn='star-main';
-            else if(['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(nm))cn='star-lucky';
-            else if(['擎羊','陀罗','火星','铃星','地空','地劫','天空'].includes(nm))cn='star-evil';
-            else cn='star-minor';
-            stars+=`<div class="${cn}">${allStarName(s)}${s.brightness&&s.brightness!=='平'?'['+s.brightness+']':''}</div>`;
-        });
-        let lbl=p.name;
-        if(p.isBodyPalace)lbl+='(身宫)';
-        return `<div class="${cls}">${badges}<div class="palace-name">${dz}宫 · ${lbl}</div><div class="star-list">${stars}</div></div>`;
-    }).join('');
-}
-
-// ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
-function computePastYears(d){
-  const DZ_ORDER=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-  const GAN='甲乙丙丁戊己庚辛壬癸';
-  const daxianOrder=['命宫','兄弟宫','夫妻宫','子女宫','财帛宫','疾厄宫','迁移宫','交友宫','官禄宫','田宅宫','福德宫','父母宫'];
-  const birthYear=d.birth.year, birthMonth=d.birth.month, birthDay=d.birth.day;
-  const age=parseInt(d.currentAge),curYear=new Date().getFullYear();
-  
-  // 计算每个大限的起止年份
-  const dxYears=[];
-  const dir=d.gender==='male'?1:-1; // simplified
-  let startAge=0;
-  d.daXians.forEach((dx,i)=>{
-    dxYears.push({name:dx.palaceName,branch:dx.palaceBranch,start:startAge,end:dx.endAge,startYear:birthYear+startAge,endYear:birthYear+dx.endAge-1});
-  });
-  
-  const pastYears=[];
-  const startYr=Math.max(curYear-15,birthYear);
-  for(let yr=startYr;yr<=curYear+10;yr++){
-    const vAge=yr-birthYear+1;
-    if(vAge<1)continue;
-    const yrGan=GAN[(yr-4)%10];
-    const yrZhi=DZ_ORDER[(yr-4)%12];
-    
-    // 流年命宫地支
-    const yearlyPalaceBranch=DZ_ORDER[(yr-4)%12];
-    
-    // 找到该年份所处的大限
-    let decadalPalace='命宫',decadalBranch='';
-    for(let di=d.daXians.length-1;di>=0;di--){
-      if(vAge>=d.daXians[di].startAge){
-        decadalPalace=d.daXians[di].palaceName;
-        decadalBranch=d.daXians[di].palaceBranch;
+// City lookup for single chart
+window.lookupCitySingle = function() {
+  var input = document.getElementById('s-location');
+  var lngField = document.getElementById('s-lng');
+  var city = (input.value || '').trim();
+  if (!city) return;
+  var found = false;
+  if (window._CITY_DB) {
+    for (var i = 0; i < window._CITY_DB.length; i++) {
+      if (window._CITY_DB[i].name.indexOf(city) !== -1) {
+        lngField.value = window._CITY_DB[i].lng;
+        window._CITY_LNG[city] = window._CITY_DB[i].lng;
+        found = true;
         break;
       }
     }
-    
-    const yearlyPalace=d.palaces.find(p=>p.branch===yearlyPalaceBranch);
-    pastYears.push({
-      year:yr, age:vAge,
-      yearlyStem:yrGan, yearlyBranch:yrZhi,
-      yearlyPalaceName:yearlyPalace?yearlyPalace.name:'',
-      yearlyPalaceBranch,
-      decadalPalace, decadalBranch
-    });
   }
-  return pastYears;
-}
+  var info = document.getElementById('s-tsinfo');
+  if (found) {
+    info.textContent = city + ' 经度 ' + lngField.value + '°E';
+  } else {
+    info.textContent = '未找到城市，请手动输入经度（默认120°E）';
+  }
+};
 
-function renderAnalysis(d,ming,shen,cai,guan,qian,tian,fuqi,funv,fude,jie,fumu,xiongdi,puyi){
-    let h='';
+// Show true solar time info
+window.showTSInfoSingle = function() {
+  var info = document.getElementById('s-tsinfo');
+  var lng = parseFloat(document.getElementById('s-lng').value) || 120;
+  if (document.getElementById('s-ts').checked) {
+    var offset = Math.round((lng - 120) * 4);
+    var sign = offset >= 0 ? '+' : '';
+    info.textContent = '真太阳时偏移 ' + sign + offset + ' 分钟（经度 ' + lng + '°E）';
+  } else {
+    info.textContent = '';
+  }
+};
 
-    // === 一、命盘基本格局 ===
-    h+=`<h3>一、命盘基本格局</h3>`;
+// Do single chart
+window.doSingleChart = async function() {
+  var btn = document.getElementById('btn-single');
+  var st = document.getElementById('s-status');
+  var result = document.getElementById('s-result');
 
-    // 命宫
-    h+=`<h4>1. 命宫分析（${ming.stem}${ming.branch}宫）</h4>`;
-    h+=renderMingGongAnalysis(ming,d);
+  btn.disabled = true;
+  btn.textContent = '排盘中...';
+  st.textContent = '正在计算...';
+  st.style.color = 'var(--text-muted)';
+  result.innerHTML = '';
 
-    // 身宫
-    if(shen){
-        h+=`<h4>2. 身宫分析（${shen.stem}${shen.branch}宫，${shen.name}）</h4>`;
-        h+=renderShenGongAnalysis(shen,d);
+  try {
+    var data = await getChartSingle();
+    if (!data || !data.palaces) throw new Error('排盘返回数据为空');
+
+    renderSingleChart(data);
+    st.textContent = '排盘完成';
+    st.style.color = 'var(--accent)';
+  } catch (e) {
+    st.textContent = '错误: ' + e.message;
+    st.style.color = 'red';
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '\u{1F52E} 开 始 排 盘';
+  }
+};
+
+// Render single chart result
+function renderSingleChart(d) {
+  var out = [];
+  out.push('<div class="single-result">');
+
+  // Basic info
+  out.push('<div class="result-card"><h3>基本信息</h3>');
+  out.push('<table><tr><th>公历</th><td>' + (d.birth || {}).solar || d.solar || '-' + '</td>');
+  out.push('<th>农历</th><td>' + (d.lunar || '-') + '</td></tr>');
+  out.push('<tr><th>时辰</th><td>' + (d.birth || {}).branch || '-' + '</td>');
+  out.push('<th>性别</th><td>' + ((d.birth || {}).gender === 'female' ? '女' : '男') + '</td></tr></table></div>');
+
+  // 12 palaces
+  if (d.palaces) {
+    out.push('<div class="result-card"><h3>十二宫</h3>');
+    out.push('<div class="chart-palace-grid">');
+    var pnames = ['命宫','兄弟','夫妻','子女','财帛','疾厄','迁移','交友','官禄','田宅','福德','父母'];
+    for (var pi = 0; pi < 12; pi++) {
+      var pd = d.palaces[pi] || {};
+      var stars = (pd.major || []).concat(pd.minor || []).slice(0, 6);
+      out.push('<div class="cp-cell"><div class="cn">' + pnames[pi] + '</div>');
+      out.push('<div class="cs">' + stars.join(' ') + '</div></div>');
     }
+    out.push('</div></div>');
+  }
 
-    // 格局判断
-    h+=`<h4>3. 特殊格局</h4>`;
-    h+=renderPatternAnalysis(d);
-
-    // === 二、十二宫详细解读 ===
-    h+=`<h3>二、十二宫详细解读</h3>`;
-
-    h+=`<h4>田宅宫（${tian.stem}${tian.branch}宫）★ 一生福禄</h4>`;
-    h+=renderTianZhaiAnalysis(tian,d);
-
-    h+=`<h4>财帛宫（${cai.stem}${cai.branch}宫）</h4>`;
-    h+=renderCaiBoAnalysis(cai,d);
-
-    h+=`<h4>官禄宫（${guan.stem}${guan.branch}宫）</h4>`;
-    h+=renderGuanLuAnalysis(guan,d);
-
-    h+=`<h4>福德宫（${fude.stem}${fude.branch}宫）${globalLaiYin.name==='福德宫'?'·来因宫':''}</h4>`;
-    h+=renderFuDeAnalysis(fude,d);
-
-    h+=`<h4>迁移宫（${qian.stem}${qian.branch}宫）</h4>`;
-    h+=renderQianYiAnalysis(qian,d);
-
-    h+=`<h4>疾厄宫（${jie.stem}${jie.branch}宫）</h4>`;
-    h+=renderJiEAnalysis(jie,d);
-
-    h+=`<h4>父母宫（${fumu.stem}${fumu.branch}宫）</h4>`;
-    h+=renderFuMuAnalysis(fumu,d);
-
-    h+=`<h4>兄弟宫（${xiongdi.stem}${xiongdi.branch}宫）</h4>`;
-    h+=renderXiongDiAnalysis(xiongdi,d);
-
-    h+=`<h4>子女宫（${funv.stem}${funv.branch}宫）</h4>`;
-    h+=renderZiNvAnalysis(funv,d);
-
-    h+=`<h4>交友宫（${puyi.stem}${puyi.branch}宫）</h4>`;
-    h+=renderPuYiAnalysis(puyi,d);
-
-    // === 三、三方四正 ===
-    h+=`<h3>三、三方四正分析</h3>`;
-    h+=renderTriSquare(ming,cai,guan,qian,d);
-
-    // === 四、大限流年关键期 ===
-    h+=`<h3>四、大限流年关键期</h3>`;
-    h+=renderDaXian(d);
-
-    // === 五、断前事·关键年份回溯（实时计算）===
-    h+=`<h3>五、断前事·关键年份回溯（过去10年）</h3>`;
-    const computedPastYears=computePastYears(d);
-    d.pastYears=computedPastYears;
-    h+=renderKeyYears(d);
-    
-    // === 六、前世因果推断 ===
-    h+=`<h3>六、前世因果推断</h3>`;
-    h+=renderPastLife(d);
-
-    // === 七、姻缘流年预测 / 财运流年预测 ===
-    const vAge=new Date().getFullYear()-d.birth.year+1;
-    if(vAge>35){
-      h+=`<h3>七、财运流年预测</h3>`;
-      h+=renderWealthYears(d);
-    }else{
-      h+=`<h3>七、姻缘流年预测</h3>`;
-      h+=renderMarriageYears(d);
+  // Analysis - call adapted functions if available
+  if (typeof renderAnalysis === 'function') {
+    try {
+      out.push(renderAnalysis(d));
+    } catch(e) {
+      out.push('<div class="result-card"><p style="color:red">分析出错: ' + e.message + '</p></div>');
     }
+  }
 
-    // === 八、健康风险预警 ===
-    h+=`<h3>八、健康风险预警</h3>`;
-    h+=renderHealthRisks(d);
-
-    // === 九、综合建议 ===
-    h+=`<h3>九、综合建议</h3>`;
-    h+=renderSuggestions(d);
-
-    return h;
+  out.push('</div>');
+  document.getElementById('s-result').innerHTML = out.join('
+');
 }
 
-// ──────────────────────────────────────────────
-// 星曜解读数据库（完整覆盖14主星 × 12宫位）
-// ──────────────────────────────────────────────
-function starNature(nm){
-  const n={'紫微':'帝王星·主尊贵/领导力/创造力','天机':'智慧星·主谋略/变通/善机变','太阳':'光明星·主热情/公益/社交/发散','武曲':'财星·主刚毅/执行力/金融','天同':'福星·主安逸/享福/温和善良','廉贞':'囚星·主拘束/血光/是非/精密','天府':'库星·主包容/稳重/富足积累','太阴':'富星·主细腻/温柔/洁净/暗财','贪狼':'桃花星·主欲望/人缘/才艺/交际','巨门':'暗星·主是非/口舌/深究/隐密','天相':'印星·主辅佐/协调/公正/服务','天梁':'荫星·主长寿/庇护/学术/清贵','七杀':'将星·主果断/竞争/开拓/威权','破军':'耗星·主改革/破坏重建/敢作敢为'};
-  return n[nm]||'';
+
+// ===== SINGLE-CHART ANALYSIS ENGINE (adapted from ziwei-app.html) =====
+
+// Adapted getChart: uses client Ziwei engine instead of fetch API
+async function getChartSingle() {
+  var y = parseInt(document.getElementById('s-year').value);
+  var m = parseInt(document.getElementById('s-month').value);
+  var d = parseInt(document.getElementById('s-day').value);
+  var h = parseInt(document.getElementById('s-hour').value);
+  var mi = parseInt(document.getElementById('s-minute').value) || 0;
+  var g = document.getElementById('s-gender').value;
+  var lng = parseFloat(document.getElementById('s-lng').value) || 120;
+  if (!window.Ziwei || !window.Ziwei.computeChart) {
+    throw new Error('Ziwei engine not loaded. Please hard-refresh (Ctrl+Shift+R).');
+  }
+  return window.Ziwei.computeChart(y, m, d, h, mi, g, lng);
 }
-function brightMod(bw){if(bw==='旺'||bw==='庙')return '庙旺有力，能量正向发挥';if(bw==='陷')return '落陷无力，能量受阻或需转向内在';return '平位，表现中规中矩';}
-function siHuaMod(sh){if(!sh)return'';const m={lu:'福禄加持，此宫非常有利',quan:'掌控力增强，自主权提升',ke:'学识才华展现，名声提升',ji:'能量阻塞，此宫需格外费力经营'};return '；<strong>化'+hn(sh)+'</strong>——'+m[sh];}
+
+增强，自主权提升',ke:'学识才华展现，名声提升',ji:'能量阻塞，此宫需格外费力经营'};return '；<strong>化'+hn(sh)+'</strong>——'+m[sh];}
 
 function getPalaceStarMeaning(star,palace){
   const k=star+'_'+palace;
@@ -2583,722 +2971,54 @@ function renderFooter(d,ming,cai,fuqi,tian){
 // support URL params: ?year=1993&month=8&day=31&hour=12&gender=female
 window.addEventListener('DOMContentLoaded',()=>{
   const params=new URLSearchParams(location.search);
-  if(params.has('year'))document.getElementById('s-year').value=params.get('year');
-  if(params.has('month'))document.getElementById('s-month').value=params.get('month');
-  if(params.has('day'))document.getElementById('s-day').value=params.get('day');
-  if(params.has('hour'))document.getElementById('s-hour').value=params.get('hour');
-  if(params.has('gender'))document.getElementById('s-gender').value=params.get('gender');
+  if(params.has('year'))document.getElementById('year').value=params.get('year');
+  if(params.has('month'))document.getElementById('month').value=params.get('month');
+  if(params.has('day'))document.getElementById('day').value=params.get('day');
+  if(params.has('hour'))document.getElementById('hour').value=params.get('hour');
+  if(params.has('gender'))document.getElementById('gender').value=params.get('gender');
   getChart();
 });
+</script>
+
+</body>
+</html>
+
 
 
 })();
 </script>
 
 <script>
+// ===== HEPAN TAB LOGIC =====
 (function(){
 'use strict';
 
 
+// 引擎加载 - 主路径 + 兜底
 (function(){
-'use strict';
-
-// ============================================================
-// ENGINE (client-side, no API needed)
-// ============================================================
-
-// ============================================================
-// CITY DATABASE (300+ cities with longitude)
-// ============================================================
-const CITY_LNG = {
-  // 直辖市
-  '北京':116.4,'上海':121.5,'天津':117.2,'重庆':106.5,
-  // 省会
-  '石家庄':114.5,'太原':112.5,'呼和浩特':111.7,'沈阳':123.4,'长春':125.3,'哈尔滨':126.5,
-  '南京':118.8,'杭州':120.2,'合肥':117.3,'福州':119.3,'南昌':115.9,'济南':117.0,
-  '郑州':113.7,'武汉':114.3,'长沙':113.0,'广州':113.3,'南宁':108.3,'海口':110.3,
-  '成都':104.1,'贵阳':106.7,'昆明':102.7,'拉萨':91.1,'西安':108.9,'兰州':103.7,
-  '西宁':101.8,'银川':106.3,'乌鲁木齐':87.6,
-  // 计划单列市+重要城市
-  '深圳':114.1,'厦门':118.1,'宁波':121.5,'青岛':120.4,'大连':121.6,
-  // 河北省
-  '唐山':118.2,'秦皇岛':119.6,'邯郸':114.5,'邢台':114.5,'保定':115.5,'张家口':114.9,'承德':117.9,'沧州':116.8,'廊坊':116.7,'衡水':115.7,'燕郊':116.8,'雄县':116.1,
-  // 山西省
-  '大同':113.3,'阳泉':113.6,'长治':113.1,'晋城':112.9,'朔州':112.4,'晋中':112.7,'运城':111.0,'忻州':112.7,'临汾':111.5,'吕梁':111.1,
-  // 内蒙古
-  '包头':109.8,'乌海':106.8,'赤峰':118.9,'通辽':122.3,'鄂尔多斯':109.8,'呼伦贝尔':119.8,'巴彦淖尔':107.4,'乌兰察布':113.1,'兴安盟':122.0,'锡林浩特':116.1,'阿拉善':105.7,
-  // 辽宁省
-  '鞍山':123.0,'抚顺':124.0,'本溪':123.8,'丹东':124.4,'锦州':121.1,'营口':122.2,'阜新':121.7,'辽阳':123.2,'盘锦':122.1,'铁岭':123.8,'朝阳':120.5,'葫芦岛':120.8,
-  // 吉林省
-  '吉林':126.5,'四平':124.4,'辽源':125.1,'通化':125.9,'白山':126.4,'松原':124.8,'白城':122.8,'延吉':129.5,'图们':129.8,'珲春':130.4,
-  // 黑龙江省
-  '齐齐哈尔':123.9,'鸡西':130.9,'鹤岗':130.3,'双鸭山':131.2,'大庆':125.0,'伊春':128.9,'佳木斯':130.3,'七台河':131.0,'牡丹江':129.6,'黑河':127.5,'绥化':127.0,'大兴安岭':124.1,
-  // 江苏省
-  '无锡':120.3,'徐州':117.2,'常州':119.9,'苏州':120.6,'南通':120.9,'连云港':119.2,'淮安':119.0,'盐城':120.2,'扬州':119.4,'镇江':119.4,'泰州':119.9,'宿迁':118.3,'昆山':121.0,'江阴':120.3,'宜兴':119.8,
-  // 浙江省
-  '温州':120.7,'嘉兴':120.8,'湖州':120.1,'绍兴':120.6,'金华':119.6,'衢州':118.9,'舟山':122.2,'台州':121.4,'丽水':119.9,'义乌':120.1,'慈溪':121.2,
-  // 安徽省
-  '芜湖':118.4,'蚌埠':117.4,'淮南':117.0,'马鞍山':118.5,'淮北':116.8,'铜陵':117.8,'安庆':117.1,'黄山':118.3,'滁州':118.3,'阜阳':115.8,'宿州':117.0,'六安':116.5,'亳州':115.8,'池州':117.5,'宣城':118.8,
-  // 福建省
-  '莆田':119.0,'三明':117.6,'泉州':118.6,'漳州':117.6,'南平':118.2,'龙岩':117.0,'宁德':119.5,'石狮':118.6,'晋江':118.6,
-  // 江西省
-  '景德镇':117.2,'萍乡':113.8,'九江':116.0,'新余':114.9,'鹰潭':117.0,'赣州':114.9,'吉安':115.0,'宜春':114.4,'抚州':116.4,'上饶':118.0,'井冈山':114.1,'瑞金':116.0,
-  // 山东省
-  '淄博':118.0,'枣庄':117.3,'东营':118.7,'烟台':121.4,'潍坊':119.1,'济宁':116.6,'泰安':117.1,'威海':122.1,'日照':119.5,'莱芜':117.7,'临沂':118.3,'德州':116.3,'聊城':116.0,'滨州':118.0,'菏泽':115.5,'曲阜':117.0,'蓬莱':120.8,
-  // 河南省
-  '开封':114.3,'洛阳':112.4,'平顶山':113.3,'安阳':114.4,'鹤壁':114.3,'新乡':113.9,'焦作':113.2,'濮阳':115.0,'许昌':113.8,'漯河':114.0,'三门峡':111.2,'南阳':112.5,'商丘':115.7,'信阳':114.1,'周口':114.6,'驻马店':114.0,'济源':112.6,
-  // 湖北省
-  '黄石':115.1,'十堰':110.8,'宜昌':111.3,'襄阳':112.1,'鄂州':114.9,'荆门':112.2,'孝感':113.9,'荆州':112.2,'黄冈':114.9,'咸宁':114.3,'随州':113.4,'恩施':109.5,'仙桃':113.4,'潜江':112.9,'天门':113.2,'神农架':110.7,
-  // 湖南省
-  '株洲':113.1,'湘潭':112.9,'衡阳':112.6,'邵阳':111.5,'岳阳':113.1,'常德':111.7,'张家界':110.5,'益阳':112.4,'郴州':113.0,'永州':111.6,'怀化':110.0,'娄底':112.0,'湘西':109.7,'浏阳':113.6,'韶山':112.5,'凤凰':109.6,
-  // 广东省
-  '韶关':113.6,'珠海':113.6,'汕头':116.7,'佛山':113.1,'江门':113.1,'湛江':110.4,'茂名':110.9,'肇庆':112.5,'惠州':114.4,'梅州':116.1,'汕尾':115.4,'河源':114.7,'阳江':111.9,'清远':113.1,'东莞':113.8,'中山':113.4,'潮州':116.6,'揭阳':116.4,'云浮':112.0,
-  // 广西
-  '柳州':109.4,'桂林':110.3,'梧州':111.3,'北海':109.1,'防城港':108.3,'钦州':108.6,'贵港':109.6,'玉林':110.2,'百色':106.6,'贺州':111.6,'河池':108.1,'来宾':109.2,'崇左':107.4,'阳朔':110.5,
-  // 海南省
-  '三亚':109.5,'三沙':112.3,'儋州':109.6,'琼海':110.5,'文昌':110.8,'万宁':110.4,'东方':108.7,'五指山':109.5,'陵水':110.0,'博鳌':110.6,
-  // 四川省
-  '自贡':104.8,'攀枝花':101.7,'泸州':105.4,'德阳':104.4,'绵阳':104.7,'广元':105.8,'遂宁':105.6,'内江':105.1,'乐山':103.8,'南充':106.1,'眉山':103.9,'宜宾':104.6,'广安':106.6,'达州':107.5,'雅安':103.0,'巴中':106.8,'资阳':104.6,'阿坝':102.2,'甘孜':101.9,'凉山':102.3,'西昌':102.3,'峨眉山':103.5,'都江堰':103.6,'九寨沟':104.2,
-  // 贵州省
-  '六盘水':104.8,'遵义':106.9,'安顺':105.9,'毕节':105.3,'铜仁':109.2,'黔西南':104.9,'黔东南':107.9,'黔南':107.5,'仁怀':106.4,'凯里':107.9,
-  // 云南省
-  '曲靖':103.8,'玉溪':102.5,'保山':99.2,'昭通':103.7,'丽江':100.2,'普洱':100.9,'临沧':100.1,'楚雄':101.5,'红河':103.3,'文山':104.2,'西双版纳':100.8,'大理':100.2,'德宏':98.6,'怒江':98.9,'迪庆':99.7,'香格里拉':99.7,'瑞丽':97.8,'腾冲':98.5,
-  // 西藏
-  '昌都':97.2,'山南':91.8,'日喀则':88.9,'那曲':92.1,'阿里':80.1,'林芝':94.3,
-  // 陕西省
-  '铜川':109.1,'宝鸡':107.2,'咸阳':108.7,'渭南':109.5,'延安':109.5,'汉中':107.0,'榆林':109.7,'安康':109.0,'商洛':109.9,'杨凌':108.1,
-  // 甘肃省
-  '嘉峪关':98.3,'金昌':102.2,'白银':104.1,'天水':105.7,'武威':102.6,'张掖':100.4,'平凉':106.7,'酒泉':98.5,'庆阳':107.6,'定西':104.6,'陇南':104.9,'临夏':103.2,'甘南':102.9,'敦煌':94.7,
-  // 青海省
-  '海东':102.1,'海北':100.9,'黄南':102.0,'海南州':100.6,'果洛':100.2,'玉树':97.0,'海西':97.4,'格尔木':94.9,'德令哈':97.4,
-  // 宁夏
-  '石嘴山':106.4,'吴忠':106.2,'固原':106.3,'中卫':105.2,
-  // 新疆
-  '克拉玛依':84.9,'吐鲁番':89.2,'哈密':93.5,'昌吉':87.3,'博尔塔拉':82.1,'巴音郭楞':86.1,'阿克苏':80.3,'克孜勒苏':76.1,'喀什':75.9,'和田':79.9,'伊犁':81.3,'塔城':82.9,'阿勒泰':88.1,'石河子':86.0,
-  // 港澳台
-  '香港':114.2,'九龙':114.2,'新界':114.1,'离岛':113.9,'澳门':113.5,'氹仔':113.6,'台北':121.5,'新北':121.5,'桃园':121.3,'台中':120.7,'台南':120.2,'高雄':120.3,'基隆':121.7,'新竹':121.0,'嘉义':120.4,'宜兰':121.8,'花莲':121.6,'台东':121.1,'澎湖':119.6,'金门':118.3,'马祖':119.9
-};
-
-// Build city index array for search
-const cityIndex = [];
-for(const [name, lng] of Object.entries(CITY_LNG)){
-  cityIndex.push({name, lng});
-}
-cityIndex.sort((a,b)=>a.name.localeCompare(b.name,'zh'));
-
-// ============================================================
-// TRUE SOLAR TIME
-// ============================================================
-const DIZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const SHICHEN_RANGES = [
-  '23:00-01:00','01:00-03:00','03:00-05:00','05:00-07:00',
-  '07:00-09:00','09:00-11:00','11:00-13:00','13:00-15:00',
-  '15:00-17:00','17:00-19:00','19:00-21:00','21:00-23:00'
-];
-
-function calcTrueSolarOffset(lng){
-  // offset = (120 - longitude) * 4 minutes
-  return (120 - lng) * 4;
-}
-
-function calcTrueSolarTime(hour, minute, lng){
-  const offsetMin = calcTrueSolarOffset(lng);
-  let totalMin = hour * 60 + minute + offsetMin;
-  // Clamp to 0-1439
-  totalMin = ((totalMin % 1440) + 1440) % 1440;
-  const solarHour = Math.floor(totalMin / 60);
-  return solarHour;
-}
-
-function hourToShichen(hour){
-  if(hour === 23 || hour === 0) return 0;
-  return Math.ceil(hour / 2);
-}
-
-function formatShichen(hour){
-  const idx = hourToShichen(hour);
-  return DIZHI[idx] + '时（' + SHICHEN_RANGES[idx] + '）';
-}
-
-// ============================================================
-// DOM REFS
-// ============================================================
-const $ = id => document.getElementById(id);
-
-// ============================================================
-// INITIALIZE SELECTS
-// ============================================================
-(function initSelects(){
-  // Year: 1900 - 2026
-  const yearOpts = '<option value="">年</option>';
-  for(let y = 2026; y >= 1900; y--){
-    // Rebuild each time for clarity
-  }
-  ['yearA','yearB'].forEach(id=>{
-    let html = '<option value="">年</option>';
-    for(let y = 2026; y >= 1900; y--){
-      html += '<option value="'+y+'">'+y+'</option>';
+  var LOADED = false;
+  function checkEngine(){
+    if (typeof window.Ziwei === 'object' && window.Ziwei.computeChart) {
+      LOADED = true;
+      console.log('[Ziwei] 引擎加载成功');
+      return true;
     }
-    $(id).innerHTML = html;
+    return false;
+  }
+  function loadFallback(){
+    if (LOADED) return;
+    console.warn('[Ziwei] 主路径加载失败，尝试从 raw.githubusercontent.com 加载...');
+    var s = document.createElement('script');
+    s.src = 'https://raw.githubusercontent.com/xingchao520hui-bit/ziwei-doushu/master/ziwei-full-engine.js';
+    s.onload = function(){ checkEngine(); };
+    s.onerror = function(){
+      console.error('[Ziwei] 兜底也加载失败，请检查网络');
+    };
+    document.head.appendChild(s);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if (!checkEngine()) loadFallback();
   });
-
-  // Month: 1-12
-  ['monthA','monthB'].forEach(id=>{
-    let html = '<option value="">月</option>';
-    for(let m = 1; m <= 12; m++){
-      html += '<option value="'+m+'">'+m+'月</option>';
-    }
-    $(id).innerHTML = html;
-  });
-
-  // Day: 1-31
-  ['dayA','dayB'].forEach(id=>{
-    let html = '<option value="">日</option>';
-    for(let d = 1; d <= 31; d++){
-      html += '<option value="'+d+'">'+d+'</option>';
-    }
-    $(id).innerHTML = html;
-  });
-
-  // Hour: 0-23
-  ['hourA','hourB'].forEach(id=>{
-    let html = '<option value="">时</option>';
-    for(let h = 0; h <= 23; h++){
-      html += '<option value="'+h+'">'+h+'时</option>';
-    }
-    $(id).innerHTML = html;
-  });
-
-  // Minute: 0-59
-  ['minuteA','minuteB'].forEach(id=>{
-    let html = '<option value="">分</option>';
-    for(let m = 0; m <= 59; m++){
-      html += '<option value="'+m+'">'+m+'分</option>';
-    }
-    $(id).innerHTML = html;
-  });
-})();
-
-// ============================================================
-// HAMBURGER MENU
-// ============================================================
-const hamburgerBtn = $('hamburgerBtn');
-const mobileMenu = $('mobileMenu');
-
-hamburgerBtn.addEventListener('click',()=>{
-  const isOpen = hamburgerBtn.classList.toggle('open');
-  mobileMenu.classList.toggle('open', isOpen);
-});
-
-// Close mobile menu on link click
-mobileMenu.querySelectorAll('a').forEach(a=>{
-  a.addEventListener('click',()=>{
-    hamburgerBtn.classList.remove('open');
-    mobileMenu.classList.remove('open');
-  });
-});
-
-// ============================================================
-// CALENDAR TOGGLE
-// ============================================================
-document.querySelectorAll('.calendar-toggle').forEach(toggle=>{
-  toggle.addEventListener('click',(e)=>{
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    // Toggle active
-    toggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    // Note: lunar conversion not implemented, just UI
-  });
-});
-
-// ============================================================
-// GENDER TOGGLE
-// ============================================================
-['genderToggleA','genderToggleB'].forEach(id=>{
-  const toggle = $(id);
-  toggle.addEventListener('click',(e)=>{
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    toggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
-
-function getGender(person){
-  const toggle = $('genderToggle' + person);
-  const active = toggle.querySelector('button.active');
-  return active ? active.dataset.gender : (person === 'A' ? 'male' : 'female');
-}
-
-// ============================================================
-// LOCATION PICKER
-// ============================================================
-// State per person
-const locState = {
-  A: { city: null, lng: null },
-  B: { city: null, lng: null }
-};
-
-['A','B'].forEach(person => {
-  const locBtn = $('locBtn'+person);
-  const locSearch = $('locSearch'+person);
-  const locDropdown = $('locDropdown'+person);
-  const locLabel = $('locLabel'+person);
-  const locArrow = $('locArrow'+person);
-
-  // Toggle search input
-  locBtn.addEventListener('click',()=>{
-    const isOpen = locSearch.classList.toggle('visible');
-    locArrow.classList.toggle('open', isOpen);
-    if(isOpen){
-      locSearch.focus();
-      // Show all cities by default
-      renderDropdown(person, '');
-    } else {
-      locDropdown.classList.remove('visible');
-    }
-  });
-
-  // Search input
-  locSearch.addEventListener('input',()=>{
-    const query = locSearch.value.trim();
-    renderDropdown(person, query);
-  });
-
-  // Close dropdown on outside click
-  document.addEventListener('click',(e)=>{
-    const wrapper = $('locWrapper'+person);
-    if(!wrapper.contains(e.target)){
-      locSearch.classList.remove('visible');
-      locDropdown.classList.remove('visible');
-      locArrow.classList.remove('open');
-    }
-  });
-});
-
-function renderDropdown(person, query){
-  const dropdown = $('locDropdown'+person);
-  let filtered = cityIndex;
-  if(query){
-    const q = query.toLowerCase();
-    filtered = cityIndex.filter(c => c.name.includes(q));
-  }
-
-  if(filtered.length === 0){
-    dropdown.innerHTML = '<div class="location-dropdown-item" style="color:#999">未找到匹配城市</div>';
-  } else {
-    dropdown.innerHTML = filtered.slice(0, 30).map(c =>
-      '<div class="location-dropdown-item" data-name="'+c.name+'" data-lng="'+c.lng+'">'+
-      '<span class="city-name">'+c.name+'</span>'+
-      '<span class="city-lng">'+c.lng+'°E</span>'+
-      '</div>'
-    ).join('');
-
-    dropdown.querySelectorAll('.location-dropdown-item[data-name]').forEach(item=>{
-      item.addEventListener('click',()=>{
-        const name = item.dataset.name;
-        const lng = parseFloat(item.dataset.lng);
-        selectCity(person, name, lng);
-      });
-    });
-  }
-  dropdown.classList.add('visible');
-}
-
-function selectCity(person, name, lng){
-  locState[person] = { city: name, lng: lng };
-  $('locLabel'+person).textContent = name;
-  $('locSearch'+person).classList.remove('visible');
-  $('locDropdown'+person).classList.remove('visible');
-  $('locArrow'+person).classList.remove('open');
-  updateTrueSolar(person);
-}
-
-function updateTrueSolar(person){
-  const state = locState[person];
-  const hourEl = $('hour'+person);
-  const solarText = $('solarText'+person);
-
-  if(!state.lng || !hourEl.value){
-    solarText.textContent = '真太阳时 → 选择地点和时间后显示';
-    return;
-  }
-
-  const hour = parseInt(hourEl.value);
-  if(isNaN(hour)){
-    solarText.textContent = '真太阳时 → 请先选择出生时间';
-    return;
-  }
-
-  const minute = parseInt($('minute'+person).value) || 0;
-  const solarHour = calcTrueSolarTime(hour, minute, state.lng);
-  const shichen = formatShichen(solarHour);
-
-  solarText.textContent = '真太阳时 → ' + shichen;
-}
-
-// Update true solar when hour/minute changes
-['hourA','minuteA','hourB','minuteB'].forEach(id=>{
-  $(id).addEventListener('change',()=>{
-    const person = id.includes('A') ? 'A' : 'B';
-    updateTrueSolar(person);
-  });
-});
-
-// ============================================================
-// UNKNOWN TIME CHECKBOX
-// ============================================================
-['unknownA','unknownB'].forEach(id=>{
-  $(id).addEventListener('change',function(){
-    const person = id.includes('A') ? 'A' : 'B';
-    const hourEl = $('hour'+person);
-    const minuteEl = $('minute'+person);
-    if(this.checked){
-      hourEl.value = '12';
-      minuteEl.value = '0';
-      hourEl.disabled = true;
-      minuteEl.disabled = true;
-    } else {
-      hourEl.disabled = false;
-      minuteEl.disabled = false;
-    }
-  });
-});
-
-// ============================================================
-// VALIDATE FORM
-// ============================================================
-function validatePerson(person){
-  const errors = [];
-  const year = parseInt($('year'+person).value);
-  const month = parseInt($('month'+person).value);
-  const day = parseInt($('day'+person).value);
-  const hour = parseInt($('hour'+person).value);
-  const minute = parseInt($('minute'+person).value);
-
-  if(isNaN(year)) errors.push('出生年份');
-  if(isNaN(month)) errors.push('出生月份');
-  if(isNaN(day)) errors.push('出生日期');
-  if(isNaN(hour)) errors.push('出生小时');
-  if(isNaN(minute)) errors.push('出生分钟');
-
-  return { valid: errors.length === 0, errors };
-}
-
-// ============================================================
-// ============================================================
-// CLIENT-SIDE ENGINE CALLS (no API needed)
-// ============================================================
-
-/** Wrap engine chart output into format renderChartCard expects */
-function chartToRenderFormat(raw){
-  return {
-    palaces: raw.palaces,
-    info: {
-      mingZhu: raw.mingPalace ? raw.mingPalace.name : '',
-      shenZhu: raw.bodyPalace ? raw.bodyPalace.name : '',
-      wuxingJu: raw.fiveElementsClass || ''
-    },
-    birth: { gender: raw.gender }
-  };
-}
-
-/** Build renderAnalysis-friendly hepan result from engine output */
-function hepanToRenderFormat(mhp){
-  const c = mhp.compat;
-  const breakdown = {};
-  const overviewParts = [];
-  const strengths = [];
-  const challenges = [];
-
-  const dimNames = {
-    palace_alignment: '宫位对齐',
-    star_harmony: '星曜和谐',
-    mutagen_interaction: '四化感应',
-    zodiac: '生肖入宫',
-    life_rhythm: '人生节奏'
-  };
-
-  for(const d of c.dimensions){
-    const label = dimNames[d.id] || d.id;
-    const pct = d.max > 0 ? Math.round((d.score / d.max) * 100) : 0;
-    breakdown[label] = { score: pct, label: label, raw: d.score.toFixed(1), max: d.max };
-
-    if(d.reason_summary && d.reason_summary.display_text){
-      overviewParts.push('【'+label+'】'+d.reason_summary.display_text);
-    }
-    if(d.score >= d.max * 0.7){ strengths.push(label + '非常契合（'+pct+'分）'); }
-    else if(d.score < 0){ challenges.push(label + '存在较大冲突'); }
-  }
-
-  const overview = overviewParts.join('\n\n');
-  return {
-    data: {
-      total_score: c.score,
-      breakdown: breakdown,
-      overview: overview,
-      strengths: strengths.length ? strengths : ['各方面表现均衡'],
-      challenges: challenges.length ? challenges : ['需日常磨合，互相理解包容']
-    }
-  };
-}
-
-function fetchChart(person){
-  if(!window.Ziwei||!window.Ziwei.computeChart){ throw new Error('引擎未加载完成，请刷新后重试'); }
-  const year = parseInt($('year'+person).value);
-  const month = parseInt($('month'+person).value);
-  const day = parseInt($('day'+person).value);
-  const hour = parseInt($('hour'+person).value);
-  const minute = parseInt($('minute'+person).value) || 0;
-  const gender = getGender(person);
-  const state = locState[person];
-  const lng = state && state.lng ? state.lng : 120;
-
-  const raw = window.Ziwei.computeChart(year, month, day, hour, minute, gender, lng);
-  return chartToRenderFormat(raw);
-}
-
-function fetchHepan(){
-  if(!window.Ziwei||!window.Ziwei.computeHepan){ throw new Error('引擎未加载完成，请刷新后重试'); }
-  const ya = parseInt($('yearA').value), ma = parseInt($('monthA').value), da = parseInt($('dayA').value);
-  const ha = parseInt($('hourA').value), mia = parseInt($('minuteA').value) || 0;
-  const ga = getGender('A');
-  const lna = (locState['A'] && locState['A'].lng) ? locState['A'].lng : 120;
-
-  const yb = parseInt($('yearB').value), mb = parseInt($('monthB').value), db = parseInt($('dayB').value);
-  const hb = parseInt($('hourB').value), mib = parseInt($('minuteB').value) || 0;
-  const gb = getGender('B');
-  const lnb = (locState['B'] && locState['B'].lng) ? locState['B'].lng : 120;
-
-  const hepan = window.Ziwei.computeHepan(ya, ma, da, ha, mia, ga, lna, yb, mb, db, hb, mib, gb, lnb);
-  return {
-    hepanResult: hepanToRenderFormat(hepan),
-    chartA: chartToRenderFormat(hepan.chartA),
-    chartB: chartToRenderFormat(hepan.chartB)
-  };
-}
-
-// ============================================================
-// RENDER RESULTS
-// ============================================================
-function renderScore(score){
-  let color, grade, comment;
-  if(score >= 90){ color = '#059669'; grade = '天作之合'; comment = '命理契合度极高，是难得的良缘'; }
-  else if(score >= 80){ color = '#2563eb'; grade = '佳偶天成'; comment = '缘分深厚，有很高的契合度'; }
-  else if(score >= 70){ color = '#7c3aed'; grade = '良缘可期'; comment = '整体契合，值得珍惜'; }
-  else if(score >= 60){ color = '#d97706'; grade = '一般缘份'; comment = '有缘但需经营，互相理解很重要'; }
-  else if(score >= 50){ color = '#dc2626'; grade = '缘浅情疏'; comment = '契合度较低，需更多包容'; }
-  else { color = '#991b1b'; grade = '多有不顺'; comment = '命理上不太契合，慎重考虑'; }
-
-  $('scoreCard').innerHTML = `
-    <div class="score-number" style="color:${color}">${score}</div>
-    <div class="score-grade" style="color:${color}">${grade}</div>
-    <div class="score-label">${comment}</div>
-  `;
-}
-
-function renderChartCard(personName, charName, chartData){
-  if(!chartData || !chartData.palaces){
-    return '<div class="chart-card"><div class="chart-card-header">'+personName+'<br><span class="chart-name">'+charName+'</span></div><p style="text-align:center;color:#999;padding:20px">命盘数据暂无</p></div>';
-  }
-
-  const palaces = chartData.palaces;
-  const info = chartData.info || {};
-  const birth = chartData.birth || {};
-
-  const mingZhu = info.mingZhu || '';
-  const shenZhu = info.shenZhu || '';
-
-  function palaceHtml(p){
-    const starsHtml = (p.stars || []).map(s => {
-      let cls = 'star-minor';
-      if(s.type === 'major') cls = 'star-major';
-      else if(s.siHua) cls = 'star-lucky';
-      return '<span class="'+cls+'">'+s.name+(s.siHua?'['+s.siHua+']':'')+'</span>';
-    }).join(' ');
-
-    let extraClass = '';
-    let badge = '';
-    if(mingZhu === p.name){ extraClass = ' ming'; badge = '<span class="palace-badge badge-ming">命</span>'; }
-    else if(shenZhu === p.name){ extraClass = ' shen'; badge = '<span class="palace-badge badge-shen">身</span>'; }
-
-    return '<div class="palace-cell'+extraClass+'">'+
-      badge+
-      '<div class="palace-name">'+p.name+'</div>'+
-      '<div class="star-entry">'+starsHtml+'</div>'+
-      '</div>';
-  }
-
-  return '<div class="chart-card">'+
-    '<div class="chart-card-header">'+personName+
-    '<br><span class="chart-name">'+charName+
-    ' · '+birth.gender+' · '+(info.wuxingJu||'')+
-    '</span></div>'+
-    '<div class="palace-grid">'+palaces.map(palaceHtml).join('')+'</div>'+
-    '</div>';
-}
-
-function renderAnalysis(result){
-  if(!result || !result.data){
-    return '<p style="color:#999;text-align:center">暂无分析数据</p>';
-  }
-
-  const d = result.data;
-  const totalScore = d.total_score || d.totalScore || d.score || 0;
-  const breakdown = d.breakdown || d.sub_scores || d.dimensions || {};
-
-  let html = '<div class="analysis-title">合盘分析详情</div>';
-
-  // Dimension scores
-  if(Object.keys(breakdown).length > 0){
-    html += '<div class="analysis-section"><h4>维度得分</h4>';
-    for(const [key, val] of Object.entries(breakdown)){
-      const score = typeof val === 'object' ? (val.score || val.value || 0) : val;
-      const label = typeof val === 'object' ? (val.label || val.name || key) : key;
-      const dotColor = score >= 80 ? '#059669' : score >= 60 ? '#2563eb' : score >= 40 ? '#d97706' : '#dc2626';
-      html += '<div class="analysis-item">'+
-        '<span class="score-dot" style="background:'+dotColor+'"></span>'+
-        '<span style="flex:1">'+label+'</span>'+
-        '<span style="font-weight:700">'+score+'分</span>'+
-        '</div>';
-    }
-    html += '</div>';
-  }
-
-  // Overview text
-  const overview = d.overview || d.summary || d.description || d.overall_text || '';
-  if(overview){
-    html += '<div class="analysis-section"><h4>综合解读</h4><p>'+overview+'</p></div>';
-  }
-
-  // Strengths
-  const strengths = d.strengths || d.pros || d.highlights || [];
-  if(strengths.length > 0){
-    html += '<div class="analysis-section"><h4>优势亮点</h4>';
-    strengths.forEach(s => {
-      html += '<p style="margin-bottom:8px">✦ '+s+'</p>';
-    });
-    html += '</div>';
-  }
-
-  // Challenges
-  const challenges = d.challenges || d.cons || d.warnings || [];
-  if(challenges.length > 0){
-    html += '<div class="analysis-section"><h4>需注意的方面</h4>';
-    challenges.forEach(c => {
-      html += '<p style="margin-bottom:8px;color:#dc2626">⚠ '+c+'</p>';
-    });
-    html += '</div>';
-  }
-
-  // Raw detail if nothing else
-  if(!overview && Object.keys(breakdown).length === 0){
-    html += '<div class="analysis-section"><h4>原始结果</h4>'+
-      '<pre style="font-size:12px;white-space:pre-wrap;background:#f8f8f8;padding:16px;border-radius:8px;max-height:400px;overflow-y:auto">'+
-      JSON.stringify(d, null, 2)+'</pre></div>';
-  }
-
-  return html;
-}
-
-async function doHepan(){
-  if(typeof window.Ziwei==="undefined"||!window.Ziwei.computeHepan){
-    showStatus('引擎未加载，请刷新页面重试（Ctrl+Shift+R）','error');
-    return;
-  }
-  const submitBtn = $('hepanSubmit');
-  const statusEl = $('hepanStatus');
-
-  // Validate
-  const va = validatePerson('A');
-  const vb = validatePerson('B');
-
-  if(!va.valid || !vb.valid){
-    const missing = [...(va.valid?[]:['甲方：'+va.errors.join('、')]), ...(vb.valid?[]:['乙方：'+vb.errors.join('、')])];
-    showStatus('请完善以下信息：'+missing.join('；'), 'error');
-    return;
-  }
-
-  // Loading state
-  submitBtn.classList.add('loading');
-  submitBtn.disabled = true;
-  showStatus('正在排盘并分析合盘...', 'loading');
-  $('resultsSection').classList.remove('visible');
-
-  try {
-    // Compute everything client-side (charts + hepan in one shot)
-    const result = fetchHepan();
-    const chartA = result.chartA;
-    const chartB = result.chartB;
-    const hepanResult = result.hepanResult;
-
-    // Render results
-    const nameA = $('nameA').value.trim() || '甲方';
-    const nameB = $('nameB').value.trim() || '乙方';
-
-    // Score
-    const score = hepanResult.data?.total_score || hepanResult.data?.totalScore || hepanResult.data?.score || 0;
-    renderScore(score);
-
-    // Charts
-    $('chartDualSection').innerHTML =
-      renderChartCard(nameA, chartA.birth ? chartA.birth.gender+' · '+(chartA.info?.wuxingJu||'') : '甲方命盘', chartA) +
-      renderChartCard(nameB, chartB.birth ? chartB.birth.gender+' · '+(chartB.info?.wuxingJu||'') : '乙方命盘', chartB);
-
-    // Analysis
-    $('analysisCard').innerHTML = renderAnalysis(hepanResult);
-
-    // Show results
-    $('resultsSection').classList.add('visible');
-    showStatus('', '');
-    $('resultsSection').scrollIntoView({behavior:'smooth', block:'start'});
-
-  } catch(err){
-    showStatus('合盘分析失败：'+err.message, 'error');
-    console.error(err);
-  } finally {
-    submitBtn.classList.remove('loading');
-    submitBtn.disabled = false;
-  }
-}
-
-function showStatus(msg, type){
-  const el = $('hepanStatus');
-  el.textContent = msg;
-  el.className = 'hepan-status';
-  if(msg){
-    el.classList.add(type, 'visible');
-  }
-}
-
-// ============================================================
-// EVENT BINDINGS
-// ============================================================
-$('hepanSubmit').addEventListener('click', doHepan);
-
-// Keyboard: Enter submits
-document.addEventListener('keydown',(e)=>{
-  if(e.key === 'Enter' && e.target.tagName === 'INPUT'){
-    // Don't submit on location search
-    if(e.target.id.startsWith('locSearch')) return;
-    e.preventDefault();
-    doHepan();
-  }
-});
-
-// ============================================================
-// INIT: Pre-select Beijing as default location
-// ============================================================
-setTimeout(()=>{
-  selectCity('A', '北京', 116.4);
-  selectCity('B', '上海', 121.5);
-}, 100);
-
-console.log('Metis 紫微合盘 · HEMING 已就绪');
-console.log('Engine: client-side Ziwei engine (no server needed)');
-console.log('城市数据库已加载 ' + cityIndex.length + ' 个城市');
-
 })();
 
 
@@ -3306,6 +3026,7 @@ console.log('城市数据库已加载 ' + cityIndex.length + ' 个城市');
 </script>
 
 <script>
+// ===== TAB SWITCHER =====
 window.switchTab = function(tab){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
   document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
