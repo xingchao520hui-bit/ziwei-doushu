@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Engine Test</title></head>
+<body>
+<h1>Engine Load Test</h1>
+<p id="status">Loading...</p>
+<script src="https://cdn.jsdelivr.net/gh/xingchao520hui-bit/ziwei-doushu@master/ziwei-full-engine.js"></script>
+<script>
+'use strict';
+var s = document.getElementById('status');
+if (typeof window.Ziwei === 'object' && window.Ziwei.computeChart && window.Ziwei.computeHepan) {
+  s.innerHTML = 'OK: engine loaded (computeChart + computeHepan)';
+  s.style.color = 'green';
+  // Test computeChart
+  var chart = window.Ziwei.computeChart(2000,1,1,0,0,'male',120);
+  if (chart && chart.palaces) {
+    s.innerHTML += '<br>computeChart OK: ' + chart.palaces.length + ' palaces';
+  } else {
+    s.innerHTML += '<br>computeChart FAILED';
+    s.style.color = 'red';
+  }
+} else {
+  s.innerHTML = 'FAIL: window.Ziwei not ready. typeof=' + typeof window.Ziwei;
+  if (window.Ziwei) s.innerHTML += ', keys=' + Object.keys(window.Ziwei).join(',');
+  s.style.color = 'red';
+}
+</script>
+</body></html>
