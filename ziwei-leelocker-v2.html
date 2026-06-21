@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>紫微斗数 · 专业命盘分析</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FFFBF5;--card:#FFFFFF;--card-border:#EDE8DD;
+  --text:#1C1C1C;--text2:#666;--text3:#999;
+  --accent:#5A8F7B;--accent-hover:#4A7A6A;--accent-light:#EAF5F1;
+  --badge-red:#D4695A;--badge-blue:#5A8FBF;--badge-purple:#8B6BAE;--badge-orange:#E8954A;
+  --input-bg:#F8F5EE;--input-border:#E5DFD0;
+  --shadow:0 1px 3px rgba(0,0,0,0.04);--shadow-lg:0 4px 24px rgba(0,0,0,0.06);
+  --radius:12px;--vip:#C9A84C;--vip-bg:linear-gradient(135deg,#FFF9E6,#FFFDF5)
+}
+body{background:var(--bg);min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background:rgba(255,251,245,0.9);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--card-border)}
+.logo{font-family:"Songti SC","Noto Serif CJK SC",serif;font-size:22px;font-weight:700;color:var(--text)}
+.logo span{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:12px}
+.vip-badge{display:none;padding:4px 12px;background:var(--vip-bg);border:1px solid #E8D9A0;border-radius:20px;font-size:12px;color:var(--vip);font-weight:600}
+.vip-badge.show{display:flex;align-items:center;gap:4px}
+.btn-vip{padding:8px 18px;font-size:13px;font-weight:600;color:#FFF;background:linear-gradient(135deg,#C9A84C,#E8C84A);border:none;border-radius:20px;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-vip:hover{transform:scale(1.05)}
+
+/* Hero */
+.hero{text-align:center;padding:56px 24px 40px;max-width:640px;margin:0 auto}
+.hero h1{font-family:"Songti SC","Noto Serif CJK SC",serif;font-size:clamp(28px,6vw,40px);font-weight:700;color:var(--text);letter-spacing:.02em;line-height:1.3;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:15px;color:var(--text3);line-height:1.8;margin-bottom:28px}
+.hero .sub{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--accent-light);border-radius:20px;font-size:13px;color:var(--accent);font-weight:500}
+
+/* Input Card */
+.card{max-width:580px;margin:0 auto 20px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:28px 24px;box-shadow:var(--shadow)}
+.card h2{font-size:17px;font-weight:600;margin:0 0 20px;color:var(--text);text-align:center;font-family:"Songti SC","Noto Serif CJK SC",serif}
+.field{margin-bottom:14px}
+.field>label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.toggle{display:flex;border:1px solid var(--input-border);border-radius:8px;overflow:hidden}
+.toggle button{flex:1;padding:9px 0;text-align:center;font-size:14px;font-family:inherit;cursor:pointer;background:#FFF;color:var(--text2);border:none;border-right:1px solid var(--input-border);transition:.2s}
+.toggle button:last-child{border-right:none}
+.toggle button.active{background:var(--accent);color:#FFF;font-weight:600}
+.input,.select{flex:1;min-width:80px;padding:10px 12px;font-size:14px;font-family:inherit;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;color:var(--text);border:none;transition:.2s;outline:none}
+.input:focus,.select:focus{border-color:var(--accent)}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 6 5-6' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.btn-start{display:block;width:100%;padding:14px;margin-top:20px;font-size:16px;font-weight:600;font-family:inherit;color:#FFF;background:var(--accent);border:none;border-radius:10px;cursor:pointer;letter-spacing:.05em;transition:.2s}
+.btn-start:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 4px 12px rgba(90,143,123,0.3)}
+
+/* Result */
+.result{max-width:720px;margin:0 auto;padding:0 16px 60px}
+.result-header{text-align:center;padding:32px 0 24px}
+.result-header h2{font-family:"Songti SC","Noto Serif CJK SC",serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px}
+.result-header .meta{font-size:13px;color:var(--text3)}
+
+/* Palace Grid */
+.palace-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.palace{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:14px 10px;min-height:120px;position:relative;transition:.2s}
+.palace:hover{box-shadow:var(--shadow-lg)}
+.palace.ming{background:var(--accent-light);border-color:var(--accent)}
+.palace.shen{background:#F5F0FF;border-color:#8B6BAE}
+.palace .name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.palace .name .tag{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:500}
+.tag-ming{background:#EAF5F1;color:var(--accent)}
+.tag-shen{background:#F5F0FF;color:var(--badge-purple)}
+.palace .stars{font-size:12px;color:var(--text2);line-height:1.8}
+.palace .stars .major{color:var(--text);font-weight:500}
+
+/* Section */
+.sec{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.sec-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;font-family:"Songti SC","Noto Serif CJK SC",serif}
+.sec-title .icon{font-size:18px}
+
+/* VIP Overlay */
+.vip-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.vip-box{background:#FFF;border-radius:20px;max-width:420px;width:100%;padding:36px 28px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.2);position:relative}
+.vip-box .close{position:absolute;top:16px;right:20px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3)}
+.vip-box .crown{font-size:48px;margin-bottom:12px}
+.vip-box h3{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px}
+.vip-box .price{font-size:36px;font-weight:700;color:var(--vip);margin-bottom:4px}
+.vip-box .price span{font-size:16px;font-weight:400}
+.vip-box .features{text-align:left;margin:20px 0;padding:0;list-style:none}
+.vip-box .features li{padding:8px 0;font-size:14px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.vip-box .features li::before{content:"✓";color:var(--accent);font-weight:700}
+.vip-box .pay-btn{display:block;width:100%;padding:14px;font-size:16px;font-weight:600;color:#FFF;background:linear-gradient(135deg,#C9A84C,#E8C84A);border:none;border-radius:12px;cursor:pointer;font-family:inherit;margin-top:16px;transition:.2s}
+.vip-box .pay-btn:hover{transform:scale(1.02)}
+
+/* Loading */
+.loading{text-align:center;padding:48px;color:var(--text3);font-size:14px}
+.loading .spinner{display:inline-block;width:28px;height:28px;border:3px solid var(--card-border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Error */
+.error{background:#FFF5F5;border:1px solid #FECACA;color:#991B1B;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px}
+
+/* Fade in */
+.fade{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Blur preview */
+.blur-content{filter:blur(6px);user-select:none;pointer-events:none;max-height:400px;overflow:hidden;position:relative}
+.blur-content::after{content:"付费内容，解锁后查看";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--vip);background:rgba(255,251,245,0.7)}
+.unlock-btn{display:block;margin:16px auto 0;padding:12px 36px;font-size:15px;font-weight:600;color:#FFF;background:linear-gradient(135deg,#C9A84C,#E8C84A);border:none;border-radius:24px;cursor:pointer;font-family:inherit;transition:.2s}
+.unlock-btn:hover{transform:scale(1.05)}
+
+@media(max-width:600px){
+  .palace-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .palace{min-height:100px;padding:10px 8px}
+  .hero{padding:40px 20px 32px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">紫微<span>斗数</span></div>
+  <div class="header-right">
+    <div class="vip-badge" id="vipBadge">👑 VIP 会员</div>
+    <button class="btn-vip" id="btnVip" onclick="showVip()">开通会员</button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>专业<span>紫微斗数</span>命盘分析</h1>
+  <p>基于传统紫微斗数理论，结合现代解读方式，为您提供专业、详尽的命盘分析报告</p>
+  <div class="sub">✨ 免费基础排盘 · 付费完整深度分析</div>
+</div>
+
+<div class="card fade">
+  <h2>输入出生信息</h2>
+  <div class="field">
+    <label>出生日期</label>
+    <div class="row">
+      <input class="input" type="number" id="year" placeholder="年" min="1924" max="2100" style="flex:1.2">
+      <select class="select" id="month" style="flex:1"></select>
+      <select class="select" id="day" style="flex:1"></select>
+    </div>
+  </div>
+  <div class="field">
+    <label>出生时辰</label>
+    <select class="select" id="hour" style="width:100%"></select>
+  </div>
+  <div class="field">
+    <label>性别</label>
+    <div class="toggle" id="genderToggle">
+      <button class="active" data-val="male">男</button>
+      <button data-val="female">女</button>
+    </div>
+  </div>
+  <div class="field">
+    <label>出生地点（选填，用于真太阳时校正）</label>
+    <input class="input" type="text" id="location" placeholder="如：北京、上海、广州...">
+  </div>
+  <button class="btn-start" onclick="startChart()">开始排盘</button>
+  <div class="error" id="errBox" style="display:none"></div>
+  <div class="loading" id="loadingBox" style="display:none">
+    <div class="spinner"></div>
+    <div>正在排盘...</div>
+  </div>
+</div>
+
+<div class="result" id="resultBox" style="display:none">
+  <div class="result-header">
+    <h2 id="resName"></h2>
+    <div class="meta" id="resMeta"></div>
+  </div>
+  <div id="resContent"></div>
+</div>
+
+<!-- VIP Modal -->
+<div class="vip-overlay" id="vipOverlay" style="display:none">
+  <div class="vip-box">
+    <button class="close" onclick="hideVip()">&times;</button>
+    <div class="crown">👑</div>
+    <h3>开通 VIP 会员</h3>
+    <div class="price">¥9.9 <span>/ 单次解读</span></div>
+    <ul class="features">
+      <li>完整十二宫深度分析</li>
+      <li>大限流年详细解读</li>
+      <li>姻缘财运专项分析</li>
+      <li>健康预警提示</li>
+      <li>前世因果解读</li>
+      <li>综合建议与开运指南</li>
+    </ul>
+    <button class="pay-btn" onclick="startPay()">微信 / 支付宝支付 ¥9.9</button>
+    <p style="margin-top:12px;font-size:12px;color:#999">支付后联系客服获取解锁码</p>
+  </div>
+</div>
+
+<!-- Pay Modal -->
+<div class="vip-overlay" id="payOverlay" style="display:none">
+  <div class="vip-box">
+    <button class="close" onclick="hidePay()">&times;</button>
+    <h3>扫码支付</h3>
+    <div style="margin:20px 0;padding:20px;background:#F8F8F8;border-radius:12px">
+      <!-- 替换成你的微信/支付宝收款码 -->
+      <div style="width:180px;height:180px;margin:0 auto;background:#EEE;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px">收款码占位</div>
+    </div>
+    <p style="font-size:13px;color:#666;margin-bottom:16px">支付完成后，联系客服获取「解锁码」</p>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input class="input" id="unlockCode" placeholder="输入解锁码" style="flex:1">
+      <button class="btn-start" style="width:auto;padding:10px 20px;margin:0" onclick="verifyCode()">验证</button>
+    </div>
+    <p style="margin-top:12px;font-size:12px;color:#999">客服微信：your_wechat_id（替换成你的）</p>
+  </div>
+</div>
+
+<script>
+// === Init ===
+const DZ = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const HOURS = ['子时 23:00-00:59','丑时 01:00-02:59','寅时 03:00-04:59','卯时 05:00-06:59',
+  '辰时 07:00-08:59','巳时 09:00-10:59','午时 11:00-12:59','未时 13:00-14:59',
+  '申时 15:00-16:59','酉时 17:00-18:59','戌时 19:00-20:59','亥时 21:00-22:59'];
+
+// Fill selects
+const monthSel = document.getElementById('month');
+const daySel = document.getElementById('day');
+const hourSel = document.getElementById('hour');
+for(let i=1;i<=12;i++) monthSel.add(new Option(i+'月',i));
+for(let i=1;i<=31;i++) daySel.add(new Option(i+'日',i));
+hourSel.add(new Option('请选择时辰',-1));
+HOURS.forEach((h,i)=>hourSel.add(new Option(h,i)));
+
+// Toggle
+document.querySelectorAll('.toggle button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+function getGender(){ return document.querySelector('#genderToggle .active').dataset.val; }
+
+// === VIP State ===
+let isVip = localStorage.getItem('ziwei_vip')==='1';
+updateVipUI();
+
+function updateVipUI(){
+  document.getElementById('vipBadge').classList.toggle('show',isVip);
+  document.getElementById('btnVip').style.display = isVip?'none':'block';
+}
+
+function showVip(){ document.getElementById('vipOverlay').style.display='flex'; }
+function hideVip(){ document.getElementById('vipOverlay').style.display='none'; }
+function startPay(){ 
+  hideVip(); 
+  document.getElementById('payOverlay').style.display='flex'; 
+}
+function hidePay(){ document.getElementById('payOverlay').style.display='none'; }
+
+function verifyCode(){
+  const code = document.getElementById('unlockCode').value.trim();
+  // 简单验证码：6位数字（实际使用时替换为你的验证码列表）
+  if(/^\d{6}$/.test(code)){
+    localStorage.setItem('ziwei_vip','1');
+    isVip = true;
+    updateVipUI();
+    hidePay();
+    alert('✅ 会员已开通！刷新页面即可查看完整内容');
+    location.reload();
+  } else {
+    alert('❌ 解锁码不正确，请确认后重试');
+  }
+}
+
+// === Chart ===
+async function startChart(){
+  const year = document.getElementById('year').value;
+  const month = document.getElementById('month').value;
+  const day = document.getElementById('day').value;
+  const hour = document.getElementById('hour').value;
+  const gender = getGender();
+  const errBox = document.getElementById('errBox');
+  
+  if(!year||!month||!day||hour==-1){ errBox.textContent='请填写完整出生信息'; errBox.style.display='block'; return; }
+  errBox.style.display='none';
+  document.getElementById('loadingBox').style.display='block';
+  document.getElementById('resultBox').style.display='none';
+  
+  try {
+    // Try local server first, fallback to client engine
+    let data;
+    try {
+      const resp = await fetch(`http://localhost:3211/chart?year=${year}&month=${month}&day=${day}&hour=${hour==0?23:hour*2-1}&minute=0&gender=${gender}&isSolar=true`);
+      if(resp.ok) data = await resp.json();
+    } catch(e){}
+    
+    if(!data && window.Ziwei){
+      data = window.Ziwei.computeChart({year:+year,month:+month,day:+day,hour:hour==0?23:hour*2-1,gender,isSolar:true});
+    }
+    
+    if(!data) throw new Error('排盘失败，请确保本地服务器已启动');
+    
+    document.getElementById('loadingBox').style.display='none';
+    renderResult(data, {year:+year,month:+month,day:+day,hour:+hour,gender});
+    
+  } catch(e){
+    document.getElementById('loadingBox').style.display='none';
+    errBox.textContent = '排盘失败：'+e.message;
+    errBox.style.display='block';
+  }
+}
+
+function renderResult(d, info){
+  const box = document.getElementById('resultBox');
+  box.style.display='block';
+  
+  // Header
+  document.getElementById('resName').textContent = `${info.year}年${info.month}月${info.day}日 ${DZ[info.hour]}时 ${info.gender==='male'?'男':'女'}命盘`;
+  document.getElementById('resMeta').textContent = `命宫：${d.palaces?.[0]?.name||'—'} · 五行局：${d.info?.five_elements||'—'}`;
+  
+  // Content
+  let html = '';
+  
+  // Palace grid
+  html += '<div class="palace-grid fade">';
+  (d.palaces||[]).forEach((p,i)=>{
+    const isMing = i===0;
+    const isShen = i===d.info?.shen_palace_idx;
+    let stars = '';
+    (p.major_stars||[]).forEach(s=>{ stars += `<div class="major">${s.name}${s.mutagen?' '+s.mutagen:''}</div>`; });
+    (p.minor_stars||[]).slice(0,3).forEach(s=>{ stars += `<div style="color:#999">${s.name}</div>`; });
+    html += `<div class="palace ${isMing?'ming':''} ${isShen?'shen':''}">
+      <div class="name">${p.name}
+        ${isMing?'<span class="tag tag-ming">命宫</span>':''}
+        ${isShen?'<span class="tag" style="background:#F5F0FF;color:#8B6BAE">身宫</span>':''}
+      </div>
+      <div class="stars">${stars||'<span style="color:#CCC">无主星</span>'}</div>
+    </div>`;
+  });
+  html += '</div>';
+  
+  // Free preview sections
+  html += `<div class="sec fade"><div class="sec-title"><span class="icon">📋</span>命宫解析（免费预览）</div><div id="freePreview"></div></div>`;
+  
+  // VIP content
+  if(!isVip){
+    html += `<div class="blur-content"><div class="sec"><div class="sec-title"><span class="icon">🔒</span>十二宫完整分析（VIP）</div><div>详细内容...</div></div></div>
+      <button class="unlock-btn" onclick="showVip()">🔓 开通会员查看完整分析</button>`;
+  } else {
+    html += `<div class="sec fade"><div class="sec-title"><span class="icon">📖</span>十二宫完整分析（VIP专享）</div><div id="fullAnalysis"></div></div>`;
+    html += `<div class="sec fade"><div class="sec-title"><span class="icon">⏳</span>大限流年分析（VIP专享）</div><div id="daXianAnalysis"></div></div>`;
+    html += `<div class="sec fade"><div class="sec-title"><span class="icon">💕</span>姻缘财运专项（VIP专享）</div><div id="marriageAnalysis"></div></div>`;
+  }
+  
+  document.getElementById('resContent').innerHTML = html;
+  
+  // Render free preview
+  renderFreePreview(d);
+  if(isVip) renderVipContent(d);
+  
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+function renderFreePreview(d){
+  const ming = d.palaces?.[0];
+  const shen = d.palaces?.[d.info?.shen_palace_idx||4];
+  let html = `<div style="line-height:2">`;
+  html += `<p><strong>命宫（${ming?.name||'—'}）</strong>：主星 ${ming?.major_stars?.map(s=>s.name).join('、')||'无'}，${ming?.major_stars?.some(s=>s.mutagen)?'有化星入命，主人性格有变':'命主性格稳重'}</p>`;
+  html += `<p style="margin-top:8px;color:#666;font-size:13px">提示：升级 VIP 可查看十二宫完整分析、大限流年、姻缘财运等深度内容。</p>`;
+  html += `</div>`;
+  document.getElementById('freePreview').innerHTML = html;
+}
+
+function renderVipContent(d){
+  // 这里调用原来的分析函数（从 ziwei-app.html 移植）
+  // 由于篇幅，这里只做框架，实际内容需要移植分析函数
+  document.getElementById('fullAnalysis').innerHTML = '<p style="color:#999">深度分析内容加载中...</p>';
+  document.getElementById('daXianAnalysis').innerHTML = '<p style="color:#999">大限流年分析加载中...</p>';
+  document.getElementById('marriageAnalysis').innerHTML = '<p style="color:#999">姻缘财运分析加载中...</p>';
+  // TODO: 移植 ziwei-app.html 的分析函数到这里
+}
+</script>
+</body>
+</html>
