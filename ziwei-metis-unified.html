@@ -36715,6 +36715,25 @@ function render(d) {
   html += '</div>';
   
   // 其他Tab内容（占位）
+// 获取Tab标题
+function getTabTitle(tabId) {
+  var titles = {
+    'overview': '命盘总览',
+    'wealth': '财运分析',
+    'career': '事业分析',
+    'love': '感情分析',
+    'personality': '性格分析',
+    'health': '健康分析',
+    'siblings': '兄弟宫分析',
+    'children': '子女宫分析',
+    'migration': '迁移宫分析',
+    'friends': '人际贵人分析',
+    'property': '田宅宫分析',
+    'blessing': '福德宫分析',
+    'parents': '父母宫分析'
+  };
+  return titles[tabId] || tabId;
+}
   var tabIds = ['wealth','career','love','personality','health','siblings','children','migration','friends','property','blessing','parents'];
   tabIds.forEach(function(tabId) {
     html += '<div class="jizhen-tab-pane" id="tab-' + tabId + '">';
@@ -37307,25 +37326,6 @@ function renderSvgRadar(containerId, d, ming) {
   if (targetPane) targetPane.classList.add('active');
 }
 
-// 获取Tab标题
-function getTabTitle(tabId) {
-  var titles = {
-    'overview': '命盘总览',
-    'wealth': '财运分析',
-    'career': '事业分析',
-    'love': '感情分析',
-    'personality': '性格分析',
-    'health': '健康分析',
-    'siblings': '兄弟宫分析',
-    'children': '子女宫分析',
-    'migration': '迁移宫分析',
-    'friends': '人际贵人分析',
-    'property': '田宅宫分析',
-    'blessing': '福德宫分析',
-    'parents': '父母宫分析'
-  };
-  return titles[tabId] || tabId;
-}
 
 // 添加CSS for tab panes
 var style = document.createElement('style');
