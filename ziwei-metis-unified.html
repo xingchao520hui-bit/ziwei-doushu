@@ -923,6 +923,190 @@ btn-unlock{display:inline-block;margin:16px auto 0;padding:10px 28px;font-size:1
   margin: 3px 0;
 }
 
+/* ===== 吉真APP风格 - 左右分栏布局 ===== */
+.jizhen-container{
+  display:flex;
+  gap:20px;
+  max-width:1400px;
+  margin:0 auto;
+  padding:0 20px;
+  align-items:flex-start;
+}
+.jizhen-left{
+  flex:0 0 42%;
+  max-width:42%;
+  position:sticky;
+  top:80px;
+}
+.jizhen-right{
+  flex:1;
+  min-width:0;
+}
+
+/* 右侧Tab栏 */
+.jizhen-tabs{
+  display:flex;
+  gap:0;
+  border-bottom:2px solid #f0f0f0;
+  margin-bottom:20px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.jizhen-tabs::-webkit-scrollbar{display:none}
+.jizhen-tab{
+  padding:12px 16px;
+  font-size:14px;
+  font-weight:500;
+  color:#999;
+  cursor:pointer;
+  white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:.2s;
+  background:none;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  font-family:inherit;
+}
+.jizhen-tab:hover{color:#c8a96e}
+.jizhen-tab.active{color:#c8a96e;border-bottom-color:#c8a96e;font-weight:600}
+
+/* 命格评语 */
+.jizhen-title{
+  font-family:"Songti SC","Noto Serif CJK SC","SimSun",serif;
+  font-size:28px;
+  font-weight:700;
+  color:#1C1C1C;
+  text-align:center;
+  margin:20px 0 10px;
+  letter-spacing:.1em;
+}
+.jizhen-subtitle{
+  font-size:13px;
+  color:#999;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+/* 宫主星信息 */
+.jizhen-palace-star{
+  background:#FFF;
+  border:1px solid #EDE8DD;
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:20px;
+  font-size:14px;
+  color:#666;
+}
+.jizhen-palace-star strong{color:#1C1C1C}
+
+/* 雷达图（SVG） */
+.jizhen-radar-container{
+  background:#FFF;
+  border:1px solid #EDE8DD;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  text-align:center;
+}
+.jizhen-radar-note{
+  font-size:12px;
+  color:#999;
+  margin-top:10px;
+  font-style:italic;
+}
+.jizhen-radar-svg{overflow:visible}
+.jizhen-radar-svg .grid-ring{fill:none;stroke:#E5E5E5;stroke-width:1}
+.jizhen-radar-svg .axis-line{fill:none;stroke:#CCC;stroke-width:1}
+.jizhen-radar-svg .data-poly{fill:rgba(99,102,241,0.15);stroke:#6366F1;stroke-width:2}
+.jizhen-radar-svg .data-dot{fill:#6366F1}
+.jizhen-radar-svg .label-text{fill:#666;font-size:12px;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.jizhen-radar-svg .label-star{fill:#8B6BAE;font-size:10px;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.jizhen-radar-svg .dim-label{fill:#1C1C1C;font-size:13px;font-weight:600;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+
+/* 分析卡片 */
+.jizhen-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:20px;
+}
+.jizhen-card{
+  background:#FFF;
+  border:1px solid #EDE8DD;
+  border-radius:12px;
+  padding:20px 16px 20px 20px;
+  text-align:left;
+  border-left-width:4px;
+}
+.jizhen-card-icon{
+  font-size:28px;
+  margin-bottom:8px;
+}
+.jizhen-card-title{
+  font-size:14px;
+  font-weight:600;
+  color:#1C1C1C;
+  margin-bottom:10px;
+}
+.jizhen-card-text{
+  font-size:13px;
+  color:#666;
+  line-height:1.8;
+  text-align:left;
+}
+/* 三列卡片彩色左边框 */
+.jizhen-card[data-type="advantage"]{border-left-color:#E8954A}
+.jizhen-card[data-type="relationship"]{border-left-color:#8B6BAE}
+.jizhen-card[data-type="growth"]{border-left-color:#5A8F7B}
+
+/* 底部按钮 */
+.jizhen-footer{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:#FFF;
+  border:1px solid #EDE8DD;
+  border-radius:12px;
+  margin-top:20px;
+}
+.jizhen-footer-tag{
+  display:inline-block;
+  padding:6px 14px;
+  background:#F5F0FA;
+  border-radius:999px;
+  font-size:13px;
+  color:#8B6BAE;
+  font-weight:500;
+}
+.jizhen-footer-btn{
+  padding:8px 20px;
+  background:#FFF;
+  border:1px solid #EDE8DD;
+  border-radius:999px;
+  font-size:13px;
+  color:#666;
+  cursor:pointer;
+  transition:.2s;
+  font-family:inherit;
+}
+.jizhen-footer-btn:hover{background:#F8F5EE;border-color:#c8a96e;color:#c8a96e}
+
+/* Tab面板显示/隐藏 */
+.jizhen-tab-pane{display:none}
+.jizhen-tab-pane.active{display:block}
+
+/* 响应式 */
+@media(max-width:900px){
+  .jizhen-container{flex-direction:column}
+  .jizhen-left,.jizhen-right{max-width:100%;flex:none}
+  .jizhen-left{position:static}
+  .jizhen-cards{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -3191,6 +3375,12 @@ function render(d) {
 
   var html = '';
   
+  // 开始左右分栏布局
+  html += '<div class="jizhen-container">';
+  
+  // ===== 左侧：命盘表格 =====
+  html += '<div class="jizhen-left">';
+  
   // Info card
   var mingStars = ms(ming).map(function(s) { return starName(s); }).join('、') || '无主星';
   var shenName = shen ? shen.name : '—';
@@ -3213,6 +3403,93 @@ function render(d) {
   
   // Palace grid
   html += renderPalaceGrid(d, ming, shen);
+  
+  html += '</div>'; // end jizhen-left
+  
+  // ===== 右侧：AI分析面板 =====
+  html += '<div class="jizhen-right">';
+  
+  // Tab栏
+  html += '<div class="jizhen-tabs" id="jizhenTabs">';
+  html += '<button class="jizhen-tab active" data-tab="overview" onclick="switchJiZhenTab(this, \'overview\')">命盘总览</button>';
+  html += '<button class="jizhen-tab" data-tab="wealth" onclick="switchJiZhenTab(this, \'wealth\')">财运</button>';
+  html += '<button class="jizhen-tab" data-tab="career" onclick="switchJiZhenTab(this, \'career\')">事业</button>';
+  html += '<button class="jizhen-tab" data-tab="love" onclick="switchJiZhenTab(this, \'love\')">感情</button>';
+  html += '<button class="jizhen-tab" data-tab="personality" onclick="switchJiZhenTab(this, \'personality\')">性格</button>';
+  html += '<button class="jizhen-tab" data-tab="health" onclick="switchJiZhenTab(this, \'health\')">健康</button>';
+  html += '<button class="jizhen-tab" data-tab="siblings" onclick="switchJiZhenTab(this, \'siblings\')">兄弟</button>';
+  html += '<button class="jizhen-tab" data-tab="children" onclick="switchJiZhenTab(this, \'children\')">子女</button>';
+  html += '<button class="jizhen-tab" data-tab="migration" onclick="switchJiZhenTab(this, \'migration\')">迁移</button>';
+  html += '<button class="jizhen-tab" data-tab="friends" onclick="switchJiZhenTab(this, \'friends\')">人际</button>';
+  html += '<button class="jizhen-tab" data-tab="property" onclick="switchJiZhenTab(this, \'property\')">田宅</button>';
+  html += '<button class="jizhen-tab" data-tab="blessing" onclick="switchJiZhenTab(this, \'blessing\')">福德</button>';
+  html += '<button class="jizhen-tab" data-tab="parents" onclick="switchJiZhenTab(this, \'parents\')">父母</button>';
+  html += '</div>';
+  
+  // Tab内容区域
+  html += '<div id="jizhenTabContent">';
+  
+  // 命盘总览（默认显示）
+  html += '<div class="jizhen-tab-pane active" id="tab-overview">';
+  
+  // 生成评语
+  var evaluation = generateEvaluation(d, ming);
+  html += '<div class="jizhen-title">' + evaluation.title + '</div>';
+  html += '<div class="jizhen-subtitle">命格总评</div>';
+  
+  // 宫主星信息
+  html += '<div class="jizhen-palace-star">';
+  html += '<strong>宫主星：</strong>' + evaluation.stars + '（' + evaluation.nature + '）';
+  html += '</div>';
+  
+  // 雷达图（SVG）
+  html += '<div class="jizhen-radar-container">';
+  html += '<div id="jizhenRadarSvg"></div>';
+  html += '<div class="jizhen-radar-note">六维度雷达仅本着福报与格局推算，仅供参考</div>';
+  html += '</div>';
+  
+  // 分析卡片
+  html += '<div class="jizhen-cards">';
+  html += '<div class="jizhen-card" data-type="advantage">';
+  html += '<div class="jizhen-card-icon">⭐</div>';
+  html += '<div class="jizhen-card-title">核心优势</div>';
+  html += '<div class="jizhen-card-text">' + evaluation.advantages + '</div>';
+  html += '</div>';
+  html += '<div class="jizhen-card" data-type="relationship">';
+  html += '<div class="jizhen-card-icon">🔮</div>';
+  html += '<div class="jizhen-card-title">关系模式</div>';
+  html += '<div class="jizhen-card-text">' + evaluation.relationship + '</div>';
+  html += '</div>';
+  html += '<div class="jizhen-card" data-type="growth">';
+  html += '<div class="jizhen-card-icon">📈</div>';
+  html += '<div class="jizhen-card-title">成长课题</div>';
+  html += '<div class="jizhen-card-text">' + evaluation.growth + '</div>';
+  html += '</div>';
+  html += '</div>';
+  
+  // 底部
+  html += '<div class="jizhen-footer">';
+  html += '<span class="jizhen-footer-tag">已选星系 · ' + (ms(ming)[0] ? starName(ms(ming)[0]) : '太阳') + '</span>';
+  html += '<button class="jizhen-footer-btn" onclick="alert(\'功能开发中\')">命格总览</button>';
+  html += '<button class="jizhen-footer-btn" onclick="alert(\'功能开发中\')">对比</button>';
+  html += '</div>';
+  
+  html += '</div>';
+  
+  // 其他Tab内容（占位）
+  var tabIds = ['wealth','career','love','personality','health','siblings','children','migration','friends','property','blessing','parents'];
+  tabIds.forEach(function(tabId) {
+    html += '<div class="jizhen-tab-pane" id="tab-' + tabId + '">';
+    html += '<div class="l-card l-analysis" style="margin-top:0">';
+    html += '<h4>' + getTabTitle(tabId) + '</h4>';
+    html += '<p style="color:#999;font-size:13px">详细分析内容正在生成中...</p>';
+    html += '</div>';
+    html += '</div>';
+  });
+  
+  html += '</div>'; // end jizhenTabContent
+  html += '</div>'; // end jizhen-right
+  html += '</div>'; // end jizhen-container
   
   // Pattern analysis
   html += '<div class="l-card l-card-wide l-analysis"><div class="l-sec-title"><span class="ic">🏛</span> 格局分析</div>';
@@ -3428,6 +3705,33 @@ function renderWithVip(d){
   window._lastChartData = d;
   // Call original render, then apply VIP blur
   if(_origRender) _origRender(d);
+  
+  // 隐藏jizhen-container之后的旧分析内容
+  setTimeout(function() {
+    var container = document.querySelector('.jizhen-container');
+    if (container) {
+      // 找到container的父元素
+      var parent = container.parentNode;
+      var nextSibling = container.nextSibling;
+      
+      // 将所有后续兄弟节点包装到一个隐藏的div中
+      if (nextSibling) {
+        var hiddenDiv = document.createElement('div');
+        hiddenDiv.style.display = 'none';
+        parent.insertBefore(hiddenDiv, nextSibling);
+        
+        while (nextSibling) {
+          var toMove = nextSibling;
+          nextSibling = nextSibling.nextSibling;
+          hiddenDiv.appendChild(toMove);
+        }
+      }
+    }
+    
+    // 绘制雷达图
+    drawRadarChart('jizhenRadarChart', d, d.palaces ? pn(d, '命宫') : null);
+  }, 150);
+  
   applyVipBlur();
 }
 
@@ -3452,6 +3756,281 @@ function applyVipBlur(){
     }
   });
 }
+
+  });
+}
+
+// ===== 吉真APP风格 - 支持函数 =====
+
+// 生成四字评语
+function generateEvaluation(d, ming) {
+  var mainStars = ms(ming).filter(function(s) { return s.type === 'major'; });
+  var starNames = mainStars.map(function(s) { return s.name; });
+  
+  // 根据主星生成评语
+  var title = '光明磊落';
+  var stars = '太阳·天梁';
+  var nature = '贵显';
+  var advantages = '热忱有担当，乐于付出、带动旁人。光明磊落。';
+  var relationship = '博爱外向，给予多于索取，朋友遍天下。';
+  var growth = '过劳易耗，记得留一分光给自己，莫只顾别人。';
+  
+  // 根据命宫主星调整评语
+  if (starNames.includes('紫微')) {
+    title = '王者风范';
+    stars = '紫微';
+    nature = '尊贵';
+    advantages = '领导能力强，有责任心，处事稳重。';
+    relationship = '重视尊严，对感情认真专一。';
+    growth = '放下身段，学会倾听不同声音。';
+  } else if (starNames.includes('天机')) {
+    title = '机智过人';
+    stars = '天机';
+    nature = '聪明';
+    advantages = '思维敏捷，善于策划，适应力强。';
+    relationship = '情感细腻，但需要安全感。';
+    growth = '避免多虑，行动比空想更重要。';
+  } else if (starNames.includes('太阳')) {
+    title = '光明磊落';
+    stars = '太阳·天梁';
+    nature = '贵显';
+    advantages = '热忱有担当，乐于付出、带动旁人。光明磊落。';
+    relationship = '博爱外向，给予多于索取，朋友遍天下。';
+    growth = '过劳易耗，记得留一分光给自己，莫只顾别人。';
+  } else if (starNames.includes('武曲')) {
+    title = '刚毅果断';
+    stars = '武曲';
+    nature = '刚强';
+    advantages = '意志坚定，执行力强，重情重义。';
+    relationship = '感情专一，但表达直接不够温柔。';
+    growth = '学会柔性处理问题，刚柔并济。';
+  } else if (starNames.includes('天同')) {
+    title = '温和善良';
+    stars = '天同';
+    nature = '福星';
+    advantages = '心地善良，待人温和，福气深厚。';
+    relationship = '重视家庭，是很好的伴侣人选。';
+    growth = '增强主见，避免过度依赖他人。';
+  } else if (starNames.includes('廉贞')) {
+    title = '才华横溢';
+    stars = '廉贞';
+    nature = '次桃花';
+    advantages = '才艺出众，感情丰富，有独特魅力。';
+    relationship = '感情深刻，但容易陷入复杂关系。';
+    growth = '理性与感性平衡，避免情绪化决策。';
+  } else if (starNames.includes('天府')) {
+    title = '稳重可靠';
+    stars = '天府';
+    nature = '库星';
+    advantages = '稳重踏实，有组织能力，财运不错。';
+    relationship = '重视稳定，适合细水长流的感情。';
+    growth = '突破舒适圈，尝试新的可能性。';
+  } else if (starNames.includes('太阴')) {
+    title = '温婉内敛';
+    stars = '太阴';
+    nature = '富星';
+    advantages = '心思细腻，审美出色，内在丰富。';
+    relationship = '感情深沉，需要时间和耐心了解。';
+    growth = '增强自信，勇敢表达真实想法。';
+  } else if (starNames.includes('贪狼')) {
+    title = '多才多艺';
+    stars = '贪狼';
+    nature = '桃花';
+    advantages = '才华横溢，社交能力强，生活多彩。';
+    relationship = '异性缘佳，但需专一经营感情。';
+    growth = '专注深耕，避免兴趣过于分散。';
+  } else if (starNames.includes('巨门')) {
+    title = '思虑深沉';
+    stars = '巨门';
+    nature = '暗星';
+    advantages = '分析力强，口才出众，研究精神佳。';
+    relationship = '需要心灵契合，沟通是关键。';
+    growth = '打开心扉，学会信任和放下猜疑。';
+  } else if (starNames.includes('天相')) {
+    title = '温文尔雅';
+    stars = '天相';
+    nature = '印星';
+    advantages = '品行端正，有礼有节，受人信任。';
+    relationship = '重视承诺，是值得托付的伴侣。';
+    growth = '增强决断力，避免过度迎合他人。';
+  } else if (starNames.includes('天梁')) {
+    title = '慈悲为怀';
+    stars = '天梁';
+    nature = '荫星';
+    advantages = '有责任感，乐于助人，智慧超群。';
+    relationship = '像长辈般关爱对方，给予指导。';
+    growth = '放下控制欲，允许他人自主成长。';
+  } else if (starNames.includes('七杀')) {
+    title = '果敢刚烈';
+    stars = '七杀';
+    nature = '将星';
+    advantages = '勇往直前，不畏艰难，行动力强。';
+    relationship = '感情直接，爱恨分明。';
+    growth = '学会妥协，刚柔并济才能走得更远。';
+  } else if (starNames.includes('破军')) {
+    title = '革新求变';
+    stars = '破军';
+    nature = '耗星';
+    advantages = '勇于突破，创意十足，不走寻常路。';
+    relationship = '感情激烈，需要能理解你独特性的伴侣。';
+    growth = '在变革与稳定间找到平衡。';
+  }
+  
+  return {
+    title: title,
+    stars: stars,
+    nature: nature,
+    advantages: advantages,
+    relationship: relationship,
+    growth: growth
+  };
+}
+
+// 绘制雷达图
+function drawRadarChart(canvasId, d, ming) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var width = canvas.width;
+  var height = canvas.height;
+  var centerX = width / 2;
+  var centerY = height / 2;
+  var radius = Math.min(centerX, centerY) - 60;
+  
+  // 清空画布
+  ctx.clearRect(0, 0, width, height);
+  
+  // 六个维度
+  var dimensions = ['综合', '事业', '财运', '感情', '健康', '性格'];
+  var values = [0.8, 0.7, 0.75, 0.65, 0.85, 0.9]; // 默认值，后续可根据命盘计算
+  
+  // 根据命宫主星调整数值
+  var mainStars = ms(ming).filter(function(s) { return s.type === 'major'; });
+  var starNames = mainStars.map(function(s) { return s.name; });
+  
+  if (starNames.includes('太阳')) {
+    values = [0.85, 0.75, 0.7, 0.8, 0.9, 0.95];
+  } else if (starNames.includes('天机')) {
+    values = [0.8, 0.85, 0.7, 0.75, 0.8, 0.9];
+  } // ... 可以根据需要添加更多
+  
+  // 绘制网格
+  ctx.strokeStyle = '#E5E5E5';
+  ctx.lineWidth = 1;
+  for (var i = 1; i <= 5; i++) {
+    var r = radius * i / 5;
+    ctx.beginPath();
+    for (var j = 0; j < 6; j++) {
+      var angle = (Math.PI * 2 * j / 6) - Math.PI / 2;
+      var x = centerX + r * Math.cos(angle);
+      var y = centerY + r * Math.sin(angle);
+      if (j === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+  
+  // 绘制轴线
+  ctx.strokeStyle = '#CCC';
+  for (var i = 0; i < 6; i++) {
+    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
+    ctx.stroke();
+  }
+  
+  // 绘制数据区域
+  ctx.fillStyle = 'rgba(200, 169, 110, 0.3)';
+  ctx.strokeStyle = 'rgba(200, 169, 110, 0.8)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (var i = 0; i < 6; i++) {
+    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
+    var x = centerX + radius * values[i] * Math.cos(angle);
+    var y = centerY + radius * values[i] * Math.sin(angle);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  
+  // 绘制数据点
+  ctx.fillStyle = '#c8a96e';
+  for (var i = 0; i < 6; i++) {
+    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
+    var x = centerX + radius * values[i] * Math.cos(angle);
+    var y = centerY + radius * values[i] * Math.sin(angle);
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  // 绘制标签
+  ctx.fillStyle = '#333';
+  ctx.font = '14px "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (var i = 0; i < 6; i++) {
+    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
+    var x = centerX + (radius + 30) * Math.cos(angle);
+    var y = centerY + (radius + 30) * Math.sin(angle);
+    
+    // 为某些维度添加说明
+    var label = dimensions[i];
+    if (i === 1 && starNames.includes('天同')) label += '(借天同)';
+    if (i === 2) label += '(太阴)';
+    if (i === 3) label += '(天同·巨门)';
+    if (i === 4) label += '(廉贞·天府)';
+    if (i === 5 && starNames.includes('太阳')) label += '(太阳·天梁)';
+    
+    ctx.fillText(label, x, y);
+  }
+}
+
+// Tab切换
+function switchJiZhenTab(btn, tabId) {
+  // 更新按钮状态
+  var tabs = document.querySelectorAll('.jizhen-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  
+  // 更新内容显示
+  var panes = document.querySelectorAll('.jizhen-tab-pane');
+  panes.forEach(function(p) { p.classList.remove('active'); });
+  var targetPane = document.getElementById('tab-' + tabId);
+  if (targetPane) targetPane.classList.add('active');
+}
+
+// 获取Tab标题
+function getTabTitle(tabId) {
+  var titles = {
+    'overview': '命盘总览',
+    'wealth': '财运分析',
+    'career': '事业分析',
+    'love': '感情分析',
+    'personality': '性格分析',
+    'health': '健康分析',
+    'siblings': '兄弟宫分析',
+    'children': '子女宫分析',
+    'migration': '迁移宫分析',
+    'friends': '人际贵人分析',
+    'property': '田宅宫分析',
+    'blessing': '福德宫分析',
+    'parents': '父母宫分析'
+  };
+  return titles[tabId] || tabId;
+}
+
+// 添加CSS for tab panes
+var style = document.createElement('style');
+style.textContent = `
+.jizhen-tab-pane { display: none; }
+.jizhen-tab-pane.active { display: block; }
+`;
+document.head.appendChild(style);
 
 // Override render
 window.render = renderWithVip;
