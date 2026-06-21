@@ -34983,8 +34983,20 @@ async function getChart(){
           setTimeout(()=>window.print(),1500);
         }
     }catch(e){
-        st.textContent='排盘失败: '+e.message+' (请确认服务已启动: node chart-server.js)';
-        st.className='status show error';btn.disabled=false;btn.textContent='重试';
+        // API unavailable, try client-side engine fallback
+        if(window.Ziwei && window.Ziwei.computeChart){
+            try{
+                var genderVal=document.getElementById('gender').value;
+                var cd=window.Ziwei.computeChart({year:useYear,month:useMonth,day:useDay,hour:useHour,minute:useMinute,gender:genderVal,isSolar:true});
+                render(cd);
+                st.className='status';btn.disabled=false;btn.textContent='开始排盘';
+                document.getElementById('result').classList.add('show');
+                document.getElementById('result').scrollIntoView({behavior:'smooth'});
+                return;
+            }catch(e2){console.error('Engine fallback failed:',e2);}
+        }
+        st.textContent='排盘失败: '+e.message;
+        st.className='status show error';btn.disabled=false;btn.textContent='排盘';
     }
 }
 
@@ -36841,9 +36853,19 @@ function getChart(){
     render(d);
   })
   .catch(function(e){
+    // API unavailable, try client-side engine fallback
+    if(window.Ziwei && window.Ziwei.computeChart){
+      try{
+        var cd=window.Ziwei.computeChart({year:year,month:month,day:day,hour:hour,minute:minute,gender:gender,isSolar:true});
+        document.getElementById('s-loading').classList.remove('show');
+        document.getElementById('s-submit').disabled=false;
+        render(cd);
+        return;
+      }catch(e2){console.error('Engine fallback failed:',e2);}
+    }
     document.getElementById('s-loading').classList.remove('show');
     document.getElementById('s-submit').disabled=false;
-    showError('排盘失败: '+e.message+'<br>请确认已启动服务器：<b>node chart-server.js</b>');
+    showError('排盘失败: '+e.message);
   });
 }
 
