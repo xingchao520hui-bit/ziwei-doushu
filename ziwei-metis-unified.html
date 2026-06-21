@@ -61,7 +61,7 @@
 .l-cell.ming{background:#FFF5F0}
 .l-cell.shen{background:#F5F0FA}
 /* 大限年龄（顶部） */
-.l-daxian-top{font-size:9px;color:#B08D57;margin-bottom:2px;text-align:right}
+.l-daxian-top{font-size:9px;color:#A08050;margin-bottom:1px;text-align:right;font-weight:500}
 /* 星曜列表 */
 .l-pstars{font-size:10px;line-height:1.4;color:#333}
 .l-pstars .mj{color:#1a1a1a;font-weight:600}
@@ -69,7 +69,7 @@
 .l-pstars .el{color:#D4695A}
 .l-pstars span{display:inline-block;margin-right:4px;white-space:nowrap}
 /* 底部宫名+干支 */
-.l-pbottom{position:absolute;bottom:4px;left:4px;right:4px;display:flex;justify-content:space-between;align-items:flex-end}
+.l-pbottom{position:absolute;bottom:3px;left:4px;right:4px;display:flex;justify-content:space-between;align-items:flex-end}
 .l-pstembranch{font-size:9px;color:#8B7355}
 .l-pname2{font-size:11px;font-weight:600;color:#1C1C1C}
 /* 命/身宫标记 */
@@ -822,6 +822,107 @@ btn-unlock{display:inline-block;margin:16px auto 0;padding:10px 28px;font-size:1
 .vip-modal .code-input{margin-top:12px;display:flex;gap:8px;align-items:center}
 .vip-modal .code-input input{flex:1;padding:10px 12px;font-size:14px;font-family:inherit;background:#F8F5EE;border:1px solid #E5DFD0;border-radius:8px}
 .vip-modal .code-input button{padding:10px 18px;font-size:13px;font-weight:600;color:#FFF;background:#5A8F7B;border:none;border-radius:8px;cursor:pointer;font-family:inherit}
+
+/* ===== 3×3 九宫格样式 ===== */
+.l-3x3-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 auto;
+  width: fit-content;
+}
+.l-grid-row {
+  display: flex;
+  gap: 4px;
+}
+.l-cell-nine {
+  width: 140px;
+  min-height: 120px;
+  border: 1.5px solid #8B7355;
+  border-radius: 6px;
+  background: #FFFEF8;
+  padding: 6px 8px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+}
+.l-cell-nine.ming {
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFECD2 100%);
+  border-color: #E8A87C;
+}
+.l-cell-nine.shen {
+  background: linear-gradient(135deg, #F5F0FA 0%, #E8D5F5 100%);
+  border-color: #C39BD3;
+}
+.l-cell-center {
+  width: 140px;
+  min-height: 120px;
+  border: 2px solid #D4A574;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #FFF8E7 0%, #FFF0D0 100%);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.l-center-info {
+  text-align: center;
+}
+.l-center-stars {
+  font-size: 15px;
+  font-weight: bold;
+  color: #C0392B;
+  margin-bottom: 4px;
+}
+.l-center-wx {
+  font-size: 12px;
+  color: #7D6B5D;
+  margin-bottom: 3px;
+}
+.l-center-gender {
+  font-size: 11px;
+  color: #9B8B7A;
+  margin-bottom: 2px;
+}
+.l-center-time {
+  font-size: 10px;
+  color: #9B8B7A;
+  margin-bottom: 2px;
+}
+.l-center-mingzhu, .l-center-shengzhu {
+  font-size: 10px;
+  color: #8B7355;
+  margin-bottom: 1px;
+}
+.l-nine-palace {
+  flex: 1;
+  min-height: 0;
+}
+.l-nine-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: #5D4E37;
+  margin-bottom: 2px;
+}
+.l-nine-stars {
+  font-size: 11px;
+  color: #8B4513;
+  line-height: 1.3;
+  word-break: break-all;
+}
+.l-nine-branch {
+  font-size: 10px;
+  color: #9B8B7A;
+  margin-top: 1px;
+}
+.l-nine-divider {
+  height: 1px;
+  background: #D4C4A8;
+  margin: 3px 0;
+}
+
 </style>
 </head>
 <body>
@@ -2877,79 +2978,89 @@ function renderFooter(d,ming,cai,fuqi,tian){
 }
 // auto-load on page open when default values are set
 // support URL params: ?year=1993&month=8&day=31&hour=12&gender=female
-// ===== LEE.LOCKER STYLE RENDER =====
-// ===== LEE.LOCKER STYLE RENDER =====
-// Overrides the dark-gothic render(d) from ziwei-app.html
-
+// ===== 3×3 九宫格 renderPalaceGrid =====
 function renderPalaceGrid(d, ming, shen) {
   var html = '';
   html += '<div class="l-card l-card-wide l-chart"><div class="l-chart-title">命盘十二宫</div>';
-  // 标准紫微斗数4×4方阵：以命宫为起点，逆时针排列十二宫
-  // 外围12格 + 中间4格（中宫信息区）
-  // 顺序：命宫→兄弟→夫妻→子女→财帛→疾厄→迁移→交友→官禄→田宅→福德→父母
-  var luckyStars = ['天魁','天钺','左辅','右弼','文昌','文曲','禄存'];
-  var evilStars = ['擎羊','陀罗','火星','铃星','地空','地劫'];
-  
-  // 十二宫顺序（逆时针）
+
+  var luckyStars = ['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马','解神'];
+  var evilStars  = ['擎羊','陀罗','火星','铃星','地空','地劫'];
+
   var palaceOrder = ['命宫','兄弟','夫妻','子女','财帛','疾厄','迁移','交友','官禄','田宅','福德','父母'];
-  // 4×4表格的格子顺序（从左上角开始，按行，跳过中间4格）
-  // 位置索引: 0=左上, 1=上中左, 2=上中右, 3=右上
-  //           4=左中上, 5=中宫, 6=中宫, 7=右中上  (中间2格是中宫)
-  //           8=左中下, 9=中宫, 10=中宫, 11=右中下 (中间2格是中宫)
-  //           12=左下, 13=下中左, 14=下中右, 15=右下
-  var gridPositions = [0,1,2,3,4,7,11,10,9,8,12,13,14,15]; // 14个外围位置，但只需要12个宫
-  // 实际外围位置（4×4矩阵，中间2×2是中宫）
-  // 第0行: 0,1,2,3
-  // 第1行: 4, [5,6], 7    (5,6是中宫)
-  // 第2行: 8, [9,10], 11  (9,10是中宫)
-  // 第3行: 12,13,14,15
-  var outerPositions = [
-    {r:0,c:0}, {r:0,c:1}, {r:0,c:2}, {r:0,c:3},  // 上排4格
-    {r:1,c:0}, {r:1,c:3},                        // 中上左右
-    {r:2,c:3}, {r:2,c:0},                        // 中下右左（注意顺序要逆时针）
-    {r:3,c:3}, {r:3,c:2}, {r:3,c:1}, {r:3,c:0}   // 下排4格（从右到左）
-  ];
-  
-  // 找到命宫在palaceOrder中的索引，然后按逆时针排列
-  var mingIdx = palaceOrder.indexOf('命宫');
-  var arrangedPalaces = [];
-  for (var i = 0; i < 12; i++) {
-    var idx = (mingIdx + i) % 12;
-    arrangedPalaces.push(palaceOrder[idx]);
-  }
-  
-  // 建立宫名到宫数据的映射
+
   var nameToPalace = {};
-  d.palaces.forEach(function(p) { nameToPalace[p.name] = p; });
-  
-  // 构建4×4表格
-  var grid = [[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]];
-  for (var i = 0; i < 12; i++) {
-    var pos = outerPositions[i];
-    grid[pos.r][pos.c] = nameToPalace[arrangedPalaces[i]];
-  }
-  
-  html += '<table class="l-zwtable"><tbody>';
-  for (var r = 0; r < 4; r++) {
-    html += '<tr>';
-    for (var c = 0; c < 4; c++) {
-      if ((r === 1 || r === 2) && (c === 1 || c === 2)) {
-        // 中宫区域（2×2）
-        if (r === 1 && c === 1) {
-          html += renderCenterCell(d, ming, shen, 2, 2);
-        }
-      } else {
-        var p = grid[r][c];
-        html += renderOneCell(p, ming, shen, luckyStars, evilStars, d);
-      }
+  d.palaces.forEach(function(p){ nameToPalace[p.name] = p; });
+
+  // 九宫格9个位置，每格1-2宫，12宫全展示
+  //  0  1  2
+  //  7  8  3   中宫=8
+  //  6  5  4
+  var cellMap = [
+    ['命宫','兄弟'],
+    ['夫妻','子女'],
+    ['财帛','疾厄'],
+    ['迁移','交友'],
+    ['官禄','田宅'],
+    ['福德','父母'],
+    null,
+    null,
+    'CENTER'
+  ];
+
+  var mingPalace = nameToPalace['命宫'] || {};
+  var mingStars = (mingPalace.stars || []).filter(function(s){return s.type==='major';}).map(function(s){return s.name;}).join('、');
+  var wuxing = d.fiveElements || (ming && ming.wuxing) || '水二局';
+  var gender = (d.birth && d.birth.gender === 'male') ? '阳男' : '阴女';
+  var birthTime = [d.birth.yearName, d.birth.monthName, d.birth.dayName].filter(Boolean).join('年').replace(/^|年/g, function(m){return m?'年':'';}) + '日';
+
+  var centerHtml = '<div class="l-center-info">' +
+    '<div class="l-center-stars">' + (mingStars||'天同') + '</div>' +
+    '<div class="l-center-wx">' + wuxing + '</div>' +
+    '<div class="l-center-gender">' + gender + '</div>' +
+    '<div class="l-center-time">' + (d.birth.yearName||'') + '年' + (d.birth.monthName||'') + '月' + (d.birth.dayName||'') + '日</div>' +
+    '<div class="l-center-mz">命主:' + (ming&&ming.mingzhu||'贪狼') + '</div>' +
+    '<div class="l-center-sz">身主:' + (shen&&shen.shenzhu||'天相') + '</div>' +
+    '</div>';
+
+  function nineCell(p1name, p2name) {
+    var p1 = p1name ? nameToPalace[p1name] : null;
+    var p2 = p2name ? nameToPalace[p2name] : null;
+    var cls = 'l-cell l-cell-nine';
+    if (p1 && ming && p1.name === ming.name) cls += ' ming';
+    else if (p1 && shen && p1.name === shen.name) cls += ' shen';
+
+    var h = '<div class="' + cls + '">';
+    if (p1) {
+      var s1 = (p1.stars||[]).map(function(x){return x.name;}).join('、')||'无';
+      h += '<div class="l-nine-group"><div class="l-nine-title">'+p1.name+'</div><div class="l-nine-stars">'+s1+'</div><div class="l-nine-branch">'+p1.branch+'</div></div>';
     }
-    html += '</tr>';
+    if (p2) {
+      h += '<div class="l-nine-sep"></div>';
+      var s2 = (p2.stars||[]).map(function(x){return x.name;}).join('、')||'无';
+      h += '<div class="l-nine-group"><div class="l-nine-title">'+p2.name+'</div><div class="l-nine-stars">'+s2+'</div><div class="l-nine-branch">'+p2.branch+'</div></div>';
+    }
+    return h + '</div>';
   }
-  html += '</tbody></table>';
-  html += '</div>';
+
+  // 生成9格HTML
+  var cells = [];
+  for (var i = 0; i < 9; i++) {
+    if (i === 8) {
+      cells[8] = '<div class="l-cell l-cell-center">' + centerHtml + '</div>';
+    } else if (cellMap[i]) {
+      cells[i] = nineCell(cellMap[i][0], cellMap[i][1]);
+    } else {
+      cells[i] = '<div class="l-cell l-cell-nine l-cell-empty"><div class="l-nine-title">—</div></div>';
+    }
+  }
+
+  html += '<div class="l-3x3-grid">';
+  html += '<div class="l-grid-row">' + cells[0] + cells[1] + cells[2] + '</div>';
+  html += '<div class="l-grid-row">' + cells[7] + cells[8] + cells[3] + '</div>';
+  html += '<div class="l-grid-row">' + cells[6] + cells[5] + cells[4] + '</div>';
+  html += '</div></div>';
   return html;
 }
-
 function renderOneCell(p, ming, shen, luckyStars, evilStars, d) {
   if (!p) return '<td class="l-cell l-empty"></td>';
   var isMing = ming && p.name === '命宫';
