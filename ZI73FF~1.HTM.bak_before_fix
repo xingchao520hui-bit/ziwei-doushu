@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -34688,7 +34688,7 @@ var _hepanBtn = document.getElementById('hepanSubmit');
 if(_hepanBtn) _hepanBtn.onclick = doHepanSubmit;
 
 // ===== Constants =====
-const API='http://https://moonlit-revenge-conceal.ngrok-free.dev';
+const API='http://localhost:3211';
 const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
 let globalLaiYin = null; // 来因宫全局变量
@@ -34983,20 +34983,8 @@ async function getChart(){
           setTimeout(()=>window.print(),1500);
         }
     }catch(e){
-        // API unavailable, try client-side engine fallback
-        if(window.Ziwei && window.Ziwei.computeChart){
-            try{
-                var genderVal=document.getElementById('gender').value;
-                var cd=window.Ziwei.computeChart({year:useYear,month:useMonth,day:useDay,hour:useHour,minute:useMinute,gender:genderVal,isSolar:true});
-                render(cd);
-                st.className='status';btn.disabled=false;btn.textContent='开始排盘';
-                document.getElementById('result').classList.add('show');
-                document.getElementById('result').scrollIntoView({behavior:'smooth'});
-                return;
-            }catch(e2){console.error('Engine fallback failed:',e2);}
-        }
-        st.textContent='排盘失败: '+e.message;
-        st.className='status show error';btn.disabled=false;btn.textContent='排盘';
+        st.textContent='排盘失败: '+e.message+' (请确认服务已启动: node chart-server.js)';
+        st.className='status show error';btn.disabled=false;btn.textContent='重试';
     }
 }
 
@@ -36727,25 +36715,6 @@ function render(d) {
   html += '</div>';
   
   // 其他Tab内容（占位）
-// 获取Tab标题
-function getTabTitle(tabId) {
-  var titles = {
-    'overview': '命盘总览',
-    'wealth': '财运分析',
-    'career': '事业分析',
-    'love': '感情分析',
-    'personality': '性格分析',
-    'health': '健康分析',
-    'siblings': '兄弟宫分析',
-    'children': '子女宫分析',
-    'migration': '迁移宫分析',
-    'friends': '人际贵人分析',
-    'property': '田宅宫分析',
-    'blessing': '福德宫分析',
-    'parents': '父母宫分析'
-  };
-  return titles[tabId] || tabId;
-}
   var tabIds = ['wealth','career','love','personality','health','siblings','children','migration','friends','property','blessing','parents'];
   tabIds.forEach(function(tabId) {
     html += '<div class="jizhen-tab-pane" id="tab-' + tabId + '">';
@@ -36845,7 +36814,7 @@ function getChart(){
 
   // 直接调用服务器 API（端口3211）
   var params='year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true';
-  fetch('http://https://moonlit-revenge-conceal.ngrok-free.dev/chart?'+params)
+  fetch('http://localhost:3211/chart?'+params)
   .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
   .then(function(d){
     document.getElementById('s-loading').classList.remove('show');
@@ -36853,19 +36822,9 @@ function getChart(){
     render(d);
   })
   .catch(function(e){
-    // API unavailable, try client-side engine fallback
-    if(window.Ziwei && window.Ziwei.computeChart){
-      try{
-        var cd=window.Ziwei.computeChart({year:year,month:month,day:day,hour:hour,minute:minute,gender:gender,isSolar:true});
-        document.getElementById('s-loading').classList.remove('show');
-        document.getElementById('s-submit').disabled=false;
-        render(cd);
-        return;
-      }catch(e2){console.error('Engine fallback failed:',e2);}
-    }
     document.getElementById('s-loading').classList.remove('show');
     document.getElementById('s-submit').disabled=false;
-    showError('排盘失败: '+e.message);
+    showError('排盘失败: '+e.message+'<br>请确认已启动服务器：<b>node chart-server.js</b>');
   });
 }
 
@@ -37348,6 +37307,25 @@ function renderSvgRadar(containerId, d, ming) {
   if (targetPane) targetPane.classList.add('active');
 }
 
+// 获取Tab标题
+function getTabTitle(tabId) {
+  var titles = {
+    'overview': '命盘总览',
+    'wealth': '财运分析',
+    'career': '事业分析',
+    'love': '感情分析',
+    'personality': '性格分析',
+    'health': '健康分析',
+    'siblings': '兄弟宫分析',
+    'children': '子女宫分析',
+    'migration': '迁移宫分析',
+    'friends': '人际贵人分析',
+    'property': '田宅宫分析',
+    'blessing': '福德宫分析',
+    'parents': '父母宫分析'
+  };
+  return titles[tabId] || tabId;
+}
 
 // 添加CSS for tab panes
 var style = document.createElement('style');

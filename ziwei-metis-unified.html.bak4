@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -34688,7 +34688,7 @@ var _hepanBtn = document.getElementById('hepanSubmit');
 if(_hepanBtn) _hepanBtn.onclick = doHepanSubmit;
 
 // ===== Constants =====
-const API='http://https://moonlit-revenge-conceal.ngrok-free.dev';
+const API='http://localhost:3211';
 const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
 let globalLaiYin = null; // 来因宫全局变量
@@ -34983,20 +34983,8 @@ async function getChart(){
           setTimeout(()=>window.print(),1500);
         }
     }catch(e){
-        // API unavailable, try client-side engine fallback
-        if(window.Ziwei && window.Ziwei.computeChart){
-            try{
-                var genderVal=document.getElementById('gender').value;
-                var cd=window.Ziwei.computeChart({year:useYear,month:useMonth,day:useDay,hour:useHour,minute:useMinute,gender:genderVal,isSolar:true});
-                render(cd);
-                st.className='status';btn.disabled=false;btn.textContent='开始排盘';
-                document.getElementById('result').classList.add('show');
-                document.getElementById('result').scrollIntoView({behavior:'smooth'});
-                return;
-            }catch(e2){console.error('Engine fallback failed:',e2);}
-        }
-        st.textContent='排盘失败: '+e.message;
-        st.className='status show error';btn.disabled=false;btn.textContent='排盘';
+        st.textContent='排盘失败: '+e.message+' (请确认服务已启动: node chart-server.js)';
+        st.className='status show error';btn.disabled=false;btn.textContent='重试';
     }
 }
 
@@ -36727,25 +36715,6 @@ function render(d) {
   html += '</div>';
   
   // 其他Tab内容（占位）
-// 获取Tab标题
-function getTabTitle(tabId) {
-  var titles = {
-    'overview': '命盘总览',
-    'wealth': '财运分析',
-    'career': '事业分析',
-    'love': '感情分析',
-    'personality': '性格分析',
-    'health': '健康分析',
-    'siblings': '兄弟宫分析',
-    'children': '子女宫分析',
-    'migration': '迁移宫分析',
-    'friends': '人际贵人分析',
-    'property': '田宅宫分析',
-    'blessing': '福德宫分析',
-    'parents': '父母宫分析'
-  };
-  return titles[tabId] || tabId;
-}
   var tabIds = ['wealth','career','love','personality','health','siblings','children','migration','friends','property','blessing','parents'];
   tabIds.forEach(function(tabId) {
     html += '<div class="jizhen-tab-pane" id="tab-' + tabId + '">';
@@ -36843,9 +36812,19 @@ function getChart(){
   document.getElementById('s-result').classList.remove('show');
   document.getElementById('s-submit').disabled=true;
 
-  // 直接调用服务器 API（端口3211）
-  var params='year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true';
-  fetch('http://https://moonlit-revenge-conceal.ngrok-free.dev/chart?'+params)
+  var lng=120;
+  if(location){
+    var match=matchLocation(location);
+    if(match){lng=match.lng;
+      document.getElementById('s-truesolar').style.display='block';
+      document.getElementById('s-truesolar').textContent='已匹配: '+match.name+' (经度 '+lng.toFixed(2)+'°E)';
+    }
+  }
+
+  // 直接调用服务器API（端口3211）
+  var params='year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:'');
+
+  fetch('http://localhost:3211/chart?'+params)
   .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
   .then(function(d){
     document.getElementById('s-loading').classList.remove('show');
@@ -36853,22 +36832,11 @@ function getChart(){
     render(d);
   })
   .catch(function(e){
-    // API unavailable, try client-side engine fallback
-    if(window.Ziwei && window.Ziwei.computeChart){
-      try{
-        var cd=window.Ziwei.computeChart({year:year,month:month,day:day,hour:hour,minute:minute,gender:gender,isSolar:true});
-        document.getElementById('s-loading').classList.remove('show');
-        document.getElementById('s-submit').disabled=false;
-        render(cd);
-        return;
-      }catch(e2){console.error('Engine fallback failed:',e2);}
-    }
     document.getElementById('s-loading').classList.remove('show');
     document.getElementById('s-submit').disabled=false;
-    showError('排盘失败: '+e.message);
+    showError('排盘失败: '+e.message+'\n请确认服务已启动: node chart-server.js');
   });
 }
-
 function showError(msg){
   document.getElementById('s-loading').classList.remove('show');
   document.getElementById('s-error').classList.add('show');
@@ -36887,130 +36855,6 @@ _zScript.src = 'ziwei-full-engine.js';
 _zScript.onload = function(){ console.log('[Ziwei] 引擎加载成功'); };
 _zScript.onerror = function(){ console.error('[Ziwei] 引擎加载失败'); };
 document.head.appendChild(_zScript);
-
-
-function generateEvaluation(d, ming) {
-  var mainStars = ms(ming).filter(function(s) { return s.type === 'major'; });
-  var starNames = mainStars.map(function(s) { return s.name; });
-  
-  // 根据主星生成评语
-  var title = '光明磊落';
-  var stars = '太阳·天梁';
-  var nature = '贵显';
-  var advantages = '热忱有担当，乐于付出、带动旁人。光明磊落。';
-  var relationship = '博爱外向，给予多于索取，朋友遍天下。';
-  var growth = '过劳易耗，记得留一分光给自己，莫只顾别人。';
-  
-  // 根据命宫主星调整评语
-  if (starNames.includes('紫微')) {
-    title = '王者风范';
-    stars = '紫微';
-    nature = '尊贵';
-    advantages = '领导能力强，有责任心，处事稳重。';
-    relationship = '重视尊严，对感情认真专一。';
-    growth = '放下身段，学会倾听不同声音。';
-  } else if (starNames.includes('天机')) {
-    title = '机智过人';
-    stars = '天机';
-    nature = '聪明';
-    advantages = '思维敏捷，善于策划，适应力强。';
-    relationship = '情感细腻，但需要安全感。';
-    growth = '避免多虑，行动比空想更重要。';
-  } else if (starNames.includes('太阳')) {
-    title = '光明磊落';
-    stars = '太阳·天梁';
-    nature = '贵显';
-    advantages = '热忱有担当，乐于付出、带动旁人。光明磊落。';
-    relationship = '博爱外向，给予多于索取，朋友遍天下。';
-    growth = '过劳易耗，记得留一分光给自己，莫只顾别人。';
-  } else if (starNames.includes('武曲')) {
-    title = '刚毅果断';
-    stars = '武曲';
-    nature = '刚强';
-    advantages = '意志坚定，执行力强，重情重义。';
-    relationship = '感情专一，但表达直接不够温柔。';
-    growth = '学会柔性处理问题，刚柔并济。';
-  } else if (starNames.includes('天同')) {
-    title = '温和善良';
-    stars = '天同';
-    nature = '福星';
-    advantages = '心地善良，待人温和，福气深厚。';
-    relationship = '重视家庭，是很好的伴侣人选。';
-    growth = '增强主见，避免过度依赖他人。';
-  } else if (starNames.includes('廉贞')) {
-    title = '才华横溢';
-    stars = '廉贞';
-    nature = '次桃花';
-    advantages = '才艺出众，感情丰富，有独特魅力。';
-    relationship = '感情深刻，但容易陷入复杂关系。';
-    growth = '理性与感性平衡，避免情绪化决策。';
-  } else if (starNames.includes('天府')) {
-    title = '稳重可靠';
-    stars = '天府';
-    nature = '库星';
-    advantages = '稳重踏实，有组织能力，财运不错。';
-    relationship = '重视稳定，适合细水长流的感情。';
-    growth = '突破舒适圈，尝试新的可能性。';
-  } else if (starNames.includes('太阴')) {
-    title = '温婉内敛';
-    stars = '太阴';
-    nature = '富星';
-    advantages = '心思细腻，审美出色，内在丰富。';
-    relationship = '感情深沉，需要时间和耐心了解。';
-    growth = '增强自信，勇敢表达真实想法。';
-  } else if (starNames.includes('贪狼')) {
-    title = '多才多艺';
-    stars = '贪狼';
-    nature = '桃花';
-    advantages = '才华横溢，社交能力强，生活多彩。';
-    relationship = '异性缘佳，但需专一经营感情。';
-    growth = '专注深耕，避免兴趣过于分散。';
-  } else if (starNames.includes('巨门')) {
-    title = '思虑深沉';
-    stars = '巨门';
-    nature = '暗星';
-    advantages = '分析力强，口才出众，研究精神佳。';
-    relationship = '需要心灵契合，沟通是关键。';
-    growth = '打开心扉，学会信任和放下猜疑。';
-  } else if (starNames.includes('天相')) {
-    title = '温文尔雅';
-    stars = '天相';
-    nature = '印星';
-    advantages = '品行端正，有礼有节，受人信任。';
-    relationship = '重视承诺，是值得托付的伴侣。';
-    growth = '增强决断力，避免过度迎合他人。';
-  } else if (starNames.includes('天梁')) {
-    title = '慈悲为怀';
-    stars = '天梁';
-    nature = '荫星';
-    advantages = '有责任感，乐于助人，智慧超群。';
-    relationship = '像长辈般关爱对方，给予指导。';
-    growth = '放下控制欲，允许他人自主成长。';
-  } else if (starNames.includes('七杀')) {
-    title = '果敢刚烈';
-    stars = '七杀';
-    nature = '将星';
-    advantages = '勇往直前，不畏艰难，行动力强。';
-    relationship = '感情直接，爱恨分明。';
-    growth = '学会妥协，刚柔并济才能走得更远。';
-  } else if (starNames.includes('破军')) {
-    title = '革新求变';
-    stars = '破军';
-    nature = '耗星';
-    advantages = '勇于突破，创意十足，不走寻常路。';
-    relationship = '感情激烈，需要能理解你独特性的伴侣。';
-    growth = '在变革与稳定间找到平衡。';
-  }
-  
-  return {
-    title: title,
-    stars: stars,
-    nature: nature,
-    advantages: advantages,
-    relationship: relationship,
-    growth: growth
-  };
-}
 </script>
 
 <!-- VIP Paywall Modal -->
@@ -37348,6 +37192,25 @@ function renderSvgRadar(containerId, d, ming) {
   if (targetPane) targetPane.classList.add('active');
 }
 
+// 获取Tab标题
+function getTabTitle(tabId) {
+  var titles = {
+    'overview': '命盘总览',
+    'wealth': '财运分析',
+    'career': '事业分析',
+    'love': '感情分析',
+    'personality': '性格分析',
+    'health': '健康分析',
+    'siblings': '兄弟宫分析',
+    'children': '子女宫分析',
+    'migration': '迁移宫分析',
+    'friends': '人际贵人分析',
+    'property': '田宅宫分析',
+    'blessing': '福德宫分析',
+    'parents': '父母宫分析'
+  };
+  return titles[tabId] || tabId;
+}
 
 // 添加CSS for tab panes
 var style = document.createElement('style');

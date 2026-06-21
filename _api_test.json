@@ -1,0 +1,637 @@
+{
+  "birth": {
+    "year": 1999,
+    "month": 2,
+    "day": 17,
+    "hour": 23,
+    "gender": "m"
+  },
+  "lunar": {
+    "yearName": "己卯",
+    "monthName": "正",
+    "dayName": "初二"
+  },
+  "info": {
+    "wuxingJu": "火六局",
+    "mingZhu": "禄存",
+    "shenZhu": "天同",
+    "hourBranch": "子"
+  },
+  "palaces": [
+    {
+      "branch": "寅",
+      "stem": "丙",
+      "name": "命宫",
+      "stars": [
+        {
+          "name": "武曲",
+          "type": "major",
+          "brightness": "得",
+          "siHua": "禄"
+        },
+        {
+          "name": "天相",
+          "type": "major",
+          "brightness": "庙",
+          "siHua": null
+        },
+        {
+          "name": "封诰",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天福",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "阴煞",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        6,
+        15
+      ],
+      "isBodyPalace": true
+    },
+    {
+      "branch": "卯",
+      "stem": "丁",
+      "name": "父母",
+      "stars": [
+        {
+          "name": "太阳",
+          "type": "major",
+          "brightness": "庙",
+          "siHua": null
+        },
+        {
+          "name": "天梁",
+          "type": "major",
+          "brightness": "庙",
+          "siHua": "科"
+        },
+        {
+          "name": "天哭",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        16,
+        25
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "辰",
+      "stem": "戊",
+      "name": "福德",
+      "stars": [
+        {
+          "name": "七杀",
+          "type": "major",
+          "brightness": "庙",
+          "siHua": null
+        },
+        {
+          "name": "左辅",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "文曲",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天贵",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天空",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        26,
+        35
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "巳",
+      "stem": "己",
+      "name": "田宅",
+      "stars": [
+        {
+          "name": "天机",
+          "type": "major",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天马",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "陀罗",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "三台",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天才",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天寿",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天巫",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "孤辰",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "蜚廉",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "破碎",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        36,
+        45
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "午",
+      "stem": "庚",
+      "name": "官禄",
+      "stars": [
+        {
+          "name": "紫微",
+          "type": "major",
+          "brightness": "庙",
+          "siHua": null
+        },
+        {
+          "name": "禄存",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天喜",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "台辅",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        46,
+        55
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "未",
+      "stem": "辛",
+      "name": "仆役",
+      "stars": [
+        {
+          "name": "擎羊",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "龙池",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "凤阁",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "华盖",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天伤",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "年解",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        56,
+        65
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "申",
+      "stem": "壬",
+      "name": "迁移",
+      "stars": [
+        {
+          "name": "破军",
+          "type": "major",
+          "brightness": "得",
+          "siHua": null
+        },
+        {
+          "name": "天钺",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "解神",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天厨",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "月德",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "截路",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        66,
+        75
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "酉",
+      "stem": "癸",
+      "name": "疾厄",
+      "stars": [
+        {
+          "name": "火星",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "八座",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天官",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "旬空",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "空亡",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天刑",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天虚",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天使",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        76,
+        85
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "戌",
+      "stem": "甲",
+      "name": "财帛",
+      "stars": [
+        {
+          "name": "廉贞",
+          "type": "major",
+          "brightness": "利",
+          "siHua": null
+        },
+        {
+          "name": "天府",
+          "type": "major",
+          "brightness": "庙",
+          "siHua": null
+        },
+        {
+          "name": "右弼",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "文昌",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "铃星",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "恩光",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天月",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        86,
+        95
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "亥",
+      "stem": "乙",
+      "name": "子女",
+      "stars": [
+        {
+          "name": "太阴",
+          "type": "major",
+          "brightness": "庙",
+          "siHua": null
+        },
+        {
+          "name": "地空",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "地劫",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        96,
+        105
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "子",
+      "stem": "丙",
+      "name": "夫妻",
+      "stars": [
+        {
+          "name": "贪狼",
+          "type": "major",
+          "brightness": "旺",
+          "siHua": "权"
+        },
+        {
+          "name": "天魁",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "红鸾",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "咸池",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "天德",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        106,
+        115
+      ],
+      "isBodyPalace": false
+    },
+    {
+      "branch": "丑",
+      "stem": "丁",
+      "name": "兄弟",
+      "stars": [
+        {
+          "name": "天同",
+          "type": "major",
+          "brightness": "不",
+          "siHua": null
+        },
+        {
+          "name": "巨门",
+          "type": "major",
+          "brightness": "不",
+          "siHua": null
+        },
+        {
+          "name": "天姚",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        },
+        {
+          "name": "寡宿",
+          "type": "minor",
+          "brightness": "平",
+          "siHua": null
+        }
+      ],
+      "daXianAge": [
+        116,
+        125
+      ],
+      "isBodyPalace": false
+    }
+  ],
+  "daXians": [
+    {
+      "startAge": 6,
+      "endAge": 15,
+      "palaceName": "命宫",
+      "palaceBranch": "寅"
+    },
+    {
+      "startAge": 16,
+      "endAge": 25,
+      "palaceName": "父母",
+      "palaceBranch": "卯"
+    },
+    {
+      "startAge": 26,
+      "endAge": 35,
+      "palaceName": "福德",
+      "palaceBranch": "辰"
+    },
+    {
+      "startAge": 36,
+      "endAge": 45,
+      "palaceName": "田宅",
+      "palaceBranch": "巳"
+    },
+    {
+      "startAge": 46,
+      "endAge": 55,
+      "palaceName": "官禄",
+      "palaceBranch": "午"
+    },
+    {
+      "startAge": 56,
+      "endAge": 65,
+      "palaceName": "仆役",
+      "palaceBranch": "未"
+    },
+    {
+      "startAge": 66,
+      "endAge": 75,
+      "palaceName": "迁移",
+      "palaceBranch": "申"
+    },
+    {
+      "startAge": 76,
+      "endAge": 85,
+      "palaceName": "疾厄",
+      "palaceBranch": "酉"
+    },
+    {
+      "startAge": 86,
+      "endAge": 95,
+      "palaceName": "财帛",
+      "palaceBranch": "戌"
+    },
+    {
+      "startAge": 96,
+      "endAge": 105,
+      "palaceName": "子女",
+      "palaceBranch": "亥"
+    },
+    {
+      "startAge": 106,
+      "endAge": 115,
+      "palaceName": "夫妻",
+      "palaceBranch": "子"
+    },
+    {
+      "startAge": 116,
+      "endAge": 125,
+      "palaceName": "兄弟",
+      "palaceBranch": "丑"
+    }
+  ],
+  "currentAge": 27
+}

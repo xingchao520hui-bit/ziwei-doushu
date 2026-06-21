@@ -1,0 +1,53 @@
+{
+  "palaces": [
+    {
+      "name": "疾厄",
+      "branch": "寅"
+    },
+    {
+      "name": "财帛",
+      "branch": "卯"
+    },
+    {
+      "name": "子女",
+      "branch": "辰"
+    },
+    {
+      "name": "夫妻",
+      "branch": "巳"
+    },
+    {
+      "name": "兄弟",
+      "branch": "午"
+    },
+    {
+      "name": "命宫",
+      "branch": "未"
+    },
+    {
+      "name": "父母",
+      "branch": "申"
+    },
+    {
+      "name": "福德",
+      "branch": "酉"
+    },
+    {
+      "name": "田宅",
+      "branch": "戌"
+    },
+    {
+      "name": "官禄",
+      "branch": "亥"
+    },
+    {
+      "name": "仆役",
+      "branch": "子"
+    },
+    {
+      "name": "迁移",
+      "branch": "丑"
+    }
+  ],
+  "total": 12
+}

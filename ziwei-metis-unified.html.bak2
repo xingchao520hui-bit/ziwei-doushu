@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -34688,7 +34688,7 @@ var _hepanBtn = document.getElementById('hepanSubmit');
 if(_hepanBtn) _hepanBtn.onclick = doHepanSubmit;
 
 // ===== Constants =====
-const API='http://https://moonlit-revenge-conceal.ngrok-free.dev';
+const API='http://localhost:3211';
 const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
 let globalLaiYin = null; // 来因宫全局变量
@@ -34983,20 +34983,8 @@ async function getChart(){
           setTimeout(()=>window.print(),1500);
         }
     }catch(e){
-        // API unavailable, try client-side engine fallback
-        if(window.Ziwei && window.Ziwei.computeChart){
-            try{
-                var genderVal=document.getElementById('gender').value;
-                var cd=window.Ziwei.computeChart({year:useYear,month:useMonth,day:useDay,hour:useHour,minute:useMinute,gender:genderVal,isSolar:true});
-                render(cd);
-                st.className='status';btn.disabled=false;btn.textContent='开始排盘';
-                document.getElementById('result').classList.add('show');
-                document.getElementById('result').scrollIntoView({behavior:'smooth'});
-                return;
-            }catch(e2){console.error('Engine fallback failed:',e2);}
-        }
-        st.textContent='排盘失败: '+e.message;
-        st.className='status show error';btn.disabled=false;btn.textContent='排盘';
+        st.textContent='排盘失败: '+e.message+' (请确认服务已启动: node chart-server.js)';
+        st.className='status show error';btn.disabled=false;btn.textContent='重试';
     }
 }
 
@@ -36494,107 +36482,6 @@ function renderCenterCell(d, ming, shen, rowspan, colspan) {
   return html;
 }
 
-
-// ═══════════════════════════════════════════════════════════════
-// 页面级 renderPalaceGrid：标准 4×4 紫微斗数命盘布局
-// 解决：交友宫缺失、宫位错位问题
-// ═══════════════════════════════════════════════════════════════
-function renderPalaceGrid(d, ming, shen) {
-  var html = '';
-  html += '<div class="l-card l-card-wide l-chart"><div class="l-chart-title">命盘十二宫</div>';
-
-  var luckyStars = ['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马','解神'];
-  var evilStars  = ['擎羊','陀罗','火星','铃星','地空','地劫','天空'];
-
-  // 用 branch 中文地支做 key 建 palace map（不依赖数组顺序）
-  var palaceByBranch = {};
-  (d.palaces || []).forEach(function(p){
-    if(p && p.branch) palaceByBranch[p.branch] = p;
-  });
-
-  // 中文地支 → 4×4 网格 [row, col]（标准紫微斗数布局）
-  // 巳午未申 = 第一行：迁移/疾厄/财帛/子女
-  // 辰命宫(左) 中宫 酉交友(右)
-  // 卯兄弟(左) 中宫 戌官禄(右)
-  // 寅丑子亥 = 第四行：父母/福德/田宅/夫妻
-  var BG = {
-    '巳':[1,1], '午':[1,2], '未':[1,3], '申':[1,4],
-    '辰':[2,1],                   '酉':[2,4],
-    '卯':[3,1],                   '戌':[3,4],
-    '寅':[4,1], '丑':[4,2], '子':[4,3], '亥':[4,4]
-  };
-
-  var rows = {};
-  for(var r=1; r<=4; r++) rows[r] = {};
-  Object.keys(BG).forEach(function(b){
-    var pos = BG[b];
-    var p = palaceByBranch[b];
-    if(p) rows[pos[0]][pos[1]] = p;
-  });
-
-  var mingGong = ming || d.palaces.find(function(p){ return p.name === '命宫'; });
-  var shenGong = shen || d.palaces.find(function(p){ return p.isBodyPalace || p.name === '身宫'; });
-
-  var info = d.info || {};
-  var birth = d.birth || {};
-  var genderTxt = (birth.gender === 'male') ? '阳男' : '阴女';
-  var wuxingJu = info.wuxingJu || d.fiveElements || '';
-  var lunarInfo = '';
-  if (d.lunar) {
-    lunarInfo = d.lunar.yearName ? (d.lunar.yearName+d.lunar.monthName+d.lunar.dayName) : ((d.lunar.year||'')+'年'+(d.lunar.month||'')+'月'+(d.lunar.day||'')+'日');
-  }
-
-  var centerHtml = '<table style="width:100%;height:100%"><tr><td style="text-align:center;vertical-align:middle;padding:8px">' +
-    '<div class="l-center-title">' + genderTxt + ' ' + wuxingJu + '</div>' +
-    '<div class="l-center-time">' +
-    '<div>真太阳时 ' + (birth.year||'') + '.' + (birth.month||'') + '.' + (birth.day||'') + ' ' + (birth.hour||'') + ':' + (birth.minute||'00') + '</div>' +
-    (lunarInfo ? '<div>农历 ' + lunarInfo + '</div>' : '') +
-    '</div>' +
-    (mingGong ? '<div class="l-center-ming">命主 ' + (info.mingZhu||'') + ' 命宫 ' + (mingGong.branch||'') + '</div>' : '') +
-    (shenGong ? '<div class="l-center-shen">身主 ' + (info.shenZhu||'') + ' 身宫 ' + (shenGong.branch||'') + '</div>' : '') +
-    '</td></tr></table>';
-
-  function cellTd(p) {
-    if (!p) return '<td class="l-cell l-empty"></td>';
-    var isMing = p.name === '命宫';
-    var isShen = p.isBodyPalace || p.name === '身宫';
-    var cls = 'l-cell';
-    if (isMing) cls += ' ming';
-    if (isShen && !isMing) cls += ' shen';
-    var h = '<td class="' + cls + '">';
-    if (p.daXianAge) h += '<div class="l-daxian-top">' + p.daXianAge[0] + '-' + p.daXianAge[1] + '岁</div>';
-    h += '<div class="l-pstars">';
-    (p.stars||[]).forEach(function(s) {
-      var cl = '';
-      if (s.type === 'major') cl = 'mj';
-      else if (luckyStars.indexOf(s.name) > -1) cl = 'lk';
-      else if (evilStars.indexOf(s.name) > -1) cl = 'el';
-      h += '<span class="' + cl + '">' + starName(s) + '</span>';
-    });
-    h += '</div>';
-    h += '<div class="l-pbottom">';
-    h += '<span class="l-pstembranch">' + (p.stem||'') + (p.branch||'') + '</span>';
-    h += '<span class="l-pname2">' + p.name + '</span>';
-    if (isMing) h += ' <span class="l-pbadge l-pbadge-m">命</span>';
-    if (isShen && !isMing) h += ' <span class="l-pbadge l-pbadge-s">身</span>';
-    h += '</div>';
-    h += '</td>';
-    return h;
-  }
-
-  html += '<table class="l-zwtable">';
-  // Row 1: 巳午未申
-  html += '<tr>' + cellTd(rows[1][1]) + cellTd(rows[1][2]) + cellTd(rows[1][3]) + cellTd(rows[1][4]) + '</tr>';
-  // Row 2: 辰 中宫 酉
-  html += '<tr>' + cellTd(rows[2][1]) + '<td colspan="2" rowspan="2" class="l-center">' + centerHtml + '</td>' + cellTd(rows[2][4]) + '</tr>';
-  // Row 3: 卯 中宫 戌
-  html += '<tr>' + cellTd(rows[3][1]) + cellTd(rows[3][4]) + '</tr>';
-  // Row 4: 寅丑子亥
-  html += '<tr>' + cellTd(rows[4][1]) + cellTd(rows[4][2]) + cellTd(rows[4][3]) + cellTd(rows[4][4]) + '</tr>';
-  html += '</table></div>';
-  return html;
-}
-
 function render(d) {
   document.getElementById('s-loading').classList.remove('show');
   document.getElementById('s-submit').disabled = false;
@@ -36727,25 +36614,6 @@ function render(d) {
   html += '</div>';
   
   // 其他Tab内容（占位）
-// 获取Tab标题
-function getTabTitle(tabId) {
-  var titles = {
-    'overview': '命盘总览',
-    'wealth': '财运分析',
-    'career': '事业分析',
-    'love': '感情分析',
-    'personality': '性格分析',
-    'health': '健康分析',
-    'siblings': '兄弟宫分析',
-    'children': '子女宫分析',
-    'migration': '迁移宫分析',
-    'friends': '人际贵人分析',
-    'property': '田宅宫分析',
-    'blessing': '福德宫分析',
-    'parents': '父母宫分析'
-  };
-  return titles[tabId] || tabId;
-}
   var tabIds = ['wealth','career','love','personality','health','siblings','children','migration','friends','property','blessing','parents'];
   tabIds.forEach(function(tabId) {
     html += '<div class="jizhen-tab-pane" id="tab-' + tabId + '">';
@@ -36827,6 +36695,7 @@ function getTabTitle(tabId) {
 
 // ===== getChart: client engine wrapper =====
 function getChart(){
+  var year=parseInt(documenfunction getChart(){
   var year=parseInt(document.getElementById('s-year').value);
   var month=parseInt(document.getElementById('s-month').value);
   var day=parseInt(document.getElementById('s-day').value);
@@ -36835,37 +36704,73 @@ function getChart(){
   var genderGroup=document.getElementById('s-gender');
   var gender=genderGroup.querySelector('.active').dataset.v;
   var location=document.getElementById('s-location').value.trim();
-
   if(!year||!month||!day){showError('请填写完整的出生日期');return;}
+  document.getElementById('s-loading').classList.add('show');
+  document.getElementById('s-error').classList.remove('show');
+  document.getElementById('s-result').classList.remove('show');
+  document.getElementById('s-submit').disabled=true;
+  var lng=120;
+  if(window.Ziwei&&location){
+    var match=matchLocation(location);
+    if(match){lng=match.lng;
+      document.getElementById('s-truesolar').style.display='block';
+      document.getElementById('s-truesolar').textContent='已匹配: '+match.name+' (经度 '+lng.toFixed(2)+'°E)';
+    }
+  }
+  function doRender(data){
+    document.getElementById('s-loading').classList.remove('show');
+    document.getElementById('s-submit').disabled=false;
+    render(data);
+  }
+  function doError(msg){
+    document.getElementById('s-loading').classList.remove('show');
+    document.getElementById('s-submit').disabled=false;
+    showError(msg);
+  }
+  try{
+    if(window.Ziwei&&window.Ziwei.computeChart){
+      var adj=window.Ziwei.getAdjustedTime(year,month,day,hour,minute,lng);
+      var d=window.Ziwei.computeChart({year:adj.year,month:adj.month,day:adj.day,hour:adj.hour,minute:adj.minute,gender:gender,location:location,isSolar:true});
+      doRender(d);return;
+    }
+  }catch(e){console.warn('内嵌引擎失败: '+e.message);}
+  fetch(API+'/chart?'+'year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:''))
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+  .then(function(data){doRender(data);})
+  .catch(function(e){
+    console.warn('后端排盘失败: '+e.message);
+    doError('排盘服务不可用，请检查网络或启动本地服务');
+  });
+}
 
   document.getElementById('s-loading').classList.add('show');
   document.getElementById('s-error').classList.remove('show');
   document.getElementById('s-result').classList.remove('show');
   document.getElementById('s-submit').disabled=true;
 
-  // 直接调用服务器 API（端口3211）
-  var params='year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true';
-  fetch('http://https://moonlit-revenge-conceal.ngrok-free.dev/chart?'+params)
-  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-  .then(function(d){
-    document.getElementById('s-loading').classList.remove('show');
-    document.getElementById('s-submit').disabled=false;
-    render(d);
-  })
-  .catch(function(e){
-    // API unavailable, try client-side engine fallback
-    if(window.Ziwei && window.Ziwei.computeChart){
-      try{
-        var cd=window.Ziwei.computeChart({year:year,month:month,day:day,hour:hour,minute:minute,gender:gender,isSolar:true});
-        document.getElementById('s-loading').classList.remove('show');
-        document.getElementById('s-submit').disabled=false;
-        render(cd);
-        return;
-      }catch(e2){console.error('Engine fallback failed:',e2);}
+  var lng=120;
+  if(window.Ziwei&&location){
+    var match=matchLocation(location);
+    if(match){lng=match.lng;
+      document.getElementById('s-truesolar').style.display='block';
+      document.getElementById('s-truesolar').textContent='已匹配: '+match.name+' (经度 '+lng.toFixed(2)+'°E)';
     }
-    document.getElementById('s-loading').classList.remove('show');
-    document.getElementById('s-submit').disabled=false;
-    showError('排盘失败: '+e.message);
+  }
+
+  fetch(API+'/chart?'+'year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:''))
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+  .then(function(data){render(data);})
+  .catch(function(e){
+    console.warn('后端排盘失败: '+e.message+', 尝试客户端引擎...');
+    try{
+      if(window.Ziwei&&window.Ziwei.computeChart){
+        var adj=window.Ziwei.getAdjustedTime(year,month,day,hour,minute,lng);
+        var d=window.Ziwei.computeChart({year:adj.year,month:adj.month,day:adj.day,hour:adj.hour,minute:adj.minute,gender:gender,location:location,isSolar:true});
+        render(d);
+      }else{
+        showError('排盘服务不可用');
+      }
+    }catch(e2){showError('排盘失败: '+e2.message)}
   });
 }
 
@@ -36887,130 +36792,6 @@ _zScript.src = 'ziwei-full-engine.js';
 _zScript.onload = function(){ console.log('[Ziwei] 引擎加载成功'); };
 _zScript.onerror = function(){ console.error('[Ziwei] 引擎加载失败'); };
 document.head.appendChild(_zScript);
-
-
-function generateEvaluation(d, ming) {
-  var mainStars = ms(ming).filter(function(s) { return s.type === 'major'; });
-  var starNames = mainStars.map(function(s) { return s.name; });
-  
-  // 根据主星生成评语
-  var title = '光明磊落';
-  var stars = '太阳·天梁';
-  var nature = '贵显';
-  var advantages = '热忱有担当，乐于付出、带动旁人。光明磊落。';
-  var relationship = '博爱外向，给予多于索取，朋友遍天下。';
-  var growth = '过劳易耗，记得留一分光给自己，莫只顾别人。';
-  
-  // 根据命宫主星调整评语
-  if (starNames.includes('紫微')) {
-    title = '王者风范';
-    stars = '紫微';
-    nature = '尊贵';
-    advantages = '领导能力强，有责任心，处事稳重。';
-    relationship = '重视尊严，对感情认真专一。';
-    growth = '放下身段，学会倾听不同声音。';
-  } else if (starNames.includes('天机')) {
-    title = '机智过人';
-    stars = '天机';
-    nature = '聪明';
-    advantages = '思维敏捷，善于策划，适应力强。';
-    relationship = '情感细腻，但需要安全感。';
-    growth = '避免多虑，行动比空想更重要。';
-  } else if (starNames.includes('太阳')) {
-    title = '光明磊落';
-    stars = '太阳·天梁';
-    nature = '贵显';
-    advantages = '热忱有担当，乐于付出、带动旁人。光明磊落。';
-    relationship = '博爱外向，给予多于索取，朋友遍天下。';
-    growth = '过劳易耗，记得留一分光给自己，莫只顾别人。';
-  } else if (starNames.includes('武曲')) {
-    title = '刚毅果断';
-    stars = '武曲';
-    nature = '刚强';
-    advantages = '意志坚定，执行力强，重情重义。';
-    relationship = '感情专一，但表达直接不够温柔。';
-    growth = '学会柔性处理问题，刚柔并济。';
-  } else if (starNames.includes('天同')) {
-    title = '温和善良';
-    stars = '天同';
-    nature = '福星';
-    advantages = '心地善良，待人温和，福气深厚。';
-    relationship = '重视家庭，是很好的伴侣人选。';
-    growth = '增强主见，避免过度依赖他人。';
-  } else if (starNames.includes('廉贞')) {
-    title = '才华横溢';
-    stars = '廉贞';
-    nature = '次桃花';
-    advantages = '才艺出众，感情丰富，有独特魅力。';
-    relationship = '感情深刻，但容易陷入复杂关系。';
-    growth = '理性与感性平衡，避免情绪化决策。';
-  } else if (starNames.includes('天府')) {
-    title = '稳重可靠';
-    stars = '天府';
-    nature = '库星';
-    advantages = '稳重踏实，有组织能力，财运不错。';
-    relationship = '重视稳定，适合细水长流的感情。';
-    growth = '突破舒适圈，尝试新的可能性。';
-  } else if (starNames.includes('太阴')) {
-    title = '温婉内敛';
-    stars = '太阴';
-    nature = '富星';
-    advantages = '心思细腻，审美出色，内在丰富。';
-    relationship = '感情深沉，需要时间和耐心了解。';
-    growth = '增强自信，勇敢表达真实想法。';
-  } else if (starNames.includes('贪狼')) {
-    title = '多才多艺';
-    stars = '贪狼';
-    nature = '桃花';
-    advantages = '才华横溢，社交能力强，生活多彩。';
-    relationship = '异性缘佳，但需专一经营感情。';
-    growth = '专注深耕，避免兴趣过于分散。';
-  } else if (starNames.includes('巨门')) {
-    title = '思虑深沉';
-    stars = '巨门';
-    nature = '暗星';
-    advantages = '分析力强，口才出众，研究精神佳。';
-    relationship = '需要心灵契合，沟通是关键。';
-    growth = '打开心扉，学会信任和放下猜疑。';
-  } else if (starNames.includes('天相')) {
-    title = '温文尔雅';
-    stars = '天相';
-    nature = '印星';
-    advantages = '品行端正，有礼有节，受人信任。';
-    relationship = '重视承诺，是值得托付的伴侣。';
-    growth = '增强决断力，避免过度迎合他人。';
-  } else if (starNames.includes('天梁')) {
-    title = '慈悲为怀';
-    stars = '天梁';
-    nature = '荫星';
-    advantages = '有责任感，乐于助人，智慧超群。';
-    relationship = '像长辈般关爱对方，给予指导。';
-    growth = '放下控制欲，允许他人自主成长。';
-  } else if (starNames.includes('七杀')) {
-    title = '果敢刚烈';
-    stars = '七杀';
-    nature = '将星';
-    advantages = '勇往直前，不畏艰难，行动力强。';
-    relationship = '感情直接，爱恨分明。';
-    growth = '学会妥协，刚柔并济才能走得更远。';
-  } else if (starNames.includes('破军')) {
-    title = '革新求变';
-    stars = '破军';
-    nature = '耗星';
-    advantages = '勇于突破，创意十足，不走寻常路。';
-    relationship = '感情激烈，需要能理解你独特性的伴侣。';
-    growth = '在变革与稳定间找到平衡。';
-  }
-  
-  return {
-    title: title,
-    stars: stars,
-    nature: nature,
-    advantages: advantages,
-    relationship: relationship,
-    growth: growth
-  };
-}
 </script>
 
 <!-- VIP Paywall Modal -->
@@ -37348,6 +37129,25 @@ function renderSvgRadar(containerId, d, ming) {
   if (targetPane) targetPane.classList.add('active');
 }
 
+// 获取Tab标题
+function getTabTitle(tabId) {
+  var titles = {
+    'overview': '命盘总览',
+    'wealth': '财运分析',
+    'career': '事业分析',
+    'love': '感情分析',
+    'personality': '性格分析',
+    'health': '健康分析',
+    'siblings': '兄弟宫分析',
+    'children': '子女宫分析',
+    'migration': '迁移宫分析',
+    'friends': '人际贵人分析',
+    'property': '田宅宫分析',
+    'blessing': '福德宫分析',
+    'parents': '父母宫分析'
+  };
+  return titles[tabId] || tabId;
+}
 
 // 添加CSS for tab panes
 var style = document.createElement('style');
