@@ -36695,6 +36695,7 @@ function render(d) {
 
 // ===== getChart: client engine wrapper =====
 function getChart(){
+  var year=parseInt(documenfunction getChart(){
   var year=parseInt(document.getElementById('s-year').value);
   var month=parseInt(document.getElementById('s-month').value);
   var day=parseInt(document.getElementById('s-day').value);
@@ -36703,8 +36704,44 @@ function getChart(){
   var genderGroup=document.getElementById('s-gender');
   var gender=genderGroup.querySelector('.active').dataset.v;
   var location=document.getElementById('s-location').value.trim();
-
   if(!year||!month||!day){showError('请填写完整的出生日期');return;}
+  document.getElementById('s-loading').classList.add('show');
+  document.getElementById('s-error').classList.remove('show');
+  document.getElementById('s-result').classList.remove('show');
+  document.getElementById('s-submit').disabled=true;
+  var lng=120;
+  if(window.Ziwei&&location){
+    var match=matchLocation(location);
+    if(match){lng=match.lng;
+      document.getElementById('s-truesolar').style.display='block';
+      document.getElementById('s-truesolar').textContent='已匹配: '+match.name+' (经度 '+lng.toFixed(2)+'°E)';
+    }
+  }
+  function doRender(data){
+    document.getElementById('s-loading').classList.remove('show');
+    document.getElementById('s-submit').disabled=false;
+    render(data);
+  }
+  function doError(msg){
+    document.getElementById('s-loading').classList.remove('show');
+    document.getElementById('s-submit').disabled=false;
+    showError(msg);
+  }
+  try{
+    if(window.Ziwei&&window.Ziwei.computeChart){
+      var adj=window.Ziwei.getAdjustedTime(year,month,day,hour,minute,lng);
+      var d=window.Ziwei.computeChart({year:adj.year,month:adj.month,day:adj.day,hour:adj.hour,minute:adj.minute,gender:gender,location:location,isSolar:true});
+      doRender(d);return;
+    }
+  }catch(e){console.warn('内嵌引擎失败: '+e.message);}
+  fetch(API+'/chart?'+'year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:''))
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+  .then(function(data){doRender(data);})
+  .catch(function(e){
+    console.warn('后端排盘失败: '+e.message);
+    doError('排盘服务不可用，请检查网络或启动本地服务');
+  });
+}
 
   document.getElementById('s-loading').classList.add('show');
   document.getElementById('s-error').classList.remove('show');
