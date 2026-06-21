@@ -766,6 +766,34 @@ body{
 @media(min-width:681px){
   .mobile-menu{display:none!important}
 }
+
+/* VIP / Paywall */
+.vip-blur{position:relative;filter:blur(8px);user-select:none;max-height:300px;overflow:hidden;pointer-events:none;transition:filter .4s}
+.vip-blur.unlocked{filter:none;max-height:none;pointer-events:auto}
+.vip-mask{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,251,245,0.85);backdrop-filter:blur(4px);z-index:10;cursor:pointer;transition:opacity .3s}
+.vip-mask.hidden{opacity:0;pointer-events:none}
+.vip-mask .lock-icon{font-size:36px;margin-bottom:8px}
+.vip-mask .lock-text{font-size:15px;font-weight:600;color:var(--vip,#C9A84C);margin-bottom:4px}
+.vip-mask .lock-sub{font-size:12px;color:#999}
+btn-unlock{display:inline-block;margin:16px auto 0;padding:10px 28px;font-size:14px;font-weight:600;color:#FFF;background:linear-gradient(135deg,#C9A84C,#E8C84A);border:none;border-radius:20px;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-unlock:hover{transform:scale(1.05)}
+
+/* VIP modal */
+.vip-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.vip-modal-overlay.show{opacity:1;pointer-events:auto}
+.vip-modal{background:#FFF;border-radius:20px;max-width:400px;width:100%;padding:32px 24px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.18);position:relative}
+.vip-modal .close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:#999}
+.vip-modal h3{font-size:20px;font-weight:700;color:#1C1C1C;margin-bottom:6px}
+.vip-modal .price{font-size:32px;font-weight:700;color:#C9A84C;margin:8px 0 4px}
+.vip-modal .price span{font-size:14px;font-weight:400;color:#999}
+.vip-modal .feats{text-align:left;margin:16px 0;padding:0;list-style:none}
+.vip-modal .feats li{padding:7px 0;font-size:13px;color:#666;display:flex;align-items:center;gap:6px}
+.vip-modal .feats li::before{content:"✓";color:#5A8F7B;font-weight:700}
+.vip-modal .pay-btn{display:block;width:100%;padding:13px;font-size:15px;font-weight:600;color:#FFF;background:linear-gradient(135deg,#C9A84C,#E8C84A);border:none;border-radius:12px;cursor:pointer;font-family:inherit;margin-top:14px;transition:.2s}
+.vip-modal .pay-btn:hover{transform:scale(1.02)}
+.vip-modal .code-input{margin-top:12px;display:flex;gap:8px;align-items:center}
+.vip-modal .code-input input{flex:1;padding:10px 12px;font-size:14px;font-family:inherit;background:#F8F5EE;border:1px solid #E5DFD0;border-radius:8px}
+.vip-modal .code-input button{padding:10px 18px;font-size:13px;font-weight:600;color:#FFF;background:#5A8F7B;border:none;border-radius:8px;cursor:pointer;font-family:inherit}
 </style>
 </head>
 <body>
@@ -2896,6 +2924,98 @@ document.getElementById('s-location').addEventListener('input',function(){if(typ
     if (!checkEngine()) loadFallback();
   });
 })();
+</script>
+
+<!-- VIP Paywall Modal -->
+<div class="vip-modal-overlay" id="vipModal">
+  <div class="vip-modal">
+    <button class="close" onclick="closeVipModal()">&times;</button>
+    <div style="font-size:40px;margin-bottom:8px">👑</div>
+    <h3>解锁完整命盘分析</h3>
+    <div class="price">¥9.9 <span>/ 单次解读</span></div>
+    <ul class="feats">
+      <li>完整十二宫深度分析</li>
+      <li>大限流年详细解读</li>
+      <li>姻缘财运专项分析</li>
+      <li>健康预警提示</li>
+      <li>前世因果解读</li>
+      <li>综合建议与开运指南</li>
+    </ul>
+    <button class="pay-btn" onclick="showPayStep()">微信 / 支付宝支付 ¥9.9</button>
+    <div id="payStep" style="display:none;margin-top:16px">
+      <div style="width:160px;height:160px;margin:0 auto 12px;background:#F5F5F5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#BBB;font-size:13px">收款码占位<br>（替换成你的二维码）</div>
+      <p style="font-size:12px;color:#999;margin-bottom:10px">支付后输入解锁码</p>
+      <div class="code-input">
+        <input type="text" id="vipCodeInput" placeholder="6位解锁码" maxlength="6">
+        <button onclick="verifyVipCode()">验证</button>
+      </div>
+      <p style="margin-top:10px;font-size:11px;color:#BBB">客服微信：your_wechat（替换成你的）</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// VIP State
+let _vip = localStorage.getItem('ziwei_vip') === '1';
+function isVip(){ return _vip; }
+function setVip(v){ _vip = v; localStorage.setItem('ziwei_vip', v?'1':'0'); }
+
+function closeVipModal(){ document.getElementById('vipModal').classList.remove('show'); }
+function showVipModal(){ document.getElementById('vipModal').classList.add('show'); }
+function showPayStep(){
+  document.getElementById('payStep').style.display = 'block';
+}
+
+function verifyVipCode(){
+  const code = document.getElementById('vipCodeInput').value.trim();
+  // Simple 6-digit code verification
+  // In production: verify against your code list / server
+  if(/^d{6}$/.test(code)){
+    setVip(true);
+    closeVipModal();
+    // Re-render current result with VIP content
+    if(window._lastChartData) renderWithVip(window._lastChartData);
+    alert('✅ 会员已开通！正在刷新内容...');
+  } else {
+    alert('❌ 解锁码格式不正确（需6位数字）');
+  }
+}
+
+// Modified render: store data + show VIP blur for deep content
+const _origRender = window.render || null;
+window._lastChartData = null;
+
+function renderWithVip(d){
+  window._lastChartData = d;
+  // Call original render, then apply VIP blur
+  if(_origRender) _origRender(d);
+  applyVipBlur();
+}
+
+function applyVipBlur(){
+  if(isVip()) return; // no blur for VIP
+  // Find deep analysis sections and add blur
+  const deepSec = document.querySelector('.l-result.show');
+  if(!deepSec) return;
+  // Blur sections after the first 2
+  const secs = deepSec.querySelectorAll('.l-sec, .sec');
+  secs.forEach((sec, i) => {
+    if(i >= 2){ // blur sections beyond first 2 (free preview)
+      if(!sec.querySelector('.vip-mask')){
+        sec.classList.add('vip-blur');
+        const mask = document.createElement('div');
+        mask.className = 'vip-mask';
+        mask.innerHTML = '<div class="lock-icon">🔒</div><div class="lock-text">VIP 专享内容</div><div class="lock-sub">开通会员查看完整分析</div>';
+        mask.onclick = showVipModal;
+        sec.style.position = 'relative';
+        sec.appendChild(mask);
+      }
+    }
+  });
+}
+
+// Override render
+window.render = renderWithVip;
 </script>
 </body>
 </html>
