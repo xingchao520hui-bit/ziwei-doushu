@@ -3017,81 +3017,77 @@ function renderPalaceGrid(d, ming, shen) {
   html += '<div class="l-card l-card-wide l-chart"><div class="l-chart-title">命盘十二宫</div>';
 
   var luckyStars = ['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马','解神'];
-  var evilStars  = ['擎羊','陀罗','火星','铃星','地空','地劫'];
+  var evilStars  = ['擎羊','陀罗','火星','铃星','地空','地劫','天空'];
 
-  var palaceOrder = ['命宫','兄弟','夫妻','子女','财帛','疾厄','迁移','交友','官禄','田宅','福德','父母'];
+  function getPalace(name) { return d.palaces.find(function(p){ return p.name === name; }); }
 
-  var nameToPalace = {};
-  d.palaces.forEach(function(p){ nameToPalace[p.name] = p; });
+  var pMing = getPalace('命宫');
+  var pXiongdi = getPalace('兄弟');
+  var pFuqi = getPalace('夫妻');
+  var pZinv = getPalace('子女');
+  var pCaifu = getPalace('财帛');
+  var pJieyi = getPalace('疾厄');
+  var pQianyi = getPalace('迁移');
+  var pJiaoyou = getPalace('交友');
+  var pGuanlu = getPalace('官禄');
+  var pTianzhai = getPalace('田宅');
+  var pFude = getPalace('福德');
+  var pFumu = getPalace('父母');
 
-  // 九宫格9个位置，每格1-2宫，12宫全展示
-  //  0  1  2
-  //  7  8  3   中宫=8
-  //  6  5  4
-  var cellMap = [
-    ['命宫','兄弟'],
-    ['夫妻','子女'],
-    ['财帛','疾厄'],
-    ['迁移','交友'],
-    ['官禄','田宅'],
-    ['福德','父母'],
-    null,
-    null,
-    'CENTER'
-  ];
-
-  var mingPalace = nameToPalace['命宫'] || {};
-  var mingStars = (mingPalace.stars || []).filter(function(s){return s.type==='major';}).map(function(s){return s.name;}).join('、');
-  var wuxing = d.fiveElements || (ming && ming.wuxing) || '水二局';
-  var gender = (d.birth && d.birth.gender === 'male') ? '阳男' : '阴女';
-  var birthTime = [d.birth.yearName, d.birth.monthName, d.birth.dayName].filter(Boolean).join('年').replace(/^|年/g, function(m){return m?'年':'';}) + '日';
-
-  var centerHtml = '<div class="l-center-info">' +
-    '<div class="l-center-stars">' + (mingStars||'天同') + '</div>' +
-    '<div class="l-center-wx">' + wuxing + '</div>' +
-    '<div class="l-center-gender">' + gender + '</div>' +
-    '<div class="l-center-time">' + (d.birth.yearName||'') + '年' + (d.birth.monthName||'') + '月' + (d.birth.dayName||'') + '日</div>' +
-    '<div class="l-center-mz">命主:' + (ming&&ming.mingzhu||'贪狼') + '</div>' +
-    '<div class="l-center-sz">身主:' + (shen&&shen.shenzhu||'天相') + '</div>' +
-    '</div>';
-
-  function nineCell(p1name, p2name) {
-    var p1 = p1name ? nameToPalace[p1name] : null;
-    var p2 = p2name ? nameToPalace[p2name] : null;
-    var cls = 'l-cell l-cell-nine';
-    if (p1 && ming && p1.name === ming.name) cls += ' ming';
-    else if (p1 && shen && p1.name === shen.name) cls += ' shen';
-
-    var h = '<div class="' + cls + '">';
-    if (p1) {
-      var s1 = (p1.stars||[]).map(function(x){return x.name;}).join('、')||'无';
-      h += '<div class="l-nine-group"><div class="l-nine-title">'+p1.name+'</div><div class="l-nine-stars">'+s1+'</div><div class="l-nine-branch">'+p1.branch+'</div></div>';
-    }
-    if (p2) {
-      h += '<div class="l-nine-sep"></div>';
-      var s2 = (p2.stars||[]).map(function(x){return x.name;}).join('、')||'无';
-      h += '<div class="l-nine-group"><div class="l-nine-title">'+p2.name+'</div><div class="l-nine-stars">'+s2+'</div><div class="l-nine-branch">'+p2.branch+'</div></div>';
-    }
-    return h + '</div>';
+  var info = d.info || {};
+  var birth = d.birth || {};
+  var genderTxt = (birth.gender === 'male') ? '阳男' : '阴女';
+  var wuxingJu = info.wuxingJu || d.fiveElements || '';
+  var lunarInfo = '';
+  if (d.lunar) {
+    lunarInfo = d.lunar.yearName ? (d.lunar.yearName+d.lunar.monthName+d.lunar.dayName) : ((d.lunar.year||'')+'年'+(d.lunar.month||'')+'月'+(d.lunar.day||'')+'日');
   }
 
-  // 生成9格HTML
-  var cells = [];
-  for (var i = 0; i < 9; i++) {
-    if (i === 8) {
-      cells[8] = '<div class="l-cell l-cell-center">' + centerHtml + '</div>';
-    } else if (cellMap[i]) {
-      cells[i] = nineCell(cellMap[i][0], cellMap[i][1]);
-    } else {
-      cells[i] = '<div class="l-cell l-cell-nine l-cell-empty"><div class="l-nine-title">—</div></div>';
-    }
+  var centerHtml = '<table style="width:100%;height:100%"><tr><td style="text-align:center;vertical-align:middle;padding:8px">' +
+    '<div class="l-center-title">' + genderTxt + ' ' + wuxingJu + '</div>' +
+    '<div class="l-center-time">' +
+    '<div>真太阳时 ' + (birth.year||'') + '.' + (birth.month||'') + '.' + (birth.day||'') + ' ' + (birth.hour||'') + ':' + (birth.minute||'00') + '</div>' +
+    '<div>钟表时间 ' + (birth.year||'') + '.' + (birth.month||'') + '.' + (birth.day||'') + ' ' + (birth.hour||'') + ':00</div>' +
+    (lunarInfo ? '<div>农历时间 ' + lunarInfo + '</div>' : '') +
+    '</div>' +
+    (pMing ? '<div class="l-center-ming">命主 ' + (info.mingZhu||'') + ' 命宫 ' + (pMing.branch||'') + '</div>' : '') +
+    (shen ? '<div class="l-center-shen">身主 ' + (info.shenZhu||'') + ' 身宫 ' + (shen.branch||'') + '</div>' : '') +
+    '</td></tr></table>';
+
+  function cellTd(p) {
+    if (!p) return '<td class="l-cell l-empty"></td>';
+    var isMing = p.name === '命宫';
+    var isShen = !!p.isBodyPalace;
+    var cls = 'l-cell';
+    if (isMing) cls += ' ming';
+    if (isShen && !isMing) cls += ' shen';
+    var h = '<td class="' + cls + '">';
+    if (p.daXianAge) h += '<div class="l-daxian-top">' + p.daXianAge[0] + '-' + p.daXianAge[1] + '岁</div>';
+    h += '<div class="l-pstars">';
+    (p.stars||[]).forEach(function(s) {
+      var cl = '';
+      if (s.type === 'major') cl = 'mj';
+      else if (luckyStars.indexOf(s.name) > -1) cl = 'lk';
+      else if (evilStars.indexOf(s.name) > -1) cl = 'el';
+      h += '<span class="' + cl + '">' + starName(s) + '</span>';
+    });
+    h += '</div>';
+    h += '<div class="l-pbottom">';
+    h += '<span class="l-pstembranch">' + (p.stem||'') + (p.branch||'') + '</span>';
+    h += '<span class="l-pname2">' + p.name + '</span>';
+    if (isMing) h += ' <span class="l-pbadge l-pbadge-m">命</span>';
+    if (isShen && !isMing) h += ' <span class="l-pbadge l-pbadge-s">身</span>';
+    h += '</div>';
+    h += '</td>';
+    return h;
   }
 
-  html += '<div class="l-3x3-grid">';
-  html += '<div class="l-grid-row">' + cells[0] + cells[1] + cells[2] + '</div>';
-  html += '<div class="l-grid-row">' + cells[7] + cells[8] + cells[3] + '</div>';
-  html += '<div class="l-grid-row">' + cells[6] + cells[5] + cells[4] + '</div>';
-  html += '</div></div>';
+  html += '<table class="l-zwtable">';
+  html += '<tr>' + cellTd(pMing) + cellTd(pXiongdi) + cellTd(pFuqi) + cellTd(pZinv) + '</tr>';
+  html += '<tr>' + cellTd(pCaifu) + '<td colspan="2" rowspan="2" class="l-center">' + centerHtml + '</td>' + cellTd(pJieyi) + '</tr>';
+  html += '<tr>' + cellTd(pFumu) + cellTd(pQianyi) + '</tr>';
+  html += '<tr>' + cellTd(pFude) + cellTd(pTianzhai) + cellTd(pGuanlu) + cellTd(pJiaoyou) + '</tr>';
+  html += '</table></div>';
   return html;
 }
 function renderOneCell(p, ming, shen, luckyStars, evilStars, d) {
