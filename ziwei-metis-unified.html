@@ -2968,19 +2968,22 @@ function showPayStep(){
 
 function verifyVipCode(){
   const code = document.getElementById('vipCodeInput').value.trim();
-  // Simple 6-digit code verification
-  // In production: verify against your code list / server
-  if(/^d{6}$/.test(code)){
+  if(!/^\d{6}$/.test(code)){ alert('❌ 解锁码需为6位数字'); return; }
+  // Simple code check (replace with your own codes)
+  // Generate codes: node -e "console.log(require('crypto').randomBytes(3).toString('hex').slice(0,6))"
+  // Store them here (obfuscated as base64):
+  const _VIP = ['OTg3NjU0','ODY1NDMy','Nzg5MjEw','OTg3NjQ1','ODY1MzMy',
+                'Nzg5MjMw','OTg3NjY1','ODY1NDQy','Nzg5MjQw','OTg3Njcx'];
+  const ok = _VIP.includes(Buffer.from(code).toString('base64'));
+  if(ok){
     setVip(true);
     closeVipModal();
-    // Re-render current result with VIP content
     if(window._lastChartData) renderWithVip(window._lastChartData);
     alert('✅ 会员已开通！正在刷新内容...');
   } else {
-    alert('❌ 解锁码格式不正确（需6位数字）');
+    alert('❌ 解锁码不正确\n支付后请联系客服获取正确解锁码');
   }
 }
-
 // Modified render: store data + show VIP blur for deep content
 const _origRender = window.render || null;
 window._lastChartData = null;
