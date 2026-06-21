@@ -2841,7 +2841,7 @@ function getChart(){
     }
   }
 
-  fetch(API+'/api/chart?'+'year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:''))
+  fetch(API+'/chart?'+'year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:''))
   .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
   .then(function(data){render(data);})
   .catch(function(e){
