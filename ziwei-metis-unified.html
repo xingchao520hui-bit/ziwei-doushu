@@ -34936,7 +34936,7 @@ function calcTrueSolar(year,month,day,hour,minute,lng){
   };
 }
 
-async function getChart(){
+async async function getChart(){
     const btn=document.querySelector('.btn-submit');
     const st=document.getElementById('status');
     btn.disabled=true;btn.textContent='排盘中...';
@@ -36826,7 +36826,7 @@ function getTabTitle(tabId) {
   try { renderSvgRadar('jizhenRadarSvg', d, ming); } catch(e) {}
 
 // ===== getChart: client engine wrapper =====
-function getChart(){
+async function getChart(){
   var year=parseInt(document.getElementById('s-year').value);
   var month=parseInt(document.getElementById('s-month').value);
   var day=parseInt(document.getElementById('s-day').value);
