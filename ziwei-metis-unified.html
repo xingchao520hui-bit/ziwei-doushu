@@ -36812,18 +36812,8 @@ function getChart(){
   document.getElementById('s-result').classList.remove('show');
   document.getElementById('s-submit').disabled=true;
 
-  var lng=120;
-  if(location){
-    var match=matchLocation(location);
-    if(match){lng=match.lng;
-      document.getElementById('s-truesolar').style.display='block';
-      document.getElementById('s-truesolar').textContent='已匹配: '+match.name+' (经度 '+lng.toFixed(2)+'°E)';
-    }
-  }
-
-  // 直接调用服务器API（端口3211）
-  var params='year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:'');
-
+  // 直接调用服务器 API（端口3211）
+  var params='year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true';
   fetch('http://localhost:3211/chart?'+params)
   .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
   .then(function(d){
@@ -36834,9 +36824,10 @@ function getChart(){
   .catch(function(e){
     document.getElementById('s-loading').classList.remove('show');
     document.getElementById('s-submit').disabled=false;
-    showError('排盘失败: '+e.message+'\n请确认服务已启动: node chart-server.js');
+    showError('排盘失败: '+e.message+'<br>请确认已启动服务器：<b>node chart-server.js</b>');
   });
 }
+
 function showError(msg){
   document.getElementById('s-loading').classList.remove('show');
   document.getElementById('s-error').classList.add('show');
