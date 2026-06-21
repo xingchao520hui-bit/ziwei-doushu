@@ -34688,7 +34688,7 @@ var _hepanBtn = document.getElementById('hepanSubmit');
 if(_hepanBtn) _hepanBtn.onclick = doHepanSubmit;
 
 // ===== Constants =====
-const API='/chart';
+const API='';
 const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
 let globalLaiYin = null; // 来因宫全局变量
@@ -36845,7 +36845,6 @@ function getChart(){
 
   // 直接调用服务器 API（端口3211）
   var params='year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true';
-  fetch('http://https://moonlit-revenge-conceal.ngrok-free.dev/chart?'+params)
   .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
   .then(function(d){
     document.getElementById('s-loading').classList.remove('show');
