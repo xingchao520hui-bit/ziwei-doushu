@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>QClaw 紫微斗数 · 排盘 & 合盘</title>
+<title>灰灰 · 紫微斗数</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
@@ -54,6 +54,20 @@
 .l-tag-ptn{background:#FFF3E0;color:var(--badge-orange)}
 .l-chart-title{font-size:15px;font-weight:600;text-align:center;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--card-border)}
 .l-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.l-zwtable{width:100%;border-collapse:collapse;border:2px solid #8B7355;background:#FFFBF5}
+.l-zwtable td{border:1px solid #C8B896;padding:8px 6px;vertical-align:top;font-size:12px;min-height:70px;width:22%}
+.l-zwtable td[colspan="2"]{width:44%;text-align:center;background:#F5EFE0}
+.l-cell.ming{background:#FFF5F0}
+.l-cell.shen{background:#F5F0FA}
+.l-pname{font-size:13px;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.l-pstem{font-size:11px;color:#8B7355;font-weight:400}
+.l-pbranch{font-size:11px;color:#999;font-weight:400}
+.l-daxian{font-size:10px;color:#B08D57;margin-bottom:3px}
+.l-center{vertical-align:middle!important;padding:16px 12px!important}
+.l-center-title{font-size:16px;font-weight:700;color:#1C1C1C;margin-bottom:6px}
+.l-center-stars{font-size:13px;color:#5A8F7B;margin-bottom:8px}
+.l-center-meta{font-size:12px;color:#666;line-height:1.8}
+.l-center-meta div{display:inline-block;margin:0 8px}
 .l-palace{padding:10px 7px;border-radius:7px;background:var(--input-bg);min-height:85px;position:relative;border:1px solid transparent}
 .l-palace.ming{background:#FFF5F5;border-color:#FECACA}
 .l-palace.shen{background:#F5F0FA;border-color:#D8C8E8}
@@ -830,7 +844,7 @@ btn-unlock{display:inline-block;margin:16px auto 0;padding:10px 28px;font-size:1
     <div class="l-row">
       <div class="l-field" style="flex:1"><label>出生时辰</label>
         <div class="l-row">
-          <select class="l-select" id="s-hour"><option value="0">0时·子</option><option value="2">2时·丑</option><option value="4">4时·寅</option><option value="6">6时·卯</option><option value="8">8时·辰</option><option value="10">10时·巳</option><option value="12" selected>12时·午</option><option value="14">14时·未</option><option value="16">16时·申</option><option value="18">18时·酉</option><option value="20">20时·戌</option><option value="22">22时·亥</option></select>
+          <select class="l-select" id="s-hour"><option value="0" selected>子时 (23-1点)</option><option value="2">丑时 (1-3点)</option><option value="4">寅时 (3-5点)</option><option value="6">卯时 (5-7点)</option><option value="8">辰时 (7-9点)</option><option value="10">巳时 (9-11点)</option><option value="12">午时 (11-13点)</option><option value="14">未时 (13-15点)</option><option value="16">申时 (15-17点)</option><option value="18">酉时 (17-19点)</option><option value="20">戌时 (19-21点)</option><option value="22">亥时 (21-23点)</option></select>
           <input type="number" class="l-input" id="s-minute" placeholder="分" min="0" max="59" style="max-width:70px">
         </div>
       </div>
@@ -2843,8 +2857,8 @@ function renderFooter(d,ming,cai,fuqi,tian){
   
   let txt=`<p><strong>命理师寄语：</strong></p>`;
   txt+=`<p>命主<strong class="highlight">${jiYu.join('，')}</strong>。运势随大限流转，顺境不骄、逆境不馁，修身即是改命。</p>`;
-  txt+=`<p style="margin-top:20px;color:#8a7a5a;">—— iztro 紫微斗数排盘系统 ——</p>`;
-  txt+=`<p style="color:#8a7a5a;font-size:12px;">注：本分析限于研究/娱乐目的，不构成专业建议。内容由 iztro 引擎排盘 + 星曜数据库自动生成。</p>`;
+  txt+=`<p style="margin-top:20px;color:#8a7a5a;">—— 灰灰 · 紫微斗数 ——</p>`;
+  txt+=`<p style="color:#8a7a5a;font-size:12px;">注：本分析限于研究/娱乐目的，不构成专业建议。</p>`;
   return txt;
 }
 // auto-load on page open when default values are set
@@ -2856,38 +2870,84 @@ function renderFooter(d,ming,cai,fuqi,tian){
 function renderPalaceGrid(d, ming, shen) {
   var html = '';
   html += '<div class="l-card l-card-wide l-chart"><div class="l-chart-title">命盘十二宫</div>';
-  html += '<div class="l-grid">';
-  var order = ['命宫','兄弟','夫妻','子女','财帛','疾厄','迁移','交友','官禄','田宅','福德','父母'];
+  // 标准紫微斗数4×4方阵（中间4格为信息区）
+  // 行顺序：巳午未申 / 辰·中·酉 / 卯·中·戌 / 寅丑子亥
+  var rows = [
+    ['巳','午','未','申'],
+    ['辰',null,'酉'],
+    ['卯',null,'戌'],
+    ['寅','丑','子','亥']
+  ];
+  var branchToPalace = {};
+  d.palaces.forEach(function(p) { branchToPalace[p.branch] = p; });
   var luckyStars = ['天魁','天钺','左辅','右弼','文昌','文曲','禄存'];
   var evilStars = ['擎羊','陀罗','火星','铃星','地空','地劫'];
   
-  order.forEach(function(pname) {
-    var p = pn(d, pname);
-    if (!p) return;
-    var isMing = pname === '命宫';
-    var isShen = shen && shen.name === pname;
-    var cls = 'l-palace';
-    if (isMing) cls += ' ming';
-    if (isShen) cls += ' shen';
-    
-    html += '<div class="' + cls + '">';
-    html += '<div class="l-pname">' + pname;
-    if (isMing) html += ' <span class="l-pbadge l-pbadge-m">命</span>';
-    if (isShen && !isMing) html += ' <span class="l-pbadge l-pbadge-s">身</span>';
-    html += '</div>';
-    
-    html += '<div class="l-pstars">';
-    p.stars.forEach(function(s) {
-      var cl = '';
-      if (s.type === 'major') cl = 'mj';
-      else if (luckyStars.indexOf(s.name) > -1) cl = 'lk';
-      else if (evilStars.indexOf(s.name) > -1) cl = 'el';
-      html += '<span class="' + cl + '">' + starName(s) + '</span> ';
-    });
-    html += '</div></div>';
+  html += '<table class="l-zwtable"><tbody>';
+  for (var ri = 0; ri < rows.length; ri++) {
+    html += '<tr>';
+    var row = rows[ri];
+    if (ri === 1 || ri === 2) {
+      // 有中间格的行：左 | 空 | 右  →  4列
+      var p0 = branchToPalace[row[0]];
+      html += renderOneCell(p0, ming, shen, luckyStars, evilStars, d, 2);
+      // 中间大格 (colspan=2)
+      if (ri === 1 && ming) {
+        var mStars = ms(ming).map(function(s){return starName(s)}).join(' ');
+        var info = d.info || {};
+        html += '<td colspan="2" rowspan="2" class="l-center">';
+        html += '<div class="l-center-title">' + (ming.name || '命宫') + '</div>';
+        html += '<div class="l-center-stars">' + mStars + '</div>';
+        html += '<div class="l-center-meta">';
+        if (info.wuxingJu) html += '<div>五行局：' + info.wuxingJu + '</div>';
+        if (info.mingZhu) html += '<div>命主：' + info.mingZhu + '</div>';
+        if (info.shenZhu) html += '<div>身主：' + info.shenZhu + '</div>';
+        html += '</div></td>';
+      } else if (ri === 1) {
+        html += '<td colspan="2" rowspan="2" class="l-center"><div class="l-center-title">命盘</div></td>';
+      }
+      var p2 = branchToPalace[row[2]];
+      html += renderOneCell(p2, ming, shen, luckyStars, evilStars, d, 2);
+    } else {
+      // 4格行
+      for (var ci = 0; ci < row.length; ci++) {
+        var p = branchToPalace[row[ci]];
+        html += renderOneCell(p, ming, shen, luckyStars, evilStars, d, 1);
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  html += '</div>';
+  return html;
+}
+
+function renderOneCell(p, ming, shen, luckyStars, evilStars, d, colspan) {
+  if (!p) return '<td class="l-cell l-empty"></td>';
+  var isMing = ming && p.name === '命宫';
+  var isShen = shen && shen.name === p.name;
+  var cls = 'l-cell';
+  if (isMing) cls += ' ming';
+  if (isShen && !isMing) cls += ' shen';
+  var attr = colspan > 1 ? ' colspan="' + colspan + '"' : '';
+  var html = '<td' + attr + ' class="' + cls + '">';
+  html += '<div class="l-pname">' + p.name;
+  if (p.stem) html += '<span class="l-pstem">' + p.stem + '</span>';
+  html += '<span class="l-pbranch">' + p.branch + '</span>';
+  if (isMing) html += ' <span class="l-pbadge l-pbadge-m">命</span>';
+  if (isShen && !isMing) html += ' <span class="l-pbadge l-pbadge-s">身</span>';
+  html += '</div>';
+  // 大限信息
+  if (p.daXianAge) html += '<div class="l-daxian">' + p.daXianAge[0] + '-' + p.daXianAge[1] + '岁</div>';
+  html += '<div class="l-pstars">';
+  p.stars.forEach(function(s) {
+    var cl = '';
+    if (s.type === 'major') cl = 'mj';
+    else if (luckyStars.indexOf(s.name) > -1) cl = 'lk';
+    else if (evilStars.indexOf(s.name) > -1) cl = 'el';
+    html += '<span class="' + cl + '">' + starName(s) + '</span>';
   });
-  
-  html += '</div></div>';
+  html += '</div></td>';
   return html;
 }
 
@@ -2925,15 +2985,18 @@ function render(d) {
   var mingStars = ms(ming).map(function(s) { return starName(s); }).join('、') || '无主星';
   var shenName = shen ? shen.name : '—';
   var lunarInfo = '';
-  if (d.lunar) lunarInfo = d.lunar.year + '年 ' + d.lunar.month + '月 ' + d.lunar.day + '日';
-  var solarInfo = d.birth.year + '年' + d.birth.month + '月' + d.birth.day + '日 ' + d.birth.hour + '时' + (d.birth.minute||0) + '分';
+  if (d.lunar) {
+    if (d.lunar.yearName) { lunarInfo = (d.lunar.yearName||'') + (d.lunar.monthName||'') + (d.lunar.dayName||''); }
+    else { lunarInfo = (d.lunar.year||'') + '年 ' + (d.lunar.month||'') + '月 ' + (d.lunar.day||'') + '日'; }
+  }
+  var solarInfo = (d.birth.year||'') + '年' + (d.birth.month||'') + '月' + (d.birth.day||'') + '日 ' + (d.birth.hour||'') + '时' + (d.birth.minute||0) + '分';
   
   html += '<div class="l-card">';
   html += '<div class="l-info">命盘信息</div>';
   html += '<div class="l-info-row">';
   html += '<span><strong>命宫</strong> ' + mingStars + ' <span class="l-tag l-tag-ming">命</span></span>';
   html += '<span><strong>身宫</strong> ' + shenName + ' <span class="l-tag l-tag-shen">身</span></span>';
-  html += '<span><strong>农历</strong> ' + lunarInfo + '</span>';
+  if (lunarInfo) html += '<span><strong>农历</strong> ' + lunarInfo + '</span>';
   html += '<span><strong>公历</strong> ' + solarInfo + '</span>';
   if (globalLaiYin) html += '<span><strong>来因宫</strong> ' + globalLaiYin.branch + '·' + globalLaiYin.name + '</span>';
   html += '</div></div>';
