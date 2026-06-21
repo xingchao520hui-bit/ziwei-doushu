@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -706,7 +706,32 @@ body{
 .star-evil{color:#dc2626}
 .star-flower{color:#d946ef}
 
-/* Analysis section */
+/* 4×4 中央宫 */
+.palace-center{
+  grid-column:2 / 4;
+  grid-row:2 / 4;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  background:var(--card-bg);
+  text-align:center;
+  min-height:140px;
+}
+.palace-center .center-yin-yang{font-size:28px;color:var(--accent);opacity:.3;margin-bottom:4px}
+.palace-center .center-title{font-size:11px;letter-spacing:.2em;color:var(--accent);margin-bottom:8px}
+.palace-center .center-info{font-size:10px;color:var(--text-muted);margin-bottom:3px}
+.palace-center .center-age{font-size:10px;color:var(--accent);font-weight:600}
+.palace-empty{
+  background:var(--card-bg);
+  min-height:70px;
+}
+.palace-missing{
+  display:flex;align-items:center;justify-content:center;
+  color:#dc2626;font-size:11px;background:#fff0f0;
+}
+
 .analysis-card{
   background:var(--card-bg);
   border:var(--card-border);
@@ -1890,61 +1915,98 @@ async function getChart(){
 
 
 function renderPalaceGrid(d,ming,shen){
-    // iztro palaces数组顺序 = [兄弟,命宫,父母,福德,田宅,官禄,仆役,迁移,疾厄,财帛,子女,夫妻]
-    // 对应地支顺序       = [寅,  卯,  辰,  巳,  午,  未,  申,  酉,  戌,  亥,  子,  丑]
-    // 4×4网格外围12格布局（顺时针）:
-    //   [申][酉]   pos8=寅(兄弟) pos9=卯(命宫)  pos10=辰(父母) pos11=巳(福德)
-    //   [卯][  ][戌][亥] → pos7=午(田宅)  pos6=未(官禄)  pos5=申(仆役)  pos4=酉(迁移)
-    //   [寅][  ][子][丑] → pos3=戌(疾厄)  pos2=亥(财帛)  pos1=子(子女)  pos0=丑(夫妻)
-    //   [辰][巳][午][未]
-    // cellIndex → 地支索引（在地支数组[子丑寅卯辰巳午未申酉戌亥]中的位置）
-    const CELL_TO_DZ_IDX = [10,11,0,1,2,3,4,5,6,7,8,9]; // cell→地支在数组中index
-    const DZ_ORDER = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    // 地支→palaces数组索引
-    const DZ_TO_PALACE_IDX = {寅:0,卯:1,辰:2,巳:3,午:4,未:5,申:6,酉:7,戌:8,亥:9,子:10,丑:11};
+    // ============================================================
+    // 核心修复：用 palace.branch（中文地支）做 key 建 palaceMap
+    // iztro 引擎返回的 branch 是中文地支字：子丑寅卯辰巳午未申酉戌亥
+    // 不依赖 palaces 数组的顺序！
+    // 4×4 网格布局（参考 ChartBoard.tsx）：
+    //   [巳][午][未][申]   ← 第一行：迁移/疾厄/财帛/子女
+    //   [辰][      ][酉]   ← 第二行：命宫(左) / 交友宫(右)
+    //   [卯][      ][戌]   ← 第三行：兄弟宫(左) / 官禄宫(右)
+    //   [寅][丑][子][亥]   ← 第四行：父母/福德/田宅/夫妻
+    // 中央宫显示：命宫/身宫/五行局/大限
+    // ============================================================
 
     if(!d.palaces || d.palaces.length < 12){
         return '<div style="color:red;padding:20px;text-align:center">⚠️ 命盘数据缺少宫位</div>';
     }
 
-    // 按名称找命宫
-    const mingPalace = d.palaces.find(p => p.name === '命宫');
-    if(!mingPalace){
-        return '<div style="color:red;padding:20px;text-align:center">⚠️ 未找到命宫</div>';
-    }
-    const mingBranch = mingPalace.branch;
-    const mingBranchIdx = DZ_ORDER.indexOf(mingBranch);
+    // 用 branch 中文地支做 key 建 palace map
+    var palaceByBranch = {};
+    d.palaces.forEach(function(p){
+        if(p && p.branch) palaceByBranch[p.branch] = p;
+    });
 
-    let html = '';
-    for(let cell = 0; cell < 12; cell++){
-        // 该格子对应的地支
-        const dz = DZ_ORDER[CELL_TO_DZ_IDX[cell]];
-        // 该地支对应的palace数组索引
-        const palaceIdx = DZ_TO_PALACE_IDX[dz];
-        const p = d.palaces[palaceIdx];
-        if(!p){
-            html += '<div class="palace palace-missing" style="border:2px dashed red;min-height:80px;display:flex;align-items:center;justify-content:center;color:red;font-size:11px;background:#fff0f0;">缺宫: '+dz+'宫</div>';
-            continue;
+    // 中文地支 → 4×4 网格 [row, col]
+    var BG = {
+        '巳':[1,1], '午':[1,2], '未':[1,3], '申':[1,4],
+        '辰':[2,1],                   '酉':[2,4],
+        '卯':[3,1],                   '戌':[3,4],
+        '寅':[4,1], '丑':[4,2], '子':[4,3], '亥':[4,4]
+    };
+
+    // 按 row/col 顺序遍历，生成 4×4 表格 HTML
+    var rows = {};
+    for(var r=1;r<=4;r++) rows[r] = {};
+
+    Object.keys(BG).forEach(function(branch){
+        var pos = BG[branch];
+        var palace = palaceByBranch[branch];
+        if(palace) rows[pos[0]][pos[1]] = palace;
+    });
+
+    var DZ_ORDER = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    var GAN = '甲乙丙丁戊己庚辛壬癸';
+
+    var mingGong = ming || d.palaces.find(function(p){ return p.name === '命宫'; });
+    var shenGong = shen || d.palaces.find(function(p){ return p.isBodyPalace || p.name === '身宫'; });
+    var mingBranch = mingGong ? mingGong.branch : '';
+
+    var html = '';
+    for(var r=1; r<=4; r++){
+        for(var c=1; c<=4; c++){
+            if(r>=2 && r<=3 && (c===2 || c===3)){
+                // 中央区域：只输出一次中宫（2×2）
+                if(r===2 && c===2){
+                    html += '<div class="palace-center">';
+                    html += '<div class="center-yin-yang">☯</div>';
+                    html += '<div class="center-title">紫微斗数</div>';
+                    html += '<div class="center-info">命宫 <b>'+(mingBranch||'')+'</b></div>';
+                    if(shenGong) html += '<div class="center-info">身宫 <b>'+shenGong.branch+'</b></div>';
+                    if(d.info && d.info.wuxingJu) html += '<div class="center-info">'+d.info.wuxingJu+'</div>';
+                    if(d.currentAge) html += '<div class="center-age">大限: '+d.currentAge+'岁</div>';
+                    html += '</div>';
+                }
+                continue;
+            } else {
+                var p = rows[r][c];
+                if(!p){
+                    html += '<div class="palace-cell palace-missing">缺宫</div>';
+                    continue;
+                }
+                var isMing = p.name === '命宫';
+                var isShen = p.isBodyPalace || p.name === '身宫';
+                var cls = 'palace-cell' + (isMing ? ' ming' : '') + (isShen ? ' shen' : '');
+                var badges = (isMing ? '<span class="palace-badge badge-ming">命</span>' : '') + (isShen ? '<span class="palace-badge badge-shen">身</span>' : '');
+                var stars = '';
+                (p.stars||[]).forEach(function(s){
+                    var nm = s.name || '';
+                    var brightness = s.brightness || '';
+                    var siHua = s.siHua || '';
+                    var starClass = 'star-minor';
+                    if(s.type === 'major') starClass = 'star-major';
+                    else if(['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].indexOf(nm)>-1) starClass = 'star-lucky';
+                    else if(['擎羊','陀罗','火星','铃星','地空','地劫','天空'].indexOf(nm)>-1) starClass = 'star-evil';
+                    var starText = nm + (brightness && brightness!=='平' ? '['+brightness+']' : '') + (siHua ? '<span class="sihua">'+siHua+'</span>' : '');
+                    stars += '<div class="star-entry '+starClass+'">'+starText+'</div>';
+                });
+                var ganZhi = (p.stem || '') + (p.branch || '');
+                html += '<div class="'+cls+'">'+badges+'<div class="palace-name">'+p.name+'</div><div class="palace-ganzhi">'+ganZhi+'</div><div class="star-list">'+stars+'</div></div>';
+            }
         }
-        const isMing = p.name === '命宫';
-        const isShen = !!p.isBodyPalace;
-        const cls = 'palace' + (isMing ? ' ming' : '') + (isShen ? ' shen' : '');
-        const badges = (isMing ? '<span class="palace-badge badge-ming">命</span>' : '') + (isShen ? '<span class="palace-badge badge-shen">身</span>' : '');
-        let stars = '';
-        (p.stars || []).forEach(s => {
-            let cn = 'star-minor';
-            const nm = (s.name) || '';
-            if(s.type === 'major') cn = 'star-main';
-            else if(['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(nm)) cn = 'star-lucky';
-            else if(['擎羊','陀罗','火星','铃星','地空','地劫','天空'].includes(nm)) cn = 'star-evil';
-            const starName = (typeof allStarName === 'function') ? allStarName(s) : nm;
-            stars += '<div class="' + cn + '">' + starName + (s.brightness && s.brightness !== '平' ? '['+s.brightness+']' : '') + '</div>';
-        });
-        html += '<div class="' + cls + '">' + badges + '<div class="palace-name">' + (p.branch||'') + '宫 · ' + p.name + (isShen&&!isMing?'(身宫)':'') + '</div><div class="star-list">' + stars + '</div></div>';
     }
     return html;
 }
-
 // ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
 
 // ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
@@ -3195,7 +3257,6 @@ function renderFooter(d,ming,cai,fuqi,tian){
 }
 // auto-load on page open when default values are set
 // support URL params: ?year=1993&month=8&day=31&hour=12&gender=female
-// ===== 3×3 九宫格 renderPalaceGrid =====
 function renderPalaceGrid(d, ming, shen) {
   var html = '';
   html += '<div class="l-card l-card-wide l-chart"><div class="l-chart-title">命盘十二宫</div>';
@@ -3203,29 +3264,35 @@ function renderPalaceGrid(d, ming, shen) {
   var luckyStars = ['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马','解神'];
   var evilStars  = ['擎羊','陀罗','火星','铃星','地空','地劫','天空'];
 
-  function getPalace(name) { return d.palaces.find(function(p){ return p.name === name; }); }
+  // 用 branch 中文地支做 key 建 palace map（不依赖数组顺序）
+  var palaceByBranch = {};
+  (d.palaces || []).forEach(function(p){
+    if(p && p.branch) palaceByBranch[p.branch] = p;
+  });
 
-  // 标准4×4紫微斗数排盘（12宫全含）
-  // Row0: 命宫 兄弟 夫妻 子女
-  // Row1: 财帛 [中宫colspan=2 rowspan=2] 疾厄
-  // Row2: 父母                 迁移
-  // Row3: 福德 田宅 官禄 交友
-  var cells = {
-    r0c0: getPalace('命宫'),
-    r0c1: getPalace('兄弟'),
-    r0c2: getPalace('夫妻'),
-    r0c3: getPalace('子女'),
-    r1c0: getPalace('财帛'),
-    r1c3: getPalace('疾厄'),
-    r2c0: getPalace('父母'),
-    r2c3: getPalace('迁移'),
-    r3c0: getPalace('福德'),
-    r3c1: getPalace('田宅'),
-    r3c2: getPalace('官禄'),
-    r3c3: getPalace('交友')   // 交友宫在这里！
+  // 中文地支 → 4×4 网格 [row, col]（参考 ChartBoard.tsx 标准紫微斗数布局）
+  // 巳午未申 = 第一行：迁移/疾厄/财帛/子女
+  // 辰命宫(左) 中宫 酉交友(右)
+  // 卯兄弟(左) 中宫 戌官禄(右)
+  // 寅丑子亥 = 第四行：父母/福德/田宅/夫妻
+  var BG = {
+    '巳':[1,1], '午':[1,2], '未':[1,3], '申':[1,4],
+    '辰':[2,1],                   '酉':[2,4],
+    '卯':[3,1],                   '戌':[3,4],
+    '寅':[4,1], '丑':[4,2], '子':[4,3], '亥':[4,4]
   };
 
-  // 中宫信息
+  var rows = {};
+  for(var r=1; r<=4; r++) rows[r] = {};
+  Object.keys(BG).forEach(function(b){
+    var pos = BG[b];
+    var p = palaceByBranch[b];
+    if(p) rows[pos[0]][pos[1]] = p;
+  });
+
+  var mingGong = ming || d.palaces.find(function(p){ return p.name === '命宫'; });
+  var shenGong = shen || d.palaces.find(function(p){ return p.isBodyPalace || p.name === '身宫'; });
+
   var info = d.info || {};
   var birth = d.birth || {};
   var genderTxt = (birth.gender === 'male') ? '阳男' : '阴女';
@@ -3242,22 +3309,19 @@ function renderPalaceGrid(d, ming, shen) {
     '<div>钟表时间 ' + (birth.year||'') + '.' + (birth.month||'') + '.' + (birth.day||'') + ' ' + (birth.hour||'') + ':00</div>' +
     (lunarInfo ? '<div>农历时间 ' + lunarInfo + '</div>' : '') +
     '</div>' +
-    (cells.r0c0 ? '<div class="l-center-ming">命主 ' + (info.mingZhu||'') + ' 命宫 ' + (cells.r0c0.branch||'') + '</div>' : '') +
-    (shen ? '<div class="l-center-shen">身主 ' + (info.shenZhu||'') + ' 身宫 ' + (shen.branch||'') + '</div>' : '') +
+    (mingGong ? '<div class="l-center-ming">命主 ' + (info.mingZhu||'') + ' 命宫 ' + (mingGong.branch||'') + '</div>' : '') +
+    (shenGong ? '<div class="l-center-shen">身主 ' + (info.shenZhu||'') + ' 身宫 ' + (shenGong.branch||'') + '</div>' : '') +
     '</td></tr></table>';
 
-  // 渲染单个宫位TD
   function cellTd(p) {
     if (!p) return '<td class="l-cell l-empty"></td>';
     var isMing = p.name === '命宫';
-    var isShen = !!p.isBodyPalace;
+    var isShen = p.isBodyPalace || p.name === '身宫';
     var cls = 'l-cell';
     if (isMing) cls += ' ming';
     if (isShen && !isMing) cls += ' shen';
     var h = '<td class="' + cls + '">';
-    // 大限年龄
     if (p.daXianAge) h += '<div class="l-daxian-top">' + p.daXianAge[0] + '-' + p.daXianAge[1] + '岁</div>';
-    // 星曜
     h += '<div class="l-pstars">';
     (p.stars||[]).forEach(function(s) {
       var cl = '';
@@ -3267,7 +3331,6 @@ function renderPalaceGrid(d, ming, shen) {
       h += '<span class="' + cl + '">' + starName(s) + '</span>';
     });
     h += '</div>';
-    // 底部：干支+宫名
     h += '<div class="l-pbottom">';
     h += '<span class="l-pstembranch">' + (p.stem||'') + (p.branch||'') + '</span>';
     h += '<span class="l-pname2">' + p.name + '</span>';
@@ -3278,16 +3341,15 @@ function renderPalaceGrid(d, ming, shen) {
     return h;
   }
 
-  // 4×4表格输出
   html += '<table class="l-zwtable">';
-  // Row0
-  html += '<tr>' + cellTd(cells.r0c0) + cellTd(cells.r0c1) + cellTd(cells.r0c2) + cellTd(cells.r0c3) + '</tr>';
-  // Row1
-  html += '<tr>' + cellTd(cells.r1c0) + '<td colspan="2" rowspan="2" class="l-center">' + centerHtml + '</td>' + cellTd(cells.r1c3) + '</tr>';
-  // Row2
-  html += '<tr>' + cellTd(cells.r2c0) + cellTd(cells.r2c3) + '</tr>';
-  // Row3
-  html += '<tr>' + cellTd(cells.r3c0) + cellTd(cells.r3c1) + cellTd(cells.r3c2) + cellTd(cells.r3c3) + '</tr>';
+  // Row 1
+  html += '<tr>' + cellTd(rows[1][1]) + cellTd(rows[1][2]) + cellTd(rows[1][3]) + cellTd(rows[1][4]) + '</tr>';
+  // Row 2
+  html += '<tr>' + cellTd(rows[2][1]) + '<td colspan="2" rowspan="2" class="l-center">' + centerHtml + '</td>' + cellTd(rows[2][4]) + '</tr>';
+  // Row 3
+  html += '<tr>' + cellTd(rows[3][1]) + cellTd(rows[3][4]) + '</tr>';
+  // Row 4
+  html += '<tr>' + cellTd(rows[4][1]) + cellTd(rows[4][2]) + cellTd(rows[4][3]) + cellTd(rows[4][4]) + '</tr>';
   html += '</table></div>';
   return html;
 }
@@ -3554,6 +3616,7 @@ function render(d) {
   document.getElementById('s-result').classList.add('show');
   document.getElementById('s-result').scrollIntoView({ behavior: 'smooth' });
 }
+  try { renderSvgRadar('jizhenRadarSvg', d, ming); } catch(e) {}
 
 // ===== getChart: client engine wrapper =====
 function getChart(){
@@ -3887,111 +3950,81 @@ function generateEvaluation(d, ming) {
 }
 
 // 绘制雷达图
-function drawRadarChart(canvasId, d, ming) {
-  var canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var width = canvas.width;
-  var height = canvas.height;
-  var centerX = width / 2;
-  var centerY = height / 2;
-  var radius = Math.min(centerX, centerY) - 60;
-  
-  // 清空画布
-  ctx.clearRect(0, 0, width, height);
-  
-  // 六个维度
-  var dimensions = ['综合', '事业', '财运', '感情', '健康', '性格'];
-  var values = [0.8, 0.7, 0.75, 0.65, 0.85, 0.9]; // 默认值，后续可根据命盘计算
-  
-  // 根据命宫主星调整数值
-  var mainStars = ms(ming).filter(function(s) { return s.type === 'major'; });
-  var starNames = mainStars.map(function(s) { return s.name; });
-  
-  if (starNames.includes('太阳')) {
-    values = [0.85, 0.75, 0.7, 0.8, 0.9, 0.95];
-  } else if (starNames.includes('天机')) {
-    values = [0.8, 0.85, 0.7, 0.75, 0.8, 0.9];
-  } // ... 可以根据需要添加更多
-  
-  // 绘制网格
-  ctx.strokeStyle = '#E5E5E5';
-  ctx.lineWidth = 1;
-  for (var i = 1; i <= 5; i++) {
-    var r = radius * i / 5;
-    ctx.beginPath();
-    for (var j = 0; j < 6; j++) {
-      var angle = (Math.PI * 2 * j / 6) - Math.PI / 2;
-      var x = centerX + r * Math.cos(angle);
-      var y = centerY + r * Math.sin(angle);
-      if (j === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-    ctx.stroke();
+// ===== SVG 雷达图渲染 =====
+function computeRadarData(d, ming) {
+  var dimDefaults = { overall: 0.65, career: 0.60, wealth: 0.60, love: 0.60, health: 0.65, personality: 0.65 };
+  var starDefaults = { career: '', wealth: '', love: '', health: '', personality: '' };
+  if (!ming) return { values: dimDefaults, stars: starDefaults };
+  var bMap = {};
+  (ming.stars || []).forEach(function(s) { if (s.type === 'major') bMap[s.name] = s.brightness || '平'; });
+  function bsc(b) { return { '庙': 1, '旺': 0.85, '得': 0.75, '平': 0.6, '不得': 0.5, '陷': 0.35 }[b] || 0.6; }
+  function topStar(p) {
+    if (!p || !p.stars) return { star: '', score: 0 };
+    var best = { star: '', score: 0 };
+    p.stars.filter(function(s) { return s.type === 'major'; }).forEach(function(s) {
+      var sc = bsc(s.brightness || '平');
+      if (sc > best.score) { best.score = sc; best.star = s.name; }
+    });
+    if (best.score < 0.5) best.score = 0.5;
+    return best;
   }
-  
-  // 绘制轴线
-  ctx.strokeStyle = '#CCC';
-  for (var i = 0; i < 6; i++) {
-    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
-    ctx.stroke();
-  }
-  
-  // 绘制数据区域
-  ctx.fillStyle = 'rgba(200, 169, 110, 0.3)';
-  ctx.strokeStyle = 'rgba(200, 169, 110, 0.8)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  for (var i = 0; i < 6; i++) {
-    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
-    var x = centerX + radius * values[i] * Math.cos(angle);
-    var y = centerY + radius * values[i] * Math.sin(angle);
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  
-  // 绘制数据点
-  ctx.fillStyle = '#c8a96e';
-  for (var i = 0; i < 6; i++) {
-    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
-    var x = centerX + radius * values[i] * Math.cos(angle);
-    var y = centerY + radius * values[i] * Math.sin(angle);
-    ctx.beginPath();
-    ctx.arc(x, y, 4, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  
-  // 绘制标签
-  ctx.fillStyle = '#333';
-  ctx.font = '14px "PingFang SC", "Microsoft YaHei", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  for (var i = 0; i < 6; i++) {
-    var angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
-    var x = centerX + (radius + 30) * Math.cos(angle);
-    var y = centerY + (radius + 30) * Math.sin(angle);
-    
-    // 为某些维度添加说明
-    var label = dimensions[i];
-    if (i === 1 && starNames.includes('天同')) label += '(借天同)';
-    if (i === 2) label += '(太阴)';
-    if (i === 3) label += '(天同·巨门)';
-    if (i === 4) label += '(廉贞·天府)';
-    if (i === 5 && starNames.includes('太阳')) label += '(太阳·天梁)';
-    
-    ctx.fillText(label, x, y);
-  }
+  var mTop = topStar(ming);
+  var cTop = topStar(pn(d, '官禄'));
+  var wTop = topStar(pn(d, '财帛'));
+  var lTop = topStar(pn(d, '夫妻'));
+  var hTop = topStar(pn(d, '疾厄'));
+  var overall = Math.round(((mTop.score + cTop.score + wTop.score + lTop.score + hTop.score) / 5) * 100) / 100;
+  return {
+    values: { overall: overall, career: cTop.score, wealth: wTop.score, love: lTop.score, health: hTop.score, personality: mTop.score },
+    stars: { personality: mTop.star, career: cTop.star, wealth: wTop.star, love: lTop.star, health: hTop.star }
+  };
 }
 
-// Tab切换
-function switchJiZhenTab(btn, tabId) {
+function renderSvgRadar(containerId, d, ming) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  var W = 360, H = 360, cx = W / 2, cy = H / 2, R = Math.min(cx, cy) - 75, axes = 6, lvls = 5;
+  var dimKeys = ['overall', 'career', 'wealth', 'love', 'health', 'personality'];
+  var dimNames = ['综合', '事业', '财运', '感情', '健康', '性格'];
+  var starKeys = ['', 'career', 'wealth', 'love', 'health', 'personality'];
+  var rd = computeRadarData(d, ming);
+  var vals = dimKeys.map(function(k) { return Math.max(0.1, Math.min(1, rd.values[k] || 0.6)); });
+  var stNames = starKeys.map(function(sk, i) { return i === 0 ? '' : (rd.stars[sk] || ''); });
+  var svg = '<svg class="jizhen-radar-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">';
+  for (var lvl = 1; lvl <= lvls; lvl++) {
+    var r = R * lvl / lvls, pts = [];
+    for (var i = 0; i < axes; i++) {
+      var angle = (Math.PI * 2 * i / axes) - Math.PI / 2;
+      pts.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
+    }
+    svg += '<path class="grid-ring" d="M' + pts[0].join(',') + pts.slice(1).map(function(p) { return 'L' + p.join(','); }).join('') + 'Z"/>';
+  }
+  for (var i = 0; i < axes; i++) {
+    var angle = (Math.PI * 2 * i / axes) - Math.PI / 2;
+    svg += '<line class="axis-line" x1="' + cx + '" y1="' + cy + '" x2="' + (cx + R * Math.cos(angle)) + '" y2="' + (cy + R * Math.sin(angle)) + '"/>';
+  }
+  var polyPts = [];
+  for (var i = 0; i < axes; i++) {
+    var angle = (Math.PI * 2 * i / axes) - Math.PI / 2;
+    polyPts.push([cx + R * vals[i] * Math.cos(angle), cy + R * vals[i] * Math.sin(angle)]);
+  }
+  svg += '<path class="data-poly" d="M' + polyPts[0].join(',') + polyPts.slice(1).map(function(p) { return 'L' + p.join(','); }).join('') + 'Z"/>';
+  for (var i = 0; i < axes; i++) {
+    svg += '<circle class="data-dot" cx="' + polyPts[i][0] + '" cy="' + polyPts[i][1] + '" r="4"/>';
+  }
+  for (var i = 0; i < axes; i++) {
+    var angle = (Math.PI * 2 * i / axes) - Math.PI / 2;
+    var lx = cx + (R + 26) * Math.cos(angle), ly = cy + (R + 26) * Math.sin(angle);
+    var anchor = Math.abs(angle) < 0.05 || Math.abs(angle - Math.PI) < 0.05 ? 'middle' : (angle > -Math.PI / 2 && angle < Math.PI / 2 ? 'start' : 'end');
+    svg += '<text class="dim-label" x="' + lx + '" y="' + ly + '" text-anchor="' + anchor + '" dominant-baseline="middle">' + dimNames[i] + '</text>';
+    if (stNames[i]) {
+      var lx2 = cx + (R + 46) * Math.cos(angle), ly2 = cy + (R + 46) * Math.sin(angle);
+      svg += '<text class="label-star" x="' + lx2 + '" y="' + ly2 + '" text-anchor="' + anchor + '" dominant-baseline="middle">' + stNames[i] + '</text>';
+    }
+  }
+  svg += '</svg>';
+  container.innerHTML = svg;
+}function switchJiZhenTab(btn, tabId) {
   // 更新按钮状态
   var tabs = document.querySelectorAll('.jizhen-tab');
   tabs.forEach(function(t) { t.classList.remove('active'); });
