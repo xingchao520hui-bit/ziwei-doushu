@@ -1706,31 +1706,62 @@ async function getChart(){
 
 
 function renderPalaceGrid(d,ming,shen){
-    // render in fixed DZ order matching the original template layout
-    const dzOrder=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    return dzOrder.map(dz=>{
-        const p=d.palaces.find(p=>p.branch===dz);
-        if(!p)return'';
-        let cls='palace';
-        if(p.name==='命宫')cls+=' ming';
-        if(p.isBodyPalace)cls+=' shen';
-        let badges='';
-        if(p.name==='命宫')badges+='<span class="palace-badge badge-ming">命</span>';
-        if(p.isBodyPalace&&p.name!=='命宫')badges+='<span class="palace-badge badge-shen">身</span>';
-        let stars='';
-        p.stars.forEach(s=>{
-            let cn='';const nm=s.name;
-            if(s.type==='major')cn='star-main';
-            else if(['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(nm))cn='star-lucky';
-            else if(['擎羊','陀罗','火星','铃星','地空','地劫','天空'].includes(nm))cn='star-evil';
-            else cn='star-minor';
-            stars+=`<div class="${cn}">${allStarName(s)}${s.brightness&&s.brightness!=='平'?'['+s.brightness+']':''}</div>`;
+    // ── 以命宫为起点·逆时针排列·对应4×4网格固定位置 ──
+    // POSITIONS[n] = 第n个逆时针位置的gridCell索引
+    // 正确顺时针序列: 申,未,午,巳,辰,卯,寅,丑,子,亥,戌,酉
+    // 对应grid索引:     8, 9,10,11, 0, 1, 2, 3, 4, 5, 6, 7
+    const POSITIONS = [8,9,10,11, 0,1,2,3,4,5,6,7];
+    const DZ_ORDER  = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    // 逆时针偏移: 第n个位置的地支 = DZ_ORDER[(baseIdx - n + 12) % 12]
+    const DZ_IDX   = {子:0,丑:1,寅:2,卯:3,辰:4,巳:5,午:6,未:7,申:8,酉:9,戌:10,亥:11};
+
+    if(!d.palaces || d.palaces.length < 12){
+        return '<div style="color:red;padding:20px;text-align:center">⚠️ 命盘数据缺少宫位，请检查排盘结果</div>';
+    }
+
+    const mingBranch = d.palaces[0].branch;
+    const baseIdx = DZ_IDX[mingBranch];
+    if(baseIdx === undefined){
+        return '<div style="color:red;padding:20px;text-align:center">⚠️ 命宫地支无法识别: ' + (mingBranch||'') + '</div>';
+    }
+
+    // 预建grid[gridCellIdx] = palace对象（0=空/未找到）
+    const grid = new Array(12).fill(null);
+    POSITIONS.forEach((cellIdx, n) => {
+        const dz = DZ_ORDER[(baseIdx - n + 1200) % 12]; // 逆时针第n个
+        const palace = d.palaces.find(p => p.branch === dz);
+        grid[cellIdx] = palace || null;
+    });
+
+    let html = '';
+    for(let cell = 0; cell < 12; cell++){
+        const p = grid[cell];
+        if(!p){
+            const dzMap = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+            html += '<div class="palace palace-missing" style="border:2px dashed red;min-height:80px;display:flex;align-items:center;justify-content:center;color:red;font-size:11px;background:#fff0f0;">缺宫: ' + (dzMap[cell]||'') + '宫空</div>';
+            continue;
+        }
+        const isMing = p.name === '命宫';
+        const isShen = !isMing && !!p.isBodyPalace;
+        const cls = 'palace' + (isMing ? ' ming' : '') + (isShen ? ' shen' : '');
+        const badges = (isMing ? '<span class="palace-badge badge-ming">命</span>' : '') + (isShen ? '<span class="palace-badge badge-shen">身</span>' : '');
+        let stars = '';
+        (p.stars || []).forEach(s => {
+            let cn = 'star-minor';
+            const nm = (s.name) || '';
+            if(s.type === 'major') cn = 'star-main';
+            else if(['天魁','天钺','左辅','右弼','文昌','文曲','禄存','天马'].includes(nm)) cn = 'star-lucky';
+            else if(['擎羊','陀罗','火星','铃星','地空','地劫','天空'].includes(nm)) cn = 'star-evil';
+            const starName = (typeof allStarName === 'function') ? allStarName(s) : nm;
+            stars += '<div class="' + cn + '">' + starName + (s.brightness && s.brightness !== '平' ? '['+s.brightness+']' : '') + '</div>';
         });
-        let lbl=p.name;
-        if(p.isBodyPalace)lbl+='(身宫)';
-        return `<div class="${cls}">${badges}<div class="palace-name">${dz}宫 · ${lbl}</div><div class="star-list">${stars}</div></div>`;
-    }).join('');
+        const lbl = p.name + (isShen ? '(身宫)' : '');
+        html += '<div class="' + cls + '">' + badges + '<div class="palace-name">' + (p.branch||'') + '宫 · ' + lbl + '</div><div class="star-list">' + stars + '</div></div>';
+    }
+    return html;
 }
+
+// ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
 
 // ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
 function computePastYears(d){
