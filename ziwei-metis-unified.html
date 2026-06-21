@@ -1706,43 +1706,44 @@ async function getChart(){
 
 
 function renderPalaceGrid(d,ming,shen){
-    // ── 以命宫为起点·逆时针排列·对应4×4网格固定位置 ──
-    // POSITIONS[n] = 第n个逆时针位置的gridCell索引
-    // 正确顺时针序列: 申,未,午,巳,辰,卯,寅,丑,子,亥,戌,酉
-    // 对应grid索引:     8, 9,10,11, 0, 1, 2, 3, 4, 5, 6, 7
-    const POSITIONS = [8,9,10,11, 0,1,2,3,4,5,6,7];
-    const DZ_ORDER  = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    // 逆时针偏移: 第n个位置的地支 = DZ_ORDER[(baseIdx - n + 12) % 12]
-    const DZ_IDX   = {子:0,丑:1,寅:2,卯:3,辰:4,巳:5,午:6,未:7,申:8,酉:9,戌:10,亥:11};
+    // iztro palaces数组顺序 = [兄弟,命宫,父母,福德,田宅,官禄,仆役,迁移,疾厄,财帛,子女,夫妻]
+    // 对应地支顺序       = [寅,  卯,  辰,  巳,  午,  未,  申,  酉,  戌,  亥,  子,  丑]
+    // 4×4网格外围12格布局（顺时针）:
+    //   [申][酉]   pos8=寅(兄弟) pos9=卯(命宫)  pos10=辰(父母) pos11=巳(福德)
+    //   [卯][  ][戌][亥] → pos7=午(田宅)  pos6=未(官禄)  pos5=申(仆役)  pos4=酉(迁移)
+    //   [寅][  ][子][丑] → pos3=戌(疾厄)  pos2=亥(财帛)  pos1=子(子女)  pos0=丑(夫妻)
+    //   [辰][巳][午][未]
+    // cellIndex → 地支索引（在地支数组[子丑寅卯辰巳午未申酉戌亥]中的位置）
+    const CELL_TO_DZ_IDX = [10,11,0,1,2,3,4,5,6,7,8,9]; // cell→地支在数组中index
+    const DZ_ORDER = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    // 地支→palaces数组索引
+    const DZ_TO_PALACE_IDX = {寅:0,卯:1,辰:2,巳:3,午:4,未:5,申:6,酉:7,戌:8,亥:9,子:10,丑:11};
 
     if(!d.palaces || d.palaces.length < 12){
-        return '<div style="color:red;padding:20px;text-align:center">⚠️ 命盘数据缺少宫位，请检查排盘结果</div>';
+        return '<div style="color:red;padding:20px;text-align:center">⚠️ 命盘数据缺少宫位</div>';
     }
 
-    const mingBranch = d.palaces[0].branch;
-    const baseIdx = DZ_IDX[mingBranch];
-    if(baseIdx === undefined){
-        return '<div style="color:red;padding:20px;text-align:center">⚠️ 命宫地支无法识别: ' + (mingBranch||'') + '</div>';
+    // 按名称找命宫
+    const mingPalace = d.palaces.find(p => p.name === '命宫');
+    if(!mingPalace){
+        return '<div style="color:red;padding:20px;text-align:center">⚠️ 未找到命宫</div>';
     }
-
-    // 预建grid[gridCellIdx] = palace对象（0=空/未找到）
-    const grid = new Array(12).fill(null);
-    POSITIONS.forEach((cellIdx, n) => {
-        const dz = DZ_ORDER[(baseIdx - n + 1200) % 12]; // 逆时针第n个
-        const palace = d.palaces.find(p => p.branch === dz);
-        grid[cellIdx] = palace || null;
-    });
+    const mingBranch = mingPalace.branch;
+    const mingBranchIdx = DZ_ORDER.indexOf(mingBranch);
 
     let html = '';
     for(let cell = 0; cell < 12; cell++){
-        const p = grid[cell];
+        // 该格子对应的地支
+        const dz = DZ_ORDER[CELL_TO_DZ_IDX[cell]];
+        // 该地支对应的palace数组索引
+        const palaceIdx = DZ_TO_PALACE_IDX[dz];
+        const p = d.palaces[palaceIdx];
         if(!p){
-            const dzMap = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-            html += '<div class="palace palace-missing" style="border:2px dashed red;min-height:80px;display:flex;align-items:center;justify-content:center;color:red;font-size:11px;background:#fff0f0;">缺宫: ' + (dzMap[cell]||'') + '宫空</div>';
+            html += '<div class="palace palace-missing" style="border:2px dashed red;min-height:80px;display:flex;align-items:center;justify-content:center;color:red;font-size:11px;background:#fff0f0;">缺宫: '+dz+'宫</div>';
             continue;
         }
         const isMing = p.name === '命宫';
-        const isShen = !isMing && !!p.isBodyPalace;
+        const isShen = !!p.isBodyPalace;
         const cls = 'palace' + (isMing ? ' ming' : '') + (isShen ? ' shen' : '');
         const badges = (isMing ? '<span class="palace-badge badge-ming">命</span>' : '') + (isShen ? '<span class="palace-badge badge-shen">身</span>' : '');
         let stars = '';
@@ -1755,11 +1756,12 @@ function renderPalaceGrid(d,ming,shen){
             const starName = (typeof allStarName === 'function') ? allStarName(s) : nm;
             stars += '<div class="' + cn + '">' + starName + (s.brightness && s.brightness !== '平' ? '['+s.brightness+']' : '') + '</div>';
         });
-        const lbl = p.name + (isShen ? '(身宫)' : '');
-        html += '<div class="' + cls + '">' + badges + '<div class="palace-name">' + (p.branch||'') + '宫 · ' + lbl + '</div><div class="star-list">' + stars + '</div></div>';
+        html += '<div class="' + cls + '">' + badges + '<div class="palace-name">' + (p.branch||'') + '宫 · ' + p.name + (isShen&&!isMing?'(身宫)':'') + '</div><div class="star-list">' + stars + '</div></div>';
     }
     return html;
 }
+
+// ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
 
 // ── 客户端生成逐年流年数据（不再依赖服务端 pastYears 接口）──
 
