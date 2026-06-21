@@ -3021,19 +3021,27 @@ function renderPalaceGrid(d, ming, shen) {
 
   function getPalace(name) { return d.palaces.find(function(p){ return p.name === name; }); }
 
-  var pMing = getPalace('命宫');
-  var pXiongdi = getPalace('兄弟');
-  var pFuqi = getPalace('夫妻');
-  var pZinv = getPalace('子女');
-  var pCaifu = getPalace('财帛');
-  var pJieyi = getPalace('疾厄');
-  var pQianyi = getPalace('迁移');
-  var pJiaoyou = getPalace('交友');
-  var pGuanlu = getPalace('官禄');
-  var pTianzhai = getPalace('田宅');
-  var pFude = getPalace('福德');
-  var pFumu = getPalace('父母');
+  // 标准4×4紫微斗数排盘（12宫全含）
+  // Row0: 命宫 兄弟 夫妻 子女
+  // Row1: 财帛 [中宫colspan=2 rowspan=2] 疾厄
+  // Row2: 父母                 迁移
+  // Row3: 福德 田宅 官禄 交友
+  var cells = {
+    r0c0: getPalace('命宫'),
+    r0c1: getPalace('兄弟'),
+    r0c2: getPalace('夫妻'),
+    r0c3: getPalace('子女'),
+    r1c0: getPalace('财帛'),
+    r1c3: getPalace('疾厄'),
+    r2c0: getPalace('父母'),
+    r2c3: getPalace('迁移'),
+    r3c0: getPalace('福德'),
+    r3c1: getPalace('田宅'),
+    r3c2: getPalace('官禄'),
+    r3c3: getPalace('交友')   // 交友宫在这里！
+  };
 
+  // 中宫信息
   var info = d.info || {};
   var birth = d.birth || {};
   var genderTxt = (birth.gender === 'male') ? '阳男' : '阴女';
@@ -3050,10 +3058,11 @@ function renderPalaceGrid(d, ming, shen) {
     '<div>钟表时间 ' + (birth.year||'') + '.' + (birth.month||'') + '.' + (birth.day||'') + ' ' + (birth.hour||'') + ':00</div>' +
     (lunarInfo ? '<div>农历时间 ' + lunarInfo + '</div>' : '') +
     '</div>' +
-    (pMing ? '<div class="l-center-ming">命主 ' + (info.mingZhu||'') + ' 命宫 ' + (pMing.branch||'') + '</div>' : '') +
+    (cells.r0c0 ? '<div class="l-center-ming">命主 ' + (info.mingZhu||'') + ' 命宫 ' + (cells.r0c0.branch||'') + '</div>' : '') +
     (shen ? '<div class="l-center-shen">身主 ' + (info.shenZhu||'') + ' 身宫 ' + (shen.branch||'') + '</div>' : '') +
     '</td></tr></table>';
 
+  // 渲染单个宫位TD
   function cellTd(p) {
     if (!p) return '<td class="l-cell l-empty"></td>';
     var isMing = p.name === '命宫';
@@ -3062,7 +3071,9 @@ function renderPalaceGrid(d, ming, shen) {
     if (isMing) cls += ' ming';
     if (isShen && !isMing) cls += ' shen';
     var h = '<td class="' + cls + '">';
+    // 大限年龄
     if (p.daXianAge) h += '<div class="l-daxian-top">' + p.daXianAge[0] + '-' + p.daXianAge[1] + '岁</div>';
+    // 星曜
     h += '<div class="l-pstars">';
     (p.stars||[]).forEach(function(s) {
       var cl = '';
@@ -3072,6 +3083,7 @@ function renderPalaceGrid(d, ming, shen) {
       h += '<span class="' + cl + '">' + starName(s) + '</span>';
     });
     h += '</div>';
+    // 底部：干支+宫名
     h += '<div class="l-pbottom">';
     h += '<span class="l-pstembranch">' + (p.stem||'') + (p.branch||'') + '</span>';
     h += '<span class="l-pname2">' + p.name + '</span>';
@@ -3082,11 +3094,16 @@ function renderPalaceGrid(d, ming, shen) {
     return h;
   }
 
+  // 4×4表格输出
   html += '<table class="l-zwtable">';
-  html += '<tr>' + cellTd(pMing) + cellTd(pXiongdi) + cellTd(pFuqi) + cellTd(pZinv) + '</tr>';
-  html += '<tr>' + cellTd(pCaifu) + '<td colspan="2" rowspan="2" class="l-center">' + centerHtml + '</td>' + cellTd(pJieyi) + '</tr>';
-  html += '<tr>' + cellTd(pFumu) + cellTd(pQianyi) + '</tr>';
-  html += '<tr>' + cellTd(pFude) + cellTd(pTianzhai) + cellTd(pGuanlu) + cellTd(pJiaoyou) + '</tr>';
+  // Row0
+  html += '<tr>' + cellTd(cells.r0c0) + cellTd(cells.r0c1) + cellTd(cells.r0c2) + cellTd(cells.r0c3) + '</tr>';
+  // Row1
+  html += '<tr>' + cellTd(cells.r1c0) + '<td colspan="2" rowspan="2" class="l-center">' + centerHtml + '</td>' + cellTd(cells.r1c3) + '</tr>';
+  // Row2
+  html += '<tr>' + cellTd(cells.r2c0) + cellTd(cells.r2c3) + '</tr>';
+  // Row3
+  html += '<tr>' + cellTd(cells.r3c0) + cellTd(cells.r3c1) + cellTd(cells.r3c2) + cellTd(cells.r3c3) + '</tr>';
   html += '</table></div>';
   return html;
 }
