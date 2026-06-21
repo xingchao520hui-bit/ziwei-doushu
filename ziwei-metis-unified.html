@@ -1162,6 +1162,7 @@ function switchTab(tab){
   var acc=document.getElementById('tab-account');
   if(acc){acc.style.display=tab==='account'?'block':'none';}
   if(tab==='account'){updateVipStatusUI&&updateVipStatusUI();}
+  if(tab==='hepan'){populateHepanSelects();}
 }
 
 // ===== Hepan Form Population =====
@@ -1174,6 +1175,7 @@ function populateHepanSelects(){
   yr('yearA');mo('monthA');dy('dayA');hr('hourA');mn('minuteA');
   yr('yearB');mo('monthB');dy('dayB');hr('hourB');mn('minuteB');
 }
+populateHepanSelects();
 
 // ===== Hepan Submit =====
 function doHepanSubmit(){
@@ -1268,14 +1270,11 @@ document.querySelectorAll('.l-toggle').forEach(function(g){
   });
 });
 
+// Bind hepanSubmit button
+var _hepanBtn = document.getElementById('hepanSubmit');
+if(_hepanBtn) _hepanBtn.onclick = doHepanSubmit;
+
 // ===== Constants =====
-var API='http://localhost:3211';
-var DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-var HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
-var globalLaiYin=null;
-
-// ===== App functions (from ziwei-app.html) =====
-
 const API='http://localhost:3211';
 const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const HOUR_LABELS={0:'子',2:'丑',4:'寅',6:'卯',8:'辰',10:'巳',12:'午',14:'未',16:'申',18:'酉',20:'戌',22:'亥'};
