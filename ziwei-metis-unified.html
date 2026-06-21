@@ -2841,20 +2841,21 @@ function getChart(){
     }
   }
 
-  setTimeout(function(){
+  fetch(API+'/api/chart?'+'year='+year+'&month='+month+'&day='+day+'&hour='+hour+'&minute='+minute+'&gender='+gender+'&isSolar=true'+(lng&&lng!==120?'&longitude='+lng:''))
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+  .then(function(data){render(data);})
+  .catch(function(e){
+    console.warn('后端排盘失败: '+e.message+', 尝试客户端引擎...');
     try{
-      var d;
       if(window.Ziwei&&window.Ziwei.computeChart){
         var adj=window.Ziwei.getAdjustedTime(year,month,day,hour,minute,lng);
-        d=window.Ziwei.computeChart({year:adj.year,month:adj.month,day:adj.day,hour:adj.hour,minute:adj.minute,gender:gender,location:location,isSolar:true});
+        var d=window.Ziwei.computeChart({year:adj.year,month:adj.month,day:adj.day,hour:adj.hour,minute:adj.minute,gender:gender,location:location,isSolar:true});
         render(d);
       }else{
-        fetch(API+'/api/chart?'+new URLSearchParams({year:year,month:month,day:day,hour:hour,gender:gender,isSolar:'true'}).toString())
-        .then(function(r){return r.json()}).then(function(data){render(data)})
-        .catch(function(e){showError('排盘服务不可用: '+e.message)});
+        showError('排盘服务不可用');
       }
-    }catch(e){showError('排盘失败: '+e.message)}
-  },50);
+    }catch(e2){showError('排盘失败: '+e2.message)}
+  });
 }
 
 function showError(msg){
