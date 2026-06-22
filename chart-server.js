@@ -494,9 +494,17 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const PORT = 3211;
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`紫微斗数排盘+合盘服务已启动: http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3211;
+
+// CORS 中间件
+function setCORSHeaders(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`紫微斗数排盘+合盘服务已启动: http://0.0.0.0:${PORT}`);
   console.log(`排盘: http://localhost:${PORT}/chart?year=1999&month=2&day=17&hour=22&gender=male`);
   console.log(`合盘: http://localhost:${PORT}/hepan?a_year=1993&a_month=5&a_day=3&a_hour=12&a_gender=male&b_year=1988&b_month=6&b_day=20&b_hour=14&b_gender=female`);
 });
